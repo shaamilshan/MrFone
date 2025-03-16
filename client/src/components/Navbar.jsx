@@ -227,7 +227,7 @@ import { TiTicket } from "react-icons/ti";
 import OutsideTouchCloseComponent from "./OutsideTouchCloseComponent";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import logo from "../assets/TrendkartL.jpeg";
+import logo from "../assets/Logo.png";
 import { Heart, Search, ShoppingCart, User } from "lucide-react";
 import { Input } from "./ui/input";
 
@@ -364,7 +364,7 @@ const Navbar = ({ usercheck }) => {
         <div className="flex items-center justify-between gap-4">
           <a href="/" className="flex-shrink-0">
             {/* <h1 className="text-2xl font-bold text-red-600">Trend Kart</h1> */}
-            <img src={logo} alt="logo" className="h-8 w-32" />
+            <img src={logo} alt="logo" className=" w-24 h-24" />
           </a>
           <div className="relative hidden flex-1 max-w-xl lg:block">
             <SearchBar
