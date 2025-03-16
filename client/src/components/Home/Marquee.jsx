@@ -17,7 +17,7 @@ const Marquee = () => {
   }, [texts.length]);
 
   return (
-    <div className="w-full text-xs bg-red-500 text-white py-2 overflow-hidden relative">
+    <div className="w-full text-xs bg-[#000000] text-white py-4 overflow-hidden relative">
       <div
         className="flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
