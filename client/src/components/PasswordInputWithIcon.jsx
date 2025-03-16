@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Field, ErrorMessage } from "formik";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-const PasswordInputWithIcon = ({ title, name, icon, placeholder, canEdit }) => {
+const PasswordInputWithIcon = ({ title, name,  placeholder, canEdit }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePassword = () => {
@@ -14,7 +14,7 @@ const PasswordInputWithIcon = ({ title, name, icon, placeholder, canEdit }) => {
         <label htmlFor="username">{title}</label>
       </p>
       <div className="flex items-center">
-        <div className="sign-up-icon">{icon}</div>
+        {/* <div className="sign-up-icon">{icon}</div> */}
         <Field
           className="sign-up-input-y w-full"
           name={name}

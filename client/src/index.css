@@ -169,10 +169,10 @@ scrollbar-width: none; /* or 'thin' or 'auto' */
   /* Sign UP page */
   
   .sign-up-input {
-    @apply border-t border-b border-e bg-white border-gray-200 p-2 rounded-e-lg outline-none;
+    @apply border bg-white border-gray-200 p-2 rounded-l-lg rounded-e-lg outline-none ;
   }
   .sign-up-input-y {
-    @apply border-t border-b bg-white border-gray-200 p-2 outline-none;
+    @apply border bg-white border-gray-200 p-2 rounded-l-lg outline-none;
   }
   
   .sign-up-icon {

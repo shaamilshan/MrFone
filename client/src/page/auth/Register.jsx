@@ -14,12 +14,12 @@ import { toast } from "react-hot-toast";
 import { appJson } from "../../Common/configurations";
 import { commonRequest } from "../../Common/api";
 import { updateError } from "../../redux/reducers/userSlice";
-import {
-  AiOutlineLock,
-  AiOutlineMail,
-  AiOutlinePhone,
-  AiOutlineUser,
-} from "react-icons/ai";
+// import {
+//   AiOutlineLock,
+//   AiOutlineMail,
+//   AiOutlinePhone,
+//   AiOutlineUser,
+// } from "react-icons/ai";
 
 const Register = () => {
   const { user, loading, error } = useSelector((state) => state.user);
@@ -113,13 +113,13 @@ const Register = () => {
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gray-100">
       {/* Left Side - Image */}
-      <div className="hidden lg:block lg:w-1/2">
+      {/* <div className="hidden lg:block lg:w-1/2">
         <img
           src={SignUpBG}
           alt="Sign Up Background"
           className="w-full h-full object-cover"
         />
-      </div>
+      </div> */}
 
       {/* Right Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 lg:px-16">
@@ -128,7 +128,7 @@ const Register = () => {
             {/* <img src={Logo} alt="Logo" className="w-12" /> */}
             {/* <p className="text-3xl font-bold ml-3">ex.iphones.</p> */}
           </div>
-          <h1 className="text-4xl font-bold mb-6 text-center">Sign Up</h1>
+          <h1 className="text-4xl font-bold mb-6 text-center">Register</h1>
 
           {emailSec && (
             <Formik
@@ -149,44 +149,44 @@ const Register = () => {
                     />
                   </div> */}
                   <InputWithIcon
-                    icon={<AiOutlineUser />}
-                    title="First Name"
+                    // icon={<AiOutlineUser />}
+                    // title="First Name"
                     name="firstName"
                     placeholder="Enter your first name"
                   />
                   <InputWithIcon
-                    icon={<AiOutlineUser />}
-                    title="Last Name"
+                    // icon={<AiOutlineUser />}
+                    // title="Last Name"
                     name="lastName"
                     placeholder="Enter your last name"
                   />
+                    <InputWithIcon
+                      // icon={<AiOutlinePhone />}
+                      // title="Phone Number"
+                      name="phoneNumber"
+                      placeholder="Enter your phone number"
+                    />
                   <InputWithIcon
-                    icon={<AiOutlineMail />}
-                    title="Email"
+                    // icon={<AiOutlineMail />}
+                    // title="Email"
                     name="email"
                     placeholder="Enter your email"
                   />
                   <PasswordInputWithIcon
-                    icon={<AiOutlineLock />}
-                    title="Password"
+                    // icon={<AiOutlineLock />}
+                    // title="Password"
                     name="password"
                     placeholder="Enter your password"
                   />
                   <PasswordInputWithIcon
-                    icon={<AiOutlineLock />}
-                    title="Confirm Password"
+                    // icon={<AiOutlineLock />}
+                    // title="Confirm Password"
                     name="passwordAgain"
                     placeholder="Confirm your password"
                   />
-                  <InputWithIcon
-                    icon={<AiOutlinePhone />}
-                    title="Phone Number"
-                    name="phoneNumber"
-                    placeholder="Enter your phone number"
-                  />
                   <button
                     type="submit"
-                    className="h-12 w-full bg-[#C84332] text-white hover:bg-red-500 rounded-md"
+                    className="h-12 w-full bg-[#000000] text-white hover:bg-red-500 rounded-md"
                     disabled={otpLoading}
                   >
                     {otpLoading ? "Loading..." : "Sign Up"}
