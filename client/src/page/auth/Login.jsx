@@ -48,18 +48,18 @@ const Login = () => {
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gray-50">
       {/* Left Side - Image */}
-      <div className="hidden lg:block lg:w-1/2 h-full">
+      {/* <div className="hidden lg:block lg:w-1/2 h-full">
         <img
           src={LoginImg}
           alt="Login Background"
           className="w-full h-full object-cover"
         />
-      </div>
+      </div> */}
 
       {/* Right Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 lg:px-16">
         <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg">
-          <h1 className="text-4xl font-bold mb-6 text-center">Welcome Back</h1>
+          <h1 className="text-4xl font-bold mb-6 text-center">Login</h1>
           <Formik
             initialValues={initialValues}
             onSubmit={handleLoginSubmit}
@@ -110,19 +110,19 @@ const Login = () => {
                 </div>
                 {error && <p className="text-red-500 text-sm">{error}</p>}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
+                  {/* <div className="flex items-center space-x-2">
                     <Checkbox id="remember" />
                     <label htmlFor="remember" className="text-sm font-medium">
                       Remember me
                     </label>
-                  </div>
+                  </div> */}
                   <Link to="/forgot-password" className="text-sm font-medium text-primary hover:underline">
                     Forgot Password?
                   </Link>
                 </div>
                 <Button
                   type="submit"
-                  className="h-12 w-full bg-[#C84332] text-white hover:bg-black/90"
+                  className="h-12 w-full bg-[#000000] text-white hover:bg-black/90"
                   disabled={loading}
                 >
                   {loading ? "Loading..." : "Login"}
