@@ -10,7 +10,7 @@ import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import LoginImg from "../../assets/login.png";
+import LoginImg from "../../assets/login.jpg";
 
 const Login = () => {
   const { user, loading, error } = useSelector((state) => state.user);
@@ -48,13 +48,13 @@ const Login = () => {
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gray-50">
       {/* Left Side - Image */}
-      {/* <div className="hidden lg:block lg:w-1/2 h-full">
+      <div className="hidden lg:block lg:w-1/2 h-full">
         <img
           src={LoginImg}
           alt="Login Background"
-          className="w-full h-full object-cover"
+          className="w-full h-screen object-cover"
         />
-      </div> */}
+      </div>
 
       {/* Right Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 lg:px-16">
