@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SignUpBG from "../../assets/register.png";
+import SignUpBG from "../../assets/register.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "../../redux/actions/userActions";
@@ -113,13 +113,13 @@ const Register = () => {
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gray-100">
       {/* Left Side - Image */}
-      {/* <div className="hidden lg:block lg:w-1/2">
+      <div className="hidden lg:block lg:w-1/2">
         <img
           src={SignUpBG}
           alt="Sign Up Background"
-          className="w-full h-full object-cover"
+          className="w-full h-screen object-cover"
         />
-      </div> */}
+      </div>
 
       {/* Right Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 lg:px-16">
