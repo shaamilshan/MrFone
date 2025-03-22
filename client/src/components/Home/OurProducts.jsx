@@ -29,7 +29,7 @@ const OurProducts = () => {
   return (
     <div className="container mx-auto px-4 py-8" data-aos="fade-up">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-xl md:text-3xl font-bold">Our Products</h1>
+        <h1 className="text-xl md:text-3xl font-bold">Popular Products</h1>
       </div>
 
       {loading ? (
@@ -39,7 +39,7 @@ const OurProducts = () => {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {shuffledProducts && shuffledProducts.length > 0 ? (
-            shuffledProducts.slice(0, 20).map((product, index) => (
+            shuffledProducts.slice(0, 8).map((product, index) => (
               <ProductCard2 product={product} key={index} />
             ))
           ) : (

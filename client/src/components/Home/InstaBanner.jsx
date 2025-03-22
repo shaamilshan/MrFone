@@ -1,12 +1,12 @@
 import React from "react";
 import { FaInstagram } from "react-icons/fa";
-import instabanner from "../../assets/trendskart/home/instabannerbg.jpg";
+import instabanner from "../../assets/banner.jpg";
 
 const BannerSection = () => {
   return (
-    <section className="flex flex-col md:flex-row w-full h-auto md:h-[300px] overflow-hidden ">
+    <section className="flex flex-col md:flex-row w-full h-auto md:h-full overflow-hidden ">
       {/* Left Side - Image */}
-      <div className="w-full md:w-1/2 h-[200px] md:h-full">
+      <div className="w-full h-full md:h-full">
         <img
           src={instabanner}
           alt="Instagram banner"
@@ -15,7 +15,7 @@ const BannerSection = () => {
       </div>
 
       {/* Right Side - Content */}
-      <div className="w-full md:w-1/2 bg-gray-50 flex flex-col justify-center items-center md:items-start text-center md:text-left p-4 md:p-8 space-y-4">
+      {/* <div className="w-full md:w-1/2 bg-gray-50 flex flex-col justify-center items-center md:items-start text-center md:text-left p-4 md:p-8 space-y-4">
         <h2 className="text-xl md:text-3xl font-semibold text-gray-800">
           @TREND_KART_MUKKAM_
         </h2>
@@ -32,7 +32,7 @@ const BannerSection = () => {
             Follow Us
           </button>
         </a>
-      </div>
+      </div> */}
     </section>
   );
 };

@@ -24,9 +24,11 @@ export default function Home2() {
      
       <RedBanner/>
       <OurProducts />
+      <BannerSection/>
+      <OurProducts />
+      <BannerSection/>
       <CategoriesGroup />
       {/* <BestSellers /> */}
-      <BannerSection/>
       <ReviewSlider />
     </>
   );
