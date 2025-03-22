@@ -1,13 +1,19 @@
 import React from 'react';
+import Logo from '../assets/Logo.png'
 
 function Footer() {
   return (
-    <footer className="bg-[#C84332] text-white py-8">
+    <footer className="bg-white text-black py-8">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
-        <div className="ml-12 mb-6 md:mb-0">
-          <h4 className="text-lg font-medium mb-4">TrendKart</h4>
+        <div className="ml-12 w-2/4 mb-6 md:mb-0">
+          <img
+          src={Logo}
+          className='w-28 ml-0 p-0'
+          />
+          {/* <h4 className="text-lg font-medium mb-4">TrendKart</h4> */}
           <p className="text-sm">
-           Karassery Junction, Mukkam, Calicut, India 673602
+           Asha Complex, Koduvally <br />
+           +91 956245 2000
           </p>
         </div>
         <div className="ml-6 grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -77,7 +83,7 @@ function Footer() {
         </div>
       </div>
       <div className="mt-8 text-center text-sm">
-        <p>&copy; 2024 TrendKart. All rights revered</p>
+        <p>&copy; 2025 MrFone. All rights revered</p>
       </div>
     </footer>
   );
