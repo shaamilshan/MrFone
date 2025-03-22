@@ -37,7 +37,7 @@ const ProductCard2 = ({ product }) => {
         <img
           src={`${URL}/img/${product?.imageURL}`}
           alt={product.name}
-          className="h-full w-full object-cover transition-transform duration-500 hover:scale-105 "
+          className="h-full w-full object-contain transition-transform duration-500 hover:scale-105 "
         />
       </div>
       
@@ -59,13 +59,10 @@ const ProductCard2 = ({ product }) => {
               </>
             )}
           </span>
-
-
           {product.offer && (
 
             <span className="text-[11px] sm:text-[12px] lg:text-[18px] text-gray-500">From</span>
           )}
-
           <span className="text-[11px] sm:text-[12px] lg:text-[14px] line-through font-semibold">
             ₹{product.price.toLocaleString()}
           </span>

@@ -209,13 +209,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/actions/userActions";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { ShoppingCart, Heart, Menu, X } from "lucide-react";
-import logo from "../assets/Logo.png";
+import logo from "../assets/trendskart/home/Logocrop.png";
 
 const Navbar = ({ usercheck }) => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -226,34 +226,63 @@ const Navbar = ({ usercheck }) => {
 
   return (
     <header className="border-b bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 md:py-2 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-2 md:py-1 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex-shrink-0">
-          <img src={logo} alt="logo" className="w-16 h-16 md:w-20 md:h-20 object-cover" />
+        <Link to="/" className="flex items-center">
+          <img
+            src={logo}
+            alt="Logo"
+            className="w-20 h-12 md:w-28 md:h-20 object-contain"
+          />
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-4 lg:gap-6 font-semibold text-gray-700">
-          <Link to="/" className="hover:text-red-600 transition-colors">HOME</Link>
-          <Link to="/electronics" className="hover:text-red-600 transition-colors">ELECTRONICS</Link>
-          <Link to="/blog" className="hover:text-red-600 transition-colors">BLOG</Link>
-          <Link to="/pages" className="hover:text-red-600 transition-colors">PAGES</Link>
-          <Link to="/contact" className="hover:text-red-600 transition-colors">CONTACT</Link>
+          <Link to="/" className="hover:text-red-600 transition-colors">
+            HOME
+          </Link>
+          <Link
+            to="/electronics"
+            className="hover:text-red-600 transition-colors"
+          >
+            ELECTRONICS
+          </Link>
+          <Link to="/blog" className="hover:text-red-600 transition-colors">
+            BLOG
+          </Link>
+          <Link to="/pages" className="hover:text-red-600 transition-colors">
+            PAGES
+          </Link>
+          <Link to="/contact" className="hover:text-red-600 transition-colors">
+            CONTACT
+          </Link>
         </nav>
 
         {/* Icons & Mobile Menu Button */}
         <div className="flex items-center gap-2 md:gap-4">
-          <Link to="/search" className="p-1 rounded-full hover:bg-gray-100 transition-colors">
+          <Link
+            to="/search"
+            className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+          >
             <IoSearch className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
           </Link>
-          <Link to="/favorites" className="p-1 rounded-full hover:bg-gray-100 transition-colors">
+          <Link
+            to="/favorites"
+            className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+          >
             <Heart className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
           </Link>
-          <Link to="/dashboard/wishlist" className="p-1 rounded-full hover:bg-gray-100 transition-colors">
+          <Link
+            to="/dashboard/wishlist"
+            className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+          >
             <HiOutlineShoppingBag className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
           </Link>
           {usercheck && (
-            <Link to="/cart" className="p-1 rounded-full hover:bg-gray-100 transition-colors">
+            <Link
+              to="/cart"
+              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+            >
               <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
             </Link>
           )}
@@ -261,34 +290,61 @@ const Navbar = ({ usercheck }) => {
           {/* User Profile or Login Button */}
           {user ? (
             <div className="hidden md:block relative">
-              <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 rounded-full bg-gray-100 p-2 hover:bg-gray-200 transition-colors">
-                <img 
-                  src={user.avatar || "https://via.placeholder.com/40"} 
-                  alt="Profile" 
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="flex items-center gap-2 rounded-full bg-gray-100 p-2 hover:bg-gray-200 transition-colors"
+              >
+                <img
+                  src={user.avatar || "https://via.placeholder.com/40"}
+                  alt="Profile"
                   className="w-8 h-8 rounded-full object-cover"
                 />
               </button>
               {menuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                  <Link to="/dashboard/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>Profile</Link>
-                  <Link to="/dashboard/orders" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>Orders</Link>
-                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</button>
+                  <Link
+                    to="/dashboard/profile"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    to="/dashboard/orders"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Orders
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
                 </div>
               )}
             </div>
           ) : (
-            <Link to="/login" className="hidden md:block  bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+            <Link
+              to="/login"
+              className="hidden md:block  bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+            >
               {/* Login */}
             </Link>
           )}
 
           {/* Mobile Menu Button */}
-          <button 
-            onClick={() => setMenuOpen(!menuOpen)} 
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden p-1 rounded-full hover:bg-gray-100 transition-colors"
             aria-label="Toggle menu"
           >
-            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {menuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
         </div>
       </div>
@@ -298,20 +354,71 @@ const Navbar = ({ usercheck }) => {
         <div className="md:hidden bg-white border-t shadow-md">
           <nav className="container mx-auto px-4">
             <ul className="flex flex-col py-4 text-gray-700">
-              <Link to="/" className="py-3 border-b border-gray-100 font-semibold" onClick={() => setMenuOpen(false)}>HOME</Link>
-              <Link to="/electronics" className="py-3 border-b border-gray-100 font-semibold" onClick={() => setMenuOpen(false)}>ELECTRONICS</Link>
-              <Link to="/blog" className="py-3 border-b border-gray-100 font-semibold" onClick={() => setMenuOpen(false)}>BLOG</Link>
-              <Link to="/pages" className="py-3 border-b border-gray-100 font-semibold" onClick={() => setMenuOpen(false)}>PAGES</Link>
-              <Link to="/contact" className="py-3 border-b border-gray-100 font-semibold" onClick={() => setMenuOpen(false)}>CONTACT</Link>
-              
+              <Link
+                to="/"
+                className="py-3 border-b border-gray-100 font-semibold"
+                onClick={() => setMenuOpen(false)}
+              >
+                HOME
+              </Link>
+              <Link
+                to="/electronics"
+                className="py-3 border-b border-gray-100 font-semibold"
+                onClick={() => setMenuOpen(false)}
+              >
+                ELECTRONICS
+              </Link>
+              <Link
+                to="/blog"
+                className="py-3 border-b border-gray-100 font-semibold"
+                onClick={() => setMenuOpen(false)}
+              >
+                BLOG
+              </Link>
+              <Link
+                to="/pages"
+                className="py-3 border-b border-gray-100 font-semibold"
+                onClick={() => setMenuOpen(false)}
+              >
+                PAGES
+              </Link>
+              <Link
+                to="/contact"
+                className="py-3 border-b border-gray-100 font-semibold"
+                onClick={() => setMenuOpen(false)}
+              >
+                CONTACT
+              </Link>
+
               {user ? (
                 <>
-                  <Link to="/dashboard/profile" className="py-3 border-b border-gray-100" onClick={() => setMenuOpen(false)}>Profile</Link>
-                  <Link to="/dashboard/orders" className="py-3 border-b border-gray-100" onClick={() => setMenuOpen(false)}>Orders</Link>
-                  <button onClick={handleLogout} className="py-3 text-left text-red-600">Logout</button>
+                  <Link
+                    to="/dashboard/profile"
+                    className="py-3 border-b border-gray-100"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    to="/dashboard/orders"
+                    className="py-3 border-b border-gray-100"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Orders
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="py-3 text-left text-red-600"
+                  >
+                    Logout
+                  </button>
                 </>
               ) : (
-                <Link to="/login" className="mt-4 block w-full py-2 bg-red-600 text-white text-center rounded-md" onClick={() => setMenuOpen(false)}>
+                <Link
+                  to="/login"
+                  className="mt-4 block w-full py-2 bg-red-600 text-white text-center rounded-md"
+                  onClick={() => setMenuOpen(false)}
+                >
                   Login
                 </Link>
               )}
@@ -332,16 +439,16 @@ export default Navbar;
 function HeartIcon(props) {
   return (
     <svg
-    width="28"
-    height="25"
-    viewBox="0 0 28 25"
+      width="28"
+      height="25"
+      viewBox="0 0 28 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
         d="M13.75 25L12.5924 23.9305C10.099 21.6014 8.03649 19.6077 6.4049 17.9494C4.77331 16.2912 3.48547 14.8287 2.54138 13.5619C1.59729 12.2952 0.937712 11.1492 0.562642 10.1238C0.187548 9.09837 0 8.06697 0 7.02956C0 5.04285 0.660076 3.37458 1.98023 2.02475C3.30038 0.674916 4.93197 0 6.875 0C8.21865 0 9.47907 0.351478 10.6562 1.05443C11.8334 1.75739 12.8647 2.77977 13.75 4.12159C14.6353 2.77977 15.6666 1.75739 16.8438 1.05443C18.0209 0.351478 19.2813 0 20.625 0C22.568 0 24.1996 0.674916 25.5198 2.02475C26.8399 3.37458 27.5 5.04285 27.5 7.02956C27.5 8.06697 27.3125 9.09837 26.9374 10.1238C26.5623 11.1492 25.9027 12.2952 24.9586 13.5619C24.0145 14.8287 22.7316 16.2912 21.1098 17.9494C19.488 19.6077 17.4206 21.6014 14.9076 23.9305L13.75 25ZM13.75 22.8851C16.1944 20.6261 18.206 18.6909 19.7847 17.0797C21.3634 15.4685 22.6111 14.0707 23.5278 12.886C24.4444 11.7014 25.081 10.652 25.4375 9.73774C25.794 8.8235 25.9722 7.92078 25.9722 7.02956C25.9722 5.46743 25.463 4.16566 24.4444 3.12425C23.4259 2.08283 22.1528 1.56212 20.625 1.56212C19.4087 1.56212 18.2863 1.9171 17.258 2.62706C16.2297 3.33702 15.3091 4.40598 14.4963 5.83395H13.0037C12.1713 4.38596 11.2458 3.312 10.2273 2.61207C9.20877 1.91211 8.09134 1.56212 6.875 1.56212C5.3668 1.56212 4.09856 2.08283 3.07026 3.12425C2.04194 4.16566 1.52778 5.46743 1.52778 7.02956C1.52778 7.92078 1.70602 8.8235 2.0625 9.73774C2.41898 10.652 3.05556 11.7014 3.97222 12.886C4.88889 14.0707 6.13657 15.4635 7.71528 17.0647C9.29398 18.6659 11.3056 20.606 13.75 22.8851Z"
         fill="white"
-        />
+      />
     </svg>
   );
 }
@@ -349,16 +456,16 @@ function HeartIcon(props) {
 function MenuIcon(props) {
   return (
     <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="white"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="white"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       <line x1="4" x2="20" y1="12" y2="12" />
       <line x1="4" x2="20" y1="6" y2="6" />
