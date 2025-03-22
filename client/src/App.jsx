@@ -84,11 +84,14 @@ import ManagerSignup from "./page/manager/ManagerSignup";
 import ManagerHome from "./page/manager/pages/ManagerHome";
 import Enquiries from "./page/admin/pages/products/Enquiries";
 import EditStock from "./page/admin/pages/products/EditStock";
-import ManagerOrders from "./page/admin/pages/Order/ManagerOrders";
+import ManagerOrders from "./page/admin/pages/Order/ManagerOrders"; 
 import Managers from "./page/admin/pages/managers/Managers";
 import AllManagerOrders from "./page/admin/pages/Order/AllManagerOrders";
 import OldRegister from "./page/auth/OldRegister";
 import ProductPageDesign from "./page/ProductPageDesign";
+import Electronics from "./page/Electronics";
+import Blog from "./page/Blog";
+import Pages from "./page/Pages";
 
 function App() {
   const { user } = useSelector((state) => state.user);
@@ -96,7 +99,7 @@ function App() {
 
   useEffect(() => {
     if (!user) {
-      dispatch(getUserDataFirst());
+      dispatch(getUserDataFirst()); 
     }
     console.log(user);
   }, [dispatch, user]);
@@ -147,6 +150,9 @@ function App() {
           {/* <Route path="/productnew" element={<SingleProduct2 />} /> */}
           <Route path="/product" element={<ProductDetails />} />
           <Route path="/home" element={<Dashboard />} />
+            <Route path="/electronics" element={<Electronics/>}/>
+            <Route path="/blog" element={<Blog/>}/>
+            <Route path="/pages" element={<Pages/>}/>
 
           {/* Auth Pages */}
 
@@ -208,7 +214,7 @@ function App() {
           )} */}
 
           {/* Admin Routes */}
-          {user ? (
+          {user ? ( 
             user.role === "admin" || user.role === "superAdmin" ? (
               <Route path="/admin/*" element={<AdminRoutes />} />
             ) : user.role === "manager" ? (

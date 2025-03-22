@@ -13,7 +13,7 @@ const shuffleArray = (array) => {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
-};
+}; 
 
 const OurProducts = () => {
   const navigate = useNavigate();

@@ -16,7 +16,7 @@ const RedBanner = () => {
   />
 </div>
 
-    </div>
+    </div> 
   );
 };
 

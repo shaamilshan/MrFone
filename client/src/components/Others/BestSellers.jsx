@@ -1,58 +1,50 @@
 import React, { useEffect } from "react";
-import ProductCard2 from "../Cards/ProductCard2";
-import { useDispatch, useSelector } from "react-redux";
-import { getUserProducts } from "@/redux/actions/user/userProductActions";
-import { useSearchParams } from "react-router-dom";
-import JustLoading from "../JustLoading";
+import airpodsImg from "../../assets/trendskart/categories/airpodss.jpeg";
+import smwatchImg from "../../assets/trendskart/categories/smartwatches.jpeg";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
-const BestSellers = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
- 
-  const { userProducts, loading, error, totalAvailableProducts } = useSelector(
-    (state) => state.userProducts
-  );
-  const dispatch = useDispatch();
-
+function BestSeller() {
   useEffect(() => {
-    // dispatch(getWishlist());
-    dispatch(getUserProducts(searchParams));
-
-    // const params = new URLSearchParams(window.location.search);
-    // const pageNumber = params.get("page");
-    // setPage(parseInt(pageNumber || 1));
-  }, [searchParams]);
+    AOS.init({
+      duration: 1000,
+      easing: "ease-in-out",
+      once: false, 
+      mirror: false, 
+      anchorPlacement: "bottom-top",
+    });
+  
+    setTimeout(() => {
+      AOS.refresh();
+    }, 500);
+  }, []);
+  
 
   return (
-    <div className="my-12 mx-4">
-      <h1 className="text-[30px] text-[#2C2C2C] text-center"> Our Products</h1>
-      <div className="flex flex-wrap justify-center">
-        {loading ? (
-          <div className="flex justify-center items-center h-96">
-            <JustLoading size={10} />
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 py-5">
-            {userProducts && userProducts.length > 0 ? (
-              userProducts
-                .slice(0, 4)
-                .map((pro, index) => (
-                  <ProductCard2
-                    star={true}
-                    className="{w-[15%]}"
-                    product={pro}
-                    key={index}
-                  />
-                ))
-            ) : (
-              <div className="h-96">
-                <p>Nothing to show</p>
-              </div>
-            )}
-          </div>
-        )}
+    <div className="flex flex-col md:flex-row gap-8 justify-center items-center w-full px-6 md:px-10">
+      <div
+        data-aos="fade-right"
+        data-aos-delay="400"
+        className="flex justify-center items-center w-full md:w-1/2 mt-6 md:mt-10 bg-gray-50 p-5 shadow-md"
+      >
+        <img
+          className="w-3/4 h-56 md:h-[350px] object-contain"
+          src={smwatchImg}
+          alt="Smart Watch"
+        />
+      </div>
+      <div
+        data-aos="fade-left"
+        className="flex justify-center items-center w-full md:w-1/2 mt-6 md:mt-10 bg-gray-50  p-5 shadow-md"
+      >
+        <img
+          className="w-3/4 h-56 md:h-[350px] object-contain"
+          src={airpodsImg}
+          alt="AirPods" 
+        />
       </div>
     </div>
   );
-};
+}
 
-export default BestSellers;
+export default BestSeller;

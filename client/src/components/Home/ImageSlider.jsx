@@ -6,7 +6,7 @@ import HomeImg from "../../assets/trendskart/home/artbrd1.jpg";
 import Image2 from "../../assets/trendskart/home/artbrd2.jpg";
 import Image3 from "../../assets/trendskart/home/artbrd3.jpg";
 
-const images = [HomeImg, Image2, Image3 ];
+const images = [HomeImg, Image2, Image3];
 
 function ImageSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -61,24 +61,34 @@ function ImageSlider() {
               }}
             >
               {images.map((image, index) => (
-                <img
+                <div
                   key={index}
-                  alt={`Slide ${index}`}
-                  className="h-full w-full object-cover flex-shrink-0"
-                  src={image}
-                />
+                  className="relative h-full w-full flex-shrink-0"
+                >
+                  <img
+                    alt={`Slide ${index}`}
+                    className="h-full w-full object-cover"
+                    src={image}
+                  />
+                  {/* Shop Now Button */}
+                  <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+                    <Button className=" rounded-full bg-red-600 px-6 py-2  text-white font-semibold shadow-md hover:bg-red-700">
+                      Shop Now
+                    </Button>
+                  </div>
+                </div>
               ))}
             </div>
 
-            {/* Dots Navigation */}
-            <div className="absolute bottom-12 w-full flex justify-center gap-2">
+            {/* Dots Navigation */} 
+            <div className="absolute bottom-12 right-6 flex items-center gap-2">
               {images.map((_, index) => (
                 <div
                   key={index}
-                  className={`h-2 w-2 rounded-full ${
+                  className={`h-2 rounded-full transition-all duration-500 ${
                     index === currentIndex
-                      ? "bg-white"
-                      : "bg-white opacity-50"
+                      ? "bg-white w-6"
+                      : "bg-white opacity-50 w-2"
                   }`}
                 />
               ))}

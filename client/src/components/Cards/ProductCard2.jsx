@@ -23,22 +23,24 @@ const StarRating = ({ rating }) => {
 
 const ProductCard2 = ({ product }) => {
   const navigate = useNavigate();
+  
   const originalPrice = product.offer
     ? Math.round(product.price / (1 - product.offer / 100))
     : product.price;
 
   return (
-    <div
+    <div 
       onClick={() => navigate(`/product/${product._id}`)}
-      className="cursor-pointer space-y-3    "
+      className="cursor-pointer space-y-3  rounded-lg shadow-md px-3 py-2   "
     >
-      <div className="aspect-[3/4] w-full overflow-hidden">
+      <div className="aspect-[4/4] w-full overflow-hidden ">
         <img
           src={`${URL}/img/${product?.imageURL}`}
           alt={product.name}
           className="h-full w-full object-cover transition-transform duration-500 hover:scale-105 "
         />
       </div>
+      
       <div className="space-y-2">
         <h3 className="text-sm font-medium uppercase tracking-wide">
           {product.name}
@@ -48,20 +50,26 @@ const ProductCard2 = ({ product }) => {
             "Contrary To Popular Belief, Lorem Ipsum Is Not Simply Random Text."}
         </p> */}
         <div className="flex items-center gap-[6px]">
-          <span className="text-[11px] sm:text-[12px] lg:text-[18px] font-semibold line-through">
+
+          
+          <span className="text-[11px] sm:text-[12px] lg:text-[18px] font-semibold   text-red-500">
             {product.offer && (
               <>
-               {product.offer} {/* ₹{originalPrice.toLocaleString()} */}
+              ₹{product.offer} 
               </>
             )}
           </span>
+
+
           {product.offer && (
 
             <span className="text-[11px] sm:text-[12px] lg:text-[18px] text-gray-500">From</span>
           )}
-          <span className="text-[11px] sm:text-[12px] lg:text-[18px] font-semibold text-red-500">
+
+          <span className="text-[11px] sm:text-[12px] lg:text-[14px] line-through font-semibold">
             ₹{product.price.toLocaleString()}
           </span>
+          
           <div className="ml-2 px-1 w-auto h-auto md:ml-4 bg-[#C84253] rounded-[2px] text-white text-[10px] sm:text-[12px] lg:text-[13px] flex  justify-center items-center text-center">
             {product.offer && (
               <>
@@ -72,6 +80,8 @@ const ProductCard2 = ({ product }) => {
 
         </div>
       </div>
+
+
     </div>
   );
 };
