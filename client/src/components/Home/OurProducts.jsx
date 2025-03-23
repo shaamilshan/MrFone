@@ -1,66 +1,72 @@
 import React, { useEffect } from "react";
-import { ChevronRight } from "lucide-react";
+import ProductCard2 from "../Cards/ProductCard2";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProducts } from "@/redux/actions/user/userProductActions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import JustLoading from "../JustLoading";
-import ProductCard2 from "../Cards/ProductCard2";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { FaArrowRightLong } from "react-icons/fa6";
 
-const shuffleArray = (array) => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}; 
-
-const OurProducts = () => {
+const NewArrivals = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { userProducts, loading } = useSelector((state) => state.userProducts);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getUserProducts(""));
-  }, [dispatch]);
+    AOS.init({
+      duration: 800, 
+      once: true,
+    });
 
-  const shuffledProducts = userProducts ? shuffleArray(userProducts) : [];
+    dispatch(getUserProducts(""));
+    
+  }, [searchParams, dispatch]);
 
   return (
-    <div className="container mx-auto px-4 py-8" data-aos="fade-up">
+    <div
+      className="container mx-auto px-4 py-8"
+      id="newArrival"
+      data-aos="fade-up"
+    >
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-xl md:text-3xl font-bold">Popular Products</h1>
+        <h1 className="text-xl md:text-2xl font-semibold">Popular Products</h1>
+
+        <div
+          onClick={() => navigate(`/collections`)}
+          className="flex items-center text-gray-600 hover:text-gray-900 cursor-pointer"
+        >
+          View all products
+          <FaArrowRightLong className="h-5 w-5 ml-1 text-red-700" />
+        </div>
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-96">
-          <JustLoading size={10} />
+        <div className="flex justify-center items-center h-72 ">
+          <JustLoading size={6} />
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {shuffledProducts && shuffledProducts.length > 0 ? (
-            shuffledProducts.slice(0, 8).map((product, index) => (
-              <ProductCard2 product={product} key={index} />
-            ))
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
+          {userProducts && userProducts.length > 0 ? (
+            userProducts
+              .slice(0, 12)
+              .map((product, index) => (
+                <ProductCard2
+                  product={product}
+                  key={index}
+                  className="p-1 shadow-sm hover:shadow-md transition w-28 h-36"
+                />
+              ))
           ) : (
-            <div className="h-96 flex items-center justify-center">
+            <div className="h-72 flex items-center justify-center">
               <p>Nothing to show</p>
             </div>
           )}
         </div>
       )}
-
-      <div className="flex justify-center mt-10">
-        <div
-          onClick={() => navigate(`/collections`)}
-          className="flex items-center bg-[#000000] py-3 px-4 rounded-md text-white hover:text-gray-200 cursor-pointer"
-        >
-          View all
-          <ChevronRight className="h-5 w-5 ml-1" />
-        </div>
-      </div>
     </div>
   );
 };
 
-export default OurProducts;
+export default NewArrivals;

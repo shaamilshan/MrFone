@@ -12,6 +12,7 @@ import Marquee from "@/components/Home/OfferHeader";
 import RedBanner from "@/components/Home/redBanner";
 import ShopCategories from "@/components/Others/ShopCatogories";
 import BestSeller from "@/components/Others/BestSellers";
+import Benefits from "@/components/Home/Benefits";
 
 
 
@@ -31,10 +32,12 @@ export default function Home2(){
     <BestSeller/>
     <NewArrivals /> 
     <RedBanner/>
+    {/* <NewArrivals />  */}
     <OurProducts />
     {/* <CategoriesGroup /> */}
     {/* <BestSellers /> */}
     <BannerSection/>
+    <Benefits/>
     {/* <ReviewSlider /> */}
   </div>
 </>
