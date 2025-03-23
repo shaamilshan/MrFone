@@ -32,10 +32,10 @@ export default function Home2(){
     <NewArrivals /> 
     <RedBanner/>
     <OurProducts />
-    <CategoriesGroup />
+    {/* <CategoriesGroup /> */}
     {/* <BestSellers /> */}
     <BannerSection/>
-    <ReviewSlider />
+    {/* <ReviewSlider /> */}
   </div>
 </>
 
