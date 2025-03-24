@@ -202,7 +202,7 @@
 //   );
 // }
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
@@ -211,18 +211,44 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { ShoppingCart, Heart, Menu, X } from "lucide-react";
 import logo from "../assets/trendskart/home/Logocrop.png";
 
+import { CgProfile } from "react-icons/cg";
+
 const Navbar = ({ usercheck }) => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
     setMenuOpen(false);
+    setProfileDropdownOpen(false);
   };
+
+  // Handle click outside to close the profile dropdown
+  const profileDropdownRef = useRef(null);
+
+  const profileImgURL = user?.profileImgURL
+    ? `http://localhost:3000/api/img/${user.profileImgURL}`
+    : "https://via.placeholder.com/40";
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target)
+      ) {
+        setProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="border-b bg-white shadow-md sticky top-0 z-50">
@@ -241,17 +267,14 @@ const Navbar = ({ usercheck }) => {
           <Link to="/" className="hover:text-red-600 transition-colors">
             HOME
           </Link>
-          <Link
-            to="/electronics"
-            className="hover:text-red-600 transition-colors"
-          >
-            ELECTRONICS
-          </Link>
-          <Link to="/blog" className="hover:text-red-600 transition-colors">
-            BLOG
-          </Link>
           <Link to="/pages" className="hover:text-red-600 transition-colors">
             PAGES
+          </Link>
+          <Link
+            to="/dashboard/order-history"
+            className="hover:text-red-600 transition-colors"
+          >
+            MY ORDER
           </Link>
           <Link to="/contact" className="hover:text-red-600 transition-colors">
             CONTACT
@@ -266,73 +289,101 @@ const Navbar = ({ usercheck }) => {
           >
             <IoSearch className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
           </Link>
-          <Link
-            to="/favorites"
-            className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <Heart className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
-          </Link>
+
           <Link
             to="/dashboard/wishlist"
             className="p-1 rounded-full hover:bg-gray-100 transition-colors"
           >
             <HiOutlineShoppingBag className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
           </Link>
-          {usercheck && (
-            <Link
-              to="/cart"
-              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-            >
-              <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
-            </Link>
-          )}
 
-          {/* User Profile or Login Button */}
-          {user ? (
-            <div className="hidden md:block relative">
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="flex items-center gap-2 rounded-full bg-gray-100 p-2 hover:bg-gray-200 transition-colors"
-              >
+          {/* Profile Button with Dropdown */}
+          <div className="relative" ref={profileDropdownRef}>
+            <button
+              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+            >
+              {profileImgURL ? (
                 <img
-                  src={user.avatar || "https://via.placeholder.com/40"}
+                  src={profileImgURL}
                   alt="Profile"
                   className="w-8 h-8 rounded-full object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://via.placeholder.com/40"; // Fallback image
+                  }}
                 />
-              </button>
-              {menuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                  <Link
-                    to="/dashboard/profile"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Profile
-                  </Link>
-                  <Link
-                    to="/dashboard/orders"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Orders
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Logout
-                  </button>
-                </div>
+              ) : (
+                <CgProfile className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
               )}
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className="hidden md:block  bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-            >
-              {/* Login */}
-            </Link>
-          )}
+            </button>
+
+            {/* Profile Dropdown Menu */}
+            {profileDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                {user ? (
+                  <>
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="font-medium  text-gray-800">
+                        {user?.firstName && user?.lastName
+                          ? `${user.firstName} ${user.lastName}`.trim()
+                          : "Guest"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {/* {user.email || "user@example.com"} */}
+                      </p>
+                    </div>
+                    <Link
+                      to="/dashboard/profile"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      Profile
+                    </Link>
+
+                    {/* <Link
+                      to="/dashboard/order-history"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      Orders
+                    </Link>
+                    <Link
+                      to="/dashboard/wishlist"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      Wishlist
+                    </Link> */}
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      Register
+                    </Link>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -353,7 +404,7 @@ const Navbar = ({ usercheck }) => {
       {menuOpen && (
         <div className="md:hidden bg-white border-t shadow-md">
           <nav className="container mx-auto px-4">
-            <ul className="flex flex-col py-4 text-gray-700">
+            <ul className="flex flex-col pt-4 text-gray-700">
               <Link
                 to="/"
                 className="py-3 border-b border-gray-100 font-semibold"
@@ -390,7 +441,7 @@ const Navbar = ({ usercheck }) => {
                 CONTACT
               </Link>
 
-              {user ? (
+              {/* {user ? (
                 <>
                   <Link
                     to="/dashboard/profile"
@@ -421,7 +472,8 @@ const Navbar = ({ usercheck }) => {
                 >
                   Login
                 </Link>
-              )}
+              )} */}
+
             </ul>
           </nav>
         </div>
@@ -431,7 +483,6 @@ const Navbar = ({ usercheck }) => {
 };
 
 export default Navbar;
-
 /*
 
 

@@ -31,13 +31,16 @@ const ProductSlider = ({ images, selectedImageIndex, imgUrl }) => {
     // <div className="w-full h-full m-auto relative group">
  <div className="w-full h-full m-auto relative group">
 
-      <div
-        style={{
-          
-          backgroundImage: `url('${URL}/img/${images[currentIndex]}')`,
-        }}
-        className="w-full h-full bg-center bg-cover duration-500 lg:rounded-xl"
-      ></div>
+<div
+  style={{
+    backgroundImage: `url('${URL}/img/${images[currentIndex]}')`,
+    backgroundSize: "contain", // Ensures the full image is visible
+    backgroundRepeat: "no-repeat", // Prevents repeating images
+    backgroundPosition: "center", // Centers the image
+  }}
+  className="w-full h-full duration-500 lg:rounded-xl"
+></div>
+
 
       {/* <div className="relative w-full" style={{ paddingBottom: "133.33%" }}>
         <div
