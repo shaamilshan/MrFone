@@ -24,7 +24,8 @@ import { getUserProducts } from "@/redux/actions/user/userProductActions";
 import redbanner from "../../../assets/trendskart/home/red-banner.jpg";
 import { FaShareAlt } from "react-icons/fa";
 import "./singleproduct.css";
-import { useMediaQuery } from 'react-responsive'; 
+import { useMediaQuery } from "react-responsive";
+import { BsSlash } from "react-icons/bs"; // Bootstrap Icons
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -57,9 +58,6 @@ const SingleProduct = () => {
     (product) => product._id !== id
   );
 
-
-
-
   const handleShare = async () => {
     const currentUrl = window.location.href;
 
@@ -69,9 +67,9 @@ const SingleProduct = () => {
           title: document.title,
           url: currentUrl,
         });
-        console.log('Content shared successfully');
+        console.log("Content shared successfully");
       } catch (error) {
-        console.error('Error sharing content:', error);
+        console.error("Error sharing content:", error);
       }
     } else {
       // Fallback: Copy to clipboard
@@ -79,16 +77,14 @@ const SingleProduct = () => {
         () => {
           setCopied(true);
           setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
-          console.log('URL copied to clipboard');
+          console.log("URL copied to clipboard");
         },
         (error) => {
-          console.error('Error copying URL to clipboard:', error);
+          console.error("Error copying URL to clipboard:", error);
         }
       );
     }
   };
-
-
 
   const dispatchAddWishlist = () => {
     if (!user) {
@@ -204,13 +200,13 @@ const SingleProduct = () => {
     // }
     // setCartLoading(true);
     try {
-
-      const userConfirmed = window.confirm(`Request for ${name} : ${value} product ${product.name} `);
+      const userConfirmed = window.confirm(
+        `Request for ${name} : ${value} product ${product.name} `
+      );
       if (userConfirmed) {
-      await axios.get(`${URL}/manager/notify/${id}/${name}/${value}`, config);
-      toast.success(`Notified `);
-    }
-
+        await axios.get(`${URL}/manager/notify/${id}/${name}/${value}`, config);
+        toast.success(`Notified `);
+      }
     } catch (error) {
       const err = error.response.data.error;
       toast.error(err);
@@ -253,7 +249,6 @@ const SingleProduct = () => {
         { ...config, withCredentials: true }
       );
       toast.success("Added to cart");
-      
     } catch (error) {
       const err = error.response.data.error;
       toast.error(err);
@@ -322,6 +317,7 @@ const SingleProduct = () => {
 
   const [selectedAttributes, setSelectedAttributes] = useState({});
 
+  
   const handleSelectAttribute = (attributeName, value) => {
     setSelectedAttributes((prev) => ({
       ...prev,
@@ -350,68 +346,73 @@ const SingleProduct = () => {
   const isMobile = useMediaQuery({ maxWidth: 767 }); // Use this to check if the device is mobile
 
   return (
-    
-      <div className="w-full flex flex-col justify-start items-center">
-        {/* Fixed bottom panel for mobile devices */}
-        {isMobile && (
-          <div className="fixed-bottom-panel">
-            <button
-              className="buy-now-btn"
-              onClick={buyNow}
-              disabled={cartLoading || isOutOfStock}
-            >
-              {cartLoading ? "Loading" : isOutOfStock ? "Notify Me" : "Buy Now"}
-            </button>
-            <button
-              className="wishlist-btn"
-              onClick={addToCart}
-              disabled={isProductInWishlist}
-            >
-              {isProductInWishlist ? "Added to Cart" : "Add to Cart"}
-            </button>
-            {/* <button className="share-btn" onClick={handleShare}>
+    <div className="max-w-screen-2xl mx-auto px-4 flex flex-col justify-start items-center ">
+      {/* Fixed bottom panel for mobile devices */}
+      {isMobile && (
+        <div className="fixed-bottom-panel">
+          <button
+            className="buy-now-btn"
+            onClick={buyNow}
+            disabled={cartLoading || isOutOfStock}
+          >
+            {cartLoading ? "Loading" : isOutOfStock ? "Notify Me" : "Buy Now"}
+          </button>
+          <button
+            className="wishlist-btn"
+            onClick={addToCart}
+            disabled={isProductInWishlist}
+          >
+            {isProductInWishlist ? "Added to Cart" : "Add to Cart"}
+          </button>
+          {/* <button className="share-btn" onClick={handleShare}>
               {copied ? "Link Copied!" : "Share"}
             </button> */}
-          </div>
-        )}
-        
-        <div className="container w-full flex my-6 px-4">
-          <h1 className="flex justify-center items-center font-Inter px-5 pl-2 sm:pl-12 md:pl-0 lg:pr-32 ">
-            <span className="text-[10px] sm:text-sm">
-              <HomeIcon
-                color="#2C2C2C"
-                onClick={onHomeClick}
-                size={14}
-                // style={{ fontSize: "1em" }} // Adjusts icon size based on text size
-                className="text-xs sm:text-sm" // Adjusts icon size based on screen size
-              />
-            </span>
-            <span
-              className="hover:text-[#CC4254] ml-2 text-[10px] sm:text-sm"
-              onClick={onCategoryClick}
-            >
-              {product.category && product.category.name + " -"}
-            </span>
-            {" >"}
-            <span className="hover:text-[#CC4254] ml-2 text-[10px] sm:text-sm">
-              {product.name}
-            </span>
-          </h1>
         </div>
+      )}
 
-        <div className="w-full lg:px-20 justify-center">
-          <div className="w-full my-2 flex flex-col lg:flex-row">
-            <div className="w-full lg:w-1/2 lg:h-[750px] h-[700px] flex flex-col">
-              <ProductSlider
-                images={imageArray}
-                selectedImageIndex={selectedImageIndex}
-                imgUrl={`${URL}/img/${selectedImageIndex}`}
-              />
-              <br />
+<div className="container w-full flex my-6 px-4">
+  <h1 className="flex justify-center items-center font-Inter px-5 pl-2 sm:pl-12 md:pl-0 lg:pr-32">
+    <span className="text-[10px] sm:text-sm">
+      <HomeIcon
+        color="#2C2C2C"
+        onClick={onHomeClick}
+        size={14}
+        className="text-xs sm:text-sm"
+      />
+    </span>
+    
+    {product.category && (
+      <>
+        <span
+          className="hover:text-[#CC4254] ml-2 text-[10px] font-semibold sm:text-sm"
+          onClick={onCategoryClick}
+        >
+          {product.category.name}
+        </span>
+        <BsSlash className=" text-3xl" />
+      </>
+    )}
 
-              {/* Product Images */}
-              <div className="lg:w-1/2 bg-white p-5 rounded flex flex-col items-center h-fit">
-                {/* <div className="w-80 h-80 lg:w-96 lg:h-96 hidden lg:block">
+    <span className="hover:text-[#CC4254]  text-[10px] font-semibold sm:text-sm">
+      {product.name}
+    </span>
+  </h1>
+</div>
+
+
+      <div className="w-full lg:px-20 justify-center">
+        <div className="w-full my-2 flex flex-col lg:flex-row">
+          <div className="w-full lg:w-1/2 lg:h-[750px] h-[700px] flex flex-col">
+            <ProductSlider
+              images={imageArray}
+              selectedImageIndex={selectedImageIndex}
+              imgUrl={`${URL}/img/${selectedImageIndex}`}
+            />
+            <br />
+
+            {/* Product Images */}
+            <div className="lg:w-1/2 bg-white p-5 rounded flex flex-col items-center h-fit">
+              {/* <div className="w-80 h-80 lg:w-96 lg:h-96 hidden lg:block">
                   {currentImage && (
                     <ImageZoom
                       imageUrl={`${URL}/img/${currentImage}`}
@@ -421,7 +422,7 @@ const SingleProduct = () => {
                     />
                   )}
                 </div> */}
-                {/* <div className="w-80 lg:w-96 lg:h-96 lg:hidden mx-auto">
+              {/* <div className="w-80 lg:w-96 lg:h-96 lg:hidden mx-auto">
                   {currentImage && (
                     <img
                       src={`${URL}/img/${currentImage}`}
@@ -431,105 +432,160 @@ const SingleProduct = () => {
                   )}
                 </div> */}
 
-                <div className="flex gap-1 lg:gap-5 mt-5 justify-center sm:ml-20">
-                  {product.moreImageURL &&
-                    product.moreImageURL.map((image, i) => (
-                      <div
+              <div className="flex gap-1 lg:gap-5 mt-5 justify-center sm:ml-20">
+                {product.moreImageURL &&
+                  product.moreImageURL.map((image, i) => (
+                    <div
+                      key={i}
+                      className={`flex justify-center items-center w-12 h-12 lg:w-20 lg:h-20 overflow-clip border p ${
+                        currentImage === image
+                          ? "border-gray-500"
+                          : "border-gray-300"
+                      } hover:border-gray-500 cursor-pointer `}
+                      onClick={() => setSelectedImageIndex(i + 1)}
+                    >
+                      <img
+                        className="w-full h-full object-contain"
                         key={i}
-                        className={`flex justify-center items-center w-12 h-12 lg:w-20 lg:h-20 overflow-clip border p ${
-                          currentImage === image
-                            ? "border-gray-500"
-                            : "border-gray-300"
-                        } hover:border-gray-500 cursor-pointer `}
-                        onClick={() => setSelectedImageIndex(i + 1)}
-                      >
-                        <img
-                          className="w-full h-full object-contain"
-                          key={i}
-                          src={`${URL}/img/${image}`}
-                        />
-                      </div>
-                    ))}
-                </div>
+                        src={`${URL}/img/${image}`}
+                      />
+                    </div>
+                  ))}
               </div>
             </div>
-              {/* Product Details */}
-            
-            <div className="mt-4 lg:mt-0 lg:w-1/2 px-8">
-              <h1 className="text-[24px] font-semibold lg:text-[30px] xl:text-[40px]  font-sans">
-                {product.name}
-              </h1>
-              <div className="flex w-full mt-1 lg:border-t-[1px] border-t-[#9F9F9F] lg:mt-6 pt-3">
-                <h1 className="text-[16px] lg:text-[20px] xl:text-[30px] font-semibold font-Inter text-[#2C2C2C] ">
-                  ₹ {product.price}
-                </h1>
-                {product.offer && (
-                  <>
-                    <h1 className="text-[16px] lg:text-[20px] xl:text-[30px] font-light font-Inter text-[#949494] ml-3 line-through">
-                      ₹ {product.offer}
-                    </h1>
-                    <div className="ml-3 px-2 w-auto h-auto md:ml-4 bg-[#C84253] rounded-[2px] text-white text-[12px] lg:text-[13px] flex justify-center items-center">
-                      {parseInt(
-                        ((product.offer - product.price) * 100) / product.offer
-                      )}{" "}% Off
-                    </div>
-                  </>
-                )}
-              </div>
-              <div className="mt-1">
-                <h1 className="text-[14px] lg:text-[16px] xl:text-[18px] font-light font-Inter text-[#C84253] ">
-                  Incl. of all taxes
-                </h1>
-              </div>
-              <div className="w-full lg:hidden h-4 mt-2 bg-[#F7F7F7]"></div>
-              <div className="w-full px-">
-                <div className="w-full pt-3 font-Inter">
-        
+          </div>
+          {/* Product Details */}
 
-                  {product.attributes &&
-                    Object.entries(groupAttributes(product.attributes)).map(
-                      ([name, values], index) => (
-                        <div key={index} className="mt-4">
-                          <p className="font-semibold text-gray-500 text-sm mb-1">
-                            {console.log("testing")}
-                            {console.log(values)}
-                            {name.toUpperCase()}{" "}
-                          </p>
-                          <div className="grid gap-2 grid-cols-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-10">
-                            {values.map(
-                              ({ value, imageIndex, quantity }, valueIndex) => (
-                                <>
-                                  {quantity > 0 ? (
-                                    <p
-                                      key={valueIndex}
-                                      className={`flex justify-center items-center py-2 my-2 px-2 rounded-full cursor-pointer 
+          <div className="mt-4 lg:mt-0 lg:w-1/2 px-8">
+            <h1 className="text-[20px] font-semibold lg:text-[20px] xl:text-[30px]  font-sans">
+              {product.name}
+            </h1>
+            <div>
+              <ProductDetailsStarAndRating rating={product.rating || 4} />
+            </div>
+            <div className="flex w-full mt-1  lg:mt-6 pt-3 border-b pb-6 ">
+              <h1 className="text-[16px] lg:text-[20px] text-red-500 xl:text-[25px] font-semibold font-Inter">
+                ₹
+                {(
+                  product.price -
+                  product.price * (product.offer / 100)
+                ).toFixed(2)}
+              </h1>
+
+              {product.offer && (
+                <div className="flex justify-center ">
+                  <h1 className="text-[16px] lg:text-[18px] xl:text-[20px]font-light font-Inter text-[#949494] ml-3 line-through">
+                    ₹{product.price}
+                  </h1>
+                  <div className="ml-3 px-2 w-auto h-auto md:ml-4 bg-black rounded-[2px] text-white text-[12px] lg:text-[13px] flex justify-center items-center">
+                    {parseInt(product.offer)} % Off
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <p className="text-[14px] border-b lg:text-[16px] py-4 pr-2">
+              {product.description}
+            </p>
+            {/* <div className="mt-1">
+                <h1 className="text-[14px] lg:text-[16px] xl:text-[18px] font-light font-Inter text-[#C84253] ">
+                Incl. of all taxes
+                </h1>
+              </div> */}
+            <div className="flex flex-col lg:flex-row gap-5 justify-center items-center w-full">
+              {/* Quantity Selector */}
+              <div className="flex items-center border justify-center  border-gray-300 rounded-md">
+                <Quantity count={count} setCount={setCount} />
+              </div>
+
+              {/* Buttons Container */}
+              <div className="grid grid-cols-2 lg:flex lg:justify-start lg:space-x-3 w-full pt-6 lg:pt-0 my-8">
+                {!isOutOfStock && !isMobile && (
+                  <button
+                    className="bg-red-500 w-full lg:w-auto hover:bg-red-600 h-12 font-Inter text-[16px] text-white px-6 rounded-sm transition-all"
+                    onClick={buyNow}
+                    disabled={cartLoading || isOutOfStock}
+                  >
+                    {cartLoading ? "Loading" : "Buy Now"}
+                  </button>
+                )}
+
+                {!isOutOfStock && (
+                  <Button
+                    disabled={cartLoading}
+                    onClick={addToCart}
+                    className="w-full lg:w-auto hover:bg-gray-700 h-12 font-Inter text-[16px] text-white px-6 bg-black rounded-sm transition-all"
+                  >
+                    {cartLoading ? "Loading" : "Add to Cart"}
+                  </Button>
+                )}
+
+                {isOutOfStock && (
+                  <Button
+                    disabled={cartLoading}
+                    onClick={notifyManager}
+                    className="w-full lg:w-auto bg-[#b3cc42] h-12 font-Inter text-[16px]  text-white px-6  transition-all"
+                  >
+                    {cartLoading ? "Loading" : "Notify Me"}
+                  </Button>
+                )}
+
+                {/* <Button
+    onClick={handleShare}
+    className="w-full lg:w-auto bg-white h-12 font-Inter text-[16px] text-green-500 border border-green-500 px-6 rounded-md flex items-center justify-center hover:bg-green-500 hover:text-white transition-all"
+  >
+    <FaShareAlt className="text-xl" />
+  </Button> */}
+              </div>
+            </div>
+
+            <div className="w-full ">
+              <div className="w-full pt-3 font-Inter">
+                {product.attributes &&
+                  Object.entries(groupAttributes(product.attributes)).map(
+                    ([name, values], index) => (
+                      <div key={index} className="mt-4">
+                        <p className="font-semibold text-gray-500 text-sm mb-1">
+                          {/* {console.log("testing")} */}
+                          {/* {console.log(values)} */}
+                          {name.toUpperCase()}{" "}
+                        </p>
+                        <div className="grid gap-2 grid-cols-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-10">
+                          {values.map(
+                            ({ value, imageIndex, quantity }, valueIndex) => (
+                              <>
+                                {quantity > 0 ? (
+                                  <button
+                                    key={valueIndex}
+                                    className={`flex justify-center flex-wrap gap-2  items-center py-2 my-2 px-3   cursor-pointer 
                 transition-colors duration-300 
                 ${
                   selectedAttributes[name] === value
-                    ? "bg-[#C84253]   text-white text-sm text-center px-4 py-4 " // Selected state
-                    : "bg-[white] text-[#C84253] text-sm text-center  border px-4 py-4 border-[#C84253] hover:bg-blue-100"
+                    ? "bg-black   text-white text-sm text-center px-5 py-2 " // Selected state
+                    : "bg-[white] text-black text-sm text-center  border px-5  py-2 border-black hover:bg-blue-100"
                 } // Default and hover states
               `}
-                                      onClick={() =>
-                                        handleSelectAttribute(name, value)
-                                      }
-                                      style={{
-                                        // background: quantity <= 0 ? "gray" : "white",
-                                        cursor:
-                                          quantity <= 0
-                                            ? "not-allowed"
-                                            : "pointer",
-                                      }}
-                                      disabled={quantity <= 0} // Disable the button if out of stock
-                                    >
-                                      {value}{" "}
-                                      {/* {imageIndex !== undefined && `(${imageIndex})`}{" "} */}
-                                      {/* Display imageIndex next to value */}
-                                    </p>
-                                  ) : (
-                                    <p
-                                      key={valueIndex}
-                                      className={`flex justify-center items-center text-sm text-center py-2 my-2 px-2 rounded-full cursor-pointer 
+                                    onClick={() =>
+                                      handleSelectAttribute(name, value)
+                                    }
+                                    style={{
+                                      // background: quantity <= 0 ? "gray" : "white",
+                                      cursor:
+                                        quantity <= 0
+                                          ? "not-allowed"
+                                          : "pointer",
+                                    }}
+                                    disabled={quantity <= 0} // Disable the button if out of stock
+                                  >
+                                    {value}{" "}
+                                    {/* {imageIndex !== undefined && `(${imageIndex})`}{" "} */}
+                                    {/* Display imageIndex next to value */}
+                                  </button>
+                                  
+                                ) : (
+                                  <p
+                                    key={valueIndex}
+                                    className={`flex justify-center items-center text-sm text-center py-2 my-2 px-2 rounded-full cursor-pointer 
                 transition-colors duration-300 
                 ${
                   selectedAttributes[name] === value
@@ -537,39 +593,34 @@ const SingleProduct = () => {
                     : "bg-gray-200 text-black hover:bg-blue-100"
                 } // Default and hover states
               `}
-                                      // onClick={() => console.log(name, value,"notifying.......")}
-                                      onClick={() => notifyManager(product._id,name, value)}
-                                      style={{
-                                        background:
-                                          quantity <= 0 ? "gray" : "white",
-                                        // cursor:
-                                        //   quantity <= 0
-                                        //     ? "not-allowed"
-                                        //     : "pointer",
-                                      }}
-                                      // disabled={quantity <= 0} // Disable the button if out of stock
-                                    >
-                                      {value}{" "}
-                                      {/* {imageIndex !== undefined && `(${imageIndex})`}{" "} */}
-                                      {/* Display imageIndex next to value */}
-                                    </p>
-                                  )}
-                                </>
-                              )
-                            )}
-                          </div>
+                                    // onClick={() => console.log(name, value,"notifying.......")}
+                                    onClick={() =>
+                                      notifyManager(product._id, name, value)
+                                    }
+                                    style={{
+                                      background:
+                                        quantity <= 0 ? "gray" : "white",
+                                      // cursor:
+                                      //   quantity <= 0
+                                      //     ? "not-allowed"
+                                      //     : "pointer",
+                                    }}
+                                    // disabled={quantity <= 0} // Disable the button if out of stock
+                                  >
+                                    {value}{" "}
+                                    {/* {imageIndex !== undefined && `(${imageIndex})`}{" "} */}
+                                    {/* Display imageIndex next to value */}
+                                  </p>
+                                )}
+                              </>
+                            )
+                          )}
                         </div>
-                      )
-                    )}
+                      </div>
+                    )
+                  )}
 
-                  <div className="flex items-center justify-center w-24 lg:w-[150px] lg:h-[50px] mt-5 border-gray-300 rounded-md lg:mt-8">
-                    <Quantity
-                      count={count}
-                      decrement={decrement}
-                      increment={increment}
-                    />
-                  </div>
-                  <div className="w-full flex justify-start pt-8">
+                {/* <div className="w-full flex justify-start pt-8">
                     <div className="flex items-center flex-col text-center">
                       <div className="flex items-center justify-center h-12 w-12 mb-2">
                         <ReplacementPolicy className="h-full w-full" />
@@ -586,174 +637,105 @@ const SingleProduct = () => {
                         Fast Delivery
                       </h1>
                     </div>
-                  </div>
-                
-                  <div className="flex justify-start space-x-2 w-full pt-10">
-
-    {!isOutOfStock && !isMobile && (
-      
-    <button
-    className="bg-[#CC4254] mt-3 w-1/2 md:w-auto hover:bg-white hover:outline hover:text-[#CC4254] hover:outline-[#CC4254] h-12 rounded-[10px] font-Inter text-[16px] text-white px-10"
-    onClick={buyNow}
-    disabled={cartLoading || isOutOfStock}
-  >
-    {cartLoading ? "Loading" : isOutOfStock ? "Notify Me" : "Buy Now"}
-  </button>
-    )}
-    {!isOutOfStock && (
-      <Button
-        disabled={cartLoading}
-        onClick={addToCart}
-        className="hover:bg-[#CC4254] mt-3 w-1/2 md:w-auto bg-white outline text-[#CC4254] outline-[#CC4254] h-12 rounded-[10px] font-Inter text-[16px] hover:text-white px-10"
-      >
-        {cartLoading ? "Loading" : "Add to Cart"}
-      </Button>
-    )}
-    {isOutOfStock && (
-      <Button
-        disabled={cartLoading}
-        onClick={notifyManager}
-        className="bg-[#b3cc42] mt-3 w-1/2 md:w-auto h-12 rounded-[10px] font-Inter text-[16px] text-white px-10"
-      >
-        {cartLoading ? "Loading" : "Notify Me sss"}
-      </Button>
-    )}
-
-    {isProductInWishlist ? (
-      <Button className="bg-white mt-3 h-12 rounded-full font-Inter text-[16px] text-[#CC4254] border-[1px] border-[#CC4254] flex items-center justify-center">
-        <AiFillHeart className="text-2xl" />
-      </Button>
-    ) : (
-      <Button
-        onClick={dispatchAddWishlist}
-        className="bg-white mt-3 hover:bg-[#CC4254] hover:text-white hover:border-[#CC4254] h-12 rounded-full font-Inter text-[16px] text-red-500 border-[1px] border-red-500 flex items-center justify-center"
-      >
-        <AiOutlineHeart className="text-2xl" />
-      </Button>
-    )}
-
-    <Button
-      onClick={handleShare}
-      className="bg-white mt-3 text-center hover:text-white hover:bg-green-500 h-12 rounded-full font-Inter text-[16px] text-green-500 border-[1px] border-green-500 flex items-center justify-center"
-    >
-      <FaShareAlt className="text-xl" />
-    </Button>
-  </div>
-
-                </div>
-              </div>
-              <div className="w-full h-4 mt-2 lg:hidden bg-[#F7F7F7]"></div>
-              <div className="w-full px-">
-                <div
-                  className="flex items-center w-full h-[60px] pl-4 justify-between border-b-[#5F5F5F] border-b-[0.5px] cursor-pointer lg:mt-4"
-                  onClick={() => handleClick("div1")}
-                >
-                  <h1 className="font-sans text-[16px] lg:text-[22px] font-light">
-                    Product Description
-                  </h1>
-                  <RiArrowDropDownLine
-                    className={`text-4xl font-[100] transition-transform duration-300 ${
-                      toggleStates.div1 ? "rotate-180" : "rotate-0"
-                    }`}
-                  />
-                </div>
-                {toggleStates.div1 && (
-                  <div className="p-4">
-                    <p className="text-[14px] lg:text-[16px]">
-                      {product.description}
-                    </p>
-                  </div>
-                )}
-                <div
-                  className="flex items-center w-full h-[60px] pl-4 justify-between border-b-[#5F5F5F] border-b-[0.5px] cursor-pointer lg:mt-4"
-                  onClick={() => handleClick("div2")}
-                >
-                  <h1 className="font-sans text-[16px] lg:text-[22px] font-light ">
-                    Size & Material
-                  </h1>
-                  <RiArrowDropDownLine
-                    className={`text-4xl font-[100] transition-transform duration-300 ${
-                      toggleStates.div2 ? "rotate-180" : "rotate-0"
-                    }`}
-                  />
-                </div>
-                {toggleStates.div2 && (
-                  <div className="p-4">
-                    <p className="text-[14px] lg:text-[16px]">
-                      Size: {product.size ? product.size : "N/A"}
-                    </p>
-                    <p className="text-[14px] lg:text-[16px]">
-                      Material: {product.material ? product.material : "N/A"}
-                    </p>
-                  </div>
-                )}
-                <div
-                  className="flex items-center w-full h-[60px] pl-4 justify-between border-b-[#5F5F5F] border-b-[0.5px] cursor-pointer lg:mt-4"
-                  onClick={() => handleClick("div3")}
-                >
-                  <h1 className="font-sans text-[16px] font-light lg:text-[22px] ">
-                    Shipping & Returns
-                  </h1>
-                  <RiArrowDropDownLine
-                    className={`text-4xl font-[100] transition-transform duration-300 ${
-                      toggleStates.div3 ? "rotate-180" : "rotate-0"
-                    }`}
-                  />
-                </div>
-                {toggleStates.div3 && (
-                  <div className="p-4">
-                    <p className="text-[14px] lg:text-[16px]">
-                      Shipping:{" "}
-                      {product.shippingInfo
-                        ? product.shippingInfo
-                        : "No shipping information available"}
-                    </p>
-                    <p className="text-[14px] lg:text-[16px]">
-                      Returns:{" "}
-                      {product.returnPolicy
-                        ? product.returnPolicy
-                        : "No return policy available"}
-                    </p>
-                  </div>
-                )}
+                  </div> */}
               </div>
             </div>
 
 
-            
-          </div>
-          <div className="w-full h-4 mt-2 bg-[#F7F7F7] lg:hidden "></div>
+{/* Shipping & Returns , Size & Material*/}
 
-          <div></div>
-        </div>
-        {/* Recommended Products */}
-        <div className="w-full px-4 lg:px-20 mt-8 mb-8">
-          <h2 className="text-xl lg:text-2xl text-center mb-4">
-            You may also like
-          </h2>
-          {loadingproducts ? (
-            <div className="flex justify-center items-center h-96">
-              <JustLoading size={10} />
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-              {filteredProducts && filteredProducts.length > 0 ? (
-                filteredProducts
-                  .slice(0, 4) // Limit to 8 products
-                  .map((pro, index) => (
-                    <ProductCard2
-                      star={true}
-                      product={pro}
-                      key={pro._id || index}
-                    />
-                  ))
-              ) : (
-                <div className="col-span-full text-center">Nothing to show</div>
+            {/* <div className="w-full">
+              <div
+                className="flex items-center w-full h-[60px] pl-4 justify-between border-b-[#5F5F5F] border-b-[0.5px] cursor-pointer lg:mt-4"
+                onClick={() => handleClick("div2")}
+              >
+                <h1 className="font-sans text-[16px] lg:text-[22px] font-light ">
+                  Size & Material
+                </h1>
+                <RiArrowDropDownLine
+                  className={`text-4xl font-[100] transition-transform duration-300 ${
+                    toggleStates.div2 ? "rotate-180" : "rotate-0"
+                  }`}
+                />
+              </div>
+
+              {toggleStates.div2 && (
+                <div className="p-4">
+                  <p className="text-[14px] lg:text-[16px]">
+                    Size: {product.size ? product.size : "N/A"}
+                  </p>
+                  <p className="text-[14px] lg:text-[16px]">
+                    Material: {product.material ? product.material : "N/A"}
+                  </p>
+                </div>
               )}
-            </div>
-          )}
+              <div
+                className="flex items-center w-full h-[60px] pl-4 justify-between border-b-[#5F5F5F] border-b-[0.5px] cursor-pointer lg:mt-4"
+                onClick={() => handleClick("div3")}
+              >
+                <h1 className="font-sans text-[16px] font-light lg:text-[22px] ">
+                  Shipping & Returns
+                </h1>
+                <RiArrowDropDownLine
+                  className={`text-4xl font-[100] transition-transform duration-300 ${
+                    toggleStates.div3 ? "rotate-180" : "rotate-0"
+                  }`}
+                />
+              </div>
+
+              {toggleStates.div3 && (
+                <div className="p-4">
+                  <p className="text-[14px] lg:text-[16px]">
+                    Shipping:{" "}
+                    {product.shippingInfo
+                      ? product.shippingInfo
+                      : "No shipping information available"}
+                  </p>
+                  <p className="text-[14px] lg:text-[16px]">
+                    Returns:{" "}
+                    {product.returnPolicy
+                      ? product.returnPolicy
+                      : "No return policy available"}
+                  </p>
+                </div>
+              )}
+            </div> */}
+          </div>
         </div>
+        <div className="w-full h-4 mt-2 bg-[#F7F7F7] lg:hidden "></div>
+
+        <div></div>
       </div>
+
+      <DescReview product={product} id={product.id} />
+      {/* Recommended Products */}
+      <div className="w-full px-4 lg:px-20 mt-8 mb-8">
+        <h2 className="text-xl lg:text-2xl text-center mb-4">
+          You may also like
+        </h2>
+        {loadingproducts ? (
+          <div className="flex justify-center items-center h-96">
+            <JustLoading size={10} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+            {filteredProducts && filteredProducts.length > 0 ? (
+              filteredProducts
+                .slice(0, 4) // Limit to 8 products
+                .map((pro, index) => (
+                  <ProductCard2
+                    star={true}
+                    product={pro}
+                    key={pro._id || index}
+                  />
+                ))
+            ) : (
+              <div className="col-span-full text-center">Nothing to show</div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
@@ -800,11 +782,11 @@ function ReplacementPolicy(props) {
 }
 
 const buttonStyle = {
-  padding: '10px 20px',
-  fontSize: '16px',
-  cursor: 'pointer',
-  backgroundColor: '#4CAF50',
-  color: 'white',
-  border: 'none',
-  borderRadius: '5px',
+  padding: "10px 20px",
+  fontSize: "16px",
+  cursor: "pointer",
+  backgroundColor: "#4CAF50",
+  color: "white",
+  border: "none",
+  borderRadius: "5px",
 };

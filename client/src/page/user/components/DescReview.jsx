@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { BiBadgeCheck, BiCheckShield, BiPhoneCall } from "react-icons/bi";
-import { FaShippingFast } from "react-icons/fa";
-import { RiSecurePaymentLine } from "react-icons/ri";
+import { renderStars } from "../../../Common/functions";
 import axios from "axios";
 import { URL } from "../../../Common/api";
-import ReviewRow from "./ReviewRow";
-import { renderStars } from "../../../Common/functions";
 
-const DescReview = ({ product, id }) => {
-  // Toggle between description and Reviews
-  const [descriptionOrReview, setDescriptionOrReview] = useState(true);
-  const toggleDescReview = () => {
-    setDescriptionOrReview(!descriptionOrReview);
-  };
-
-  // Loading data
+const ProductDescriptionReview = ({ product, id }) => {
+  const [activeTab, setActiveTab] = useState('description');
   const [reviews, setReviews] = useState([]);
-  const [error, setError] = useState(null);
   const [ratingCount, setRatingCount] = useState([]);
+  const [error, setError] = useState(null);
+  
+  // New state for adding reviews
+  const [newReview, setNewReview] = useState({
+    rating: 0,
+    comment: '',
+    username: ''
+  });
 
   const loadReviews = async () => {
     try {
@@ -38,156 +35,182 @@ const DescReview = ({ product, id }) => {
     }
   };
 
+  const handleAddReview = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${URL}/user/reviews/${id}`, newReview, {
+        withCredentials: true,
+      });
+      
+      // Add the new review to the existing reviews
+      setReviews([...reviews, response.data.review]);
+      
+      // Reset the form
+      setNewReview({
+        rating: 0,
+        comment: '',
+        username: ''
+      });
+
+      // Reload reviews to update rating counts
+      loadReviews();
+    } catch (error) {
+      console.error("Error adding review", error);
+      setError(error.response?.data?.error || "Failed to add review");
+    }
+  };
+
   useEffect(() => {
     loadReviews();
   }, []);
 
   return (
-    <div className="bg-white mt-5">
-      <div className="flex justify-center gap-8 border-b">
+    <div className="mt-5 ">
+      <div className="flex justify-center border-b">
         <button
-          className={`uppercase text-xs py-3 ${
-            descriptionOrReview
-              ? "border-b-2 border-blue-500 font-semibold"
-              : ""
+          className={`py-3 px-4 text-sm uppercase ${
+            activeTab === 'description' 
+              ? 'border-b-2 border-red-500 text-red-500 font-semibold' 
+              : 'text-gray-500'
           }`}
-          onClick={toggleDescReview}
+          onClick={() => setActiveTab('description')}
         >
           Description
         </button>
         <button
-          className={`uppercase text-xs py-3 ${
-            !descriptionOrReview
-              ? "border-b-2 border-blue-500 font-semibold"
-              : ""
+          className={`py-3 px-4 text-sm uppercase ${
+            activeTab === 'reviews' 
+              ? 'border-b-2 border-red-500 text-red-500 font-semibold' 
+              : 'text-gray-500'
           }`}
-          onClick={toggleDescReview}
+          // onClick={() => setActiveTab('reviews')}
         >
-          Review
+          Reviews ({product.numberOfReviews})
         </button>
       </div>
-      {descriptionOrReview ? (
-        <div className="p-5 lg:flex gap-5">
-          <div className="w-full">
-            <h1 className="font-semibold my-2">Description</h1>
-            <p className="text-xs font-semibold text-gray-500">
-              {product.description}
-            </p>
-          </div>
-          <div className="shrink-0">
-            <ul>
-              <li className="font-semibold my-2">Feature</li>
-              <li className="description-ul">
-                <span className="text-blue-700 text-xl">
-                  <BiBadgeCheck />
-                </span>
-                Free 1 Month Warranty
-              </li>
-              <li className="description-ul">
-                <span className="text-blue-700 text-xl">
-                  <FaShippingFast />
-                </span>
-                Free Shipping & Faster Delivery
-              </li>
-              <li className="description-ul">
-                <span className="text-blue-700 text-xl">
-                  <BiCheckShield />
-                </span>
-                100% Money-back guarantee
-              </li>
-              <li className="description-ul">
-                <span className="text-blue-700 text-xl">
-                  <BiPhoneCall />
-                </span>
-                24/7 Customer Support
-              </li>
-              <li className="description-ul">
-                <span className="text-blue-700 text-xl">
-                  <RiSecurePaymentLine />
-                </span>
-                Secure payment method
-              </li>
-            </ul>
-          </div>
-          <div className="text-gray-500 shrink-0">
-            <ul>
-              <li className="font-semibold text-black my-2">
-                Shipping information
-              </li>
-              <li>
-                <span className="text-black py-1">Courier:</span> 2 - 4 days,
-                free shipping
-              </li>
-              <li>
-                <span className="text-black py-1">Local Shipping: </span>
-                up to one week, 200₹
-              </li>
-            </ul>
-          </div>
-        </div>
-      ) : (
+
+      {activeTab === 'description' && (
         <div className="p-5">
-          {error ? (
-            <p>{error}</p>
-          ) : (
-            <>
-              <div className="flex flex-col lg:flex-row gap-5">
-                <div className="bg-blue-50 py-10 px-20 flex flex-col items-center gap-3 rounded">
-                  <h1 className="text-5xl font-semibold">
-                    {Number.isInteger(product.rating)
-                      ? `${product.rating}.0`
-                      : product.rating.toFixed(1)}
-                  </h1>
-                  <div className="flex text-xl">
-                    {renderStars(product.rating)}
+          <p className="text-gray-600">{product.description}</p>
+        </div>
+      )}
+
+      {activeTab === 'reviews' && (
+        <div className="p-5">
+          {error && <p className="text-red-500">{error}</p>}
+          
+          <div className="flex gap-8">
+            <div className="bg-gray-100 p-6 text-center rounded-lg">
+              <h2 className="text-4xl font-bold">
+                {Number.isInteger(product.rating)
+                  ? `${product.rating}.0`
+                  : product.rating.toFixed(1)}
+              </h2>
+              <div className="flex justify-center my-2">
+                {renderStars(product.rating)}
+              </div>
+              <p className="text-gray-600">
+                Based on {product.numberOfReviews} reviews
+              </p>
+            </div>
+
+            <div className="flex-grow">
+              {ratingCount && ratingCount.slice().reverse().map((count, index) => {
+                const starRating = 5 - index;
+                const percentage = parseInt((count / product.numberOfReviews) * 100);
+                
+                return (
+                  <div key={starRating} className="flex items-center mb-2">
+                    <div className="flex mr-3">
+                      {renderStars(starRating)}
+                    </div>
+                    <div className="flex-grow bg-gray-200 rounded-full h-2 mr-3">
+                      <div 
+                        className="bg-yellow-500 h-2 rounded-full" 
+                        style={{ width: `${percentage}%` }}
+                      ></div>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {percentage}% ({count})
+                    </div>
                   </div>
-                  <p className="font-semibold">
-                    Customer Rating{" "}
-                    <span className="text-gray-500">
-                      ({product.numberOfReviews})
-                    </span>
-                  </p>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-4">Customer Reviews</h3>
+            {reviews.map(review => (
+              <div key={review._id} className="border-b py-4">
+                <div className="flex items-center mb-2">
+                  {renderStars(review.rating)}
+                  <span className="ml-2 text-gray-600 text-sm">
+                    {review.date}
+                  </span>
                 </div>
-                {/* 1 - 5 rating graph chart */}
-                <div className="flex flex-col-reverse gap-3 justify-center">
-                  {ratingCount &&
-                    ratingCount.map((item, index) => {
-                      const width = parseInt(
-                        (item / product.numberOfReviews) * 100
-                      );
-                      return (
-                        <div className="flex items-center gap-5" key={index}>
-                          <div className="flex">{renderStars(index + 1)}</div>
-                          <div className="h-1 bg-gray-200 rounded-full w-96">
-                            <div
-                              className={`h-1 bg-yellow-400 rounded-full`}
-                              style={{ width: `${width}%` }}
-                            ></div>
-                          </div>
-                          <div className="flex gap-2 text-xs font-semibold">
-                            <p>{width}%</p>
-                            <p className="text-gray-500">({item})</p>
-                          </div>
-                        </div>
-                      );
-                    })}
+                <p className="text-gray-700">{review.comment}</p>
+                <p className="text-sm text-gray-500 mt-2">
+                  By {review.username}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-4">Add a Review</h3>
+            <form onSubmit={handleAddReview} className="space-y-4">
+              <div>
+                <label className="block mb-2">Rating</label>
+                <div className="flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      className={`text-2xl mr-1 ${
+                        newReview.rating >= star 
+                          ? 'text-yellow-500' 
+                          : 'text-gray-300'
+                      }`}
+                      onClick={() => setNewReview({...newReview, rating: star})}
+                    >
+                      ★
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="pt-5">
-                <h1 className="font-bold text-lg">Customer Feedback</h1>
-                <div>
-                  {reviews &&
-                    reviews.map((review) => (
-                      <ReviewRow review={review} key={review._id} />
-                    ))}
-                </div>
+              <div>
+                <label className="block mb-2">Username</label>
+                <input
+                  type="text"
+                  value={newReview.username}
+                  onChange={(e) => setNewReview({...newReview, username: e.target.value})}
+                  className="w-full border p-2 rounded"
+                  required
+                />
               </div>
-            </>
-          )}
+              <div>
+                <label className="block mb-2">Comment</label>
+                <textarea
+                  value={newReview.comment}
+                  onChange={(e) => setNewReview({...newReview, comment: e.target.value})}
+                  className="w-full border p-2 rounded"
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+              <button 
+                type="submit" 
+                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+              >
+                Submit Review
+              </button>
+            </form>
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default DescReview;
+export default ProductDescriptionReview;

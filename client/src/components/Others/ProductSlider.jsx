@@ -85,6 +85,7 @@ const ProductSlider = ({ images, selectedImageIndex, imgUrl }) => {
       </div>
     </div>
   );
-};
-
+};    
+ 
 export default ProductSlider;
+ 

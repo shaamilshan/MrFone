@@ -217,9 +217,10 @@ const Navbar = ({ usercheck }) => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const profile = "../assets/trendskart/profile/user.png";
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
@@ -232,7 +233,7 @@ const Navbar = ({ usercheck }) => {
 
   const profileImgURL = user?.profileImgURL
     ? `http://localhost:3000/api/img/${user.profileImgURL}`
-    : "https://via.placeholder.com/40";
+    : profile;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -249,6 +250,7 @@ const Navbar = ({ usercheck }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  console.log("Profile Image URL:", profileImgURL);
 
   return (
     <header className="border-b bg-white shadow-md sticky top-0 z-50">
@@ -282,7 +284,7 @@ const Navbar = ({ usercheck }) => {
         </nav>
 
         {/* Icons & Mobile Menu Button */}
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-2 ">
           <Link
             to="/search"
             className="p-1 rounded-full hover:bg-gray-100 transition-colors"
@@ -303,15 +305,12 @@ const Navbar = ({ usercheck }) => {
               className="p-1 rounded-full hover:bg-gray-100 transition-colors"
               onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
             >
-              {profileImgURL ? (
+              {user?.profileImgURL && !imgError ? (
                 <img
-                  src={profileImgURL}
+                  src={`http://localhost:3000/api/img/${user.profileImgURL}`}
                   alt="Profile"
                   className="w-8 h-8 rounded-full object-cover"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/40"; // Fallback image
-                  }}
+                  onError={() => setImgError(true)} // Fallback to icon if image is broken
                 />
               ) : (
                 <CgProfile className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
@@ -473,7 +472,6 @@ const Navbar = ({ usercheck }) => {
                   Login
                 </Link>
               )} */}
-
             </ul>
           </nav>
         </div>

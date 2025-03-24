@@ -27,9 +27,10 @@ const ProductDetailsStarAndRating = ({ rating, numberOfReviews }) => {
   return (
     <div className="flex text-sm items-center gap-1 mt-4 ">
       {renderStars()}
-      <p className="font-semibold">
-        {parseFloat(rating).toFixed(2)} Star Rating{" "}
-        <span className="text-gray-500">({numberOfReviews} User Feedback)</span>
+     
+      <p className="font-semibold text-gray-500">
+      
+        <span className="text-gray-500">({numberOfReviews||1} Customer review)</span>
       </p>
     </div>
   );
