@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const User = require("./userModel");
-const Order = require("./orderModel");
 const Product = require("./productModel");
 
 const { Schema } = mongoose;
@@ -16,11 +15,6 @@ const reviewSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: Product,
       required: [true, "Product reference is required"],
-    },
-    order: {
-      type: Schema.Types.ObjectId,
-      ref: Order,
-      required: [true, "Order reference is required"],
     },
     rating: {
       type: Number,

@@ -20,10 +20,10 @@ const createNewReview = async (req, res) => {
     }
 
     const { _id } = decoded;
-    const { product, order, rating, title, body } = req.body;
+    const { product,rating, title, body } = req.body;
 
     // Validate input fields
-    if (!product || !order || !rating || !title || !body) {
+    if (!product || !rating || !title || !body) {
       return res.status(400).json({ error: "Missing required review fields" });
     }
 
@@ -33,23 +33,18 @@ const createNewReview = async (req, res) => {
       return res.status(404).json({ error: "Product not found." }); 
     }
 
-    // Verify order exists and belongs to the user
-    const orderData = await Order.findOne({ _id: order, user: _id });
-    if (!orderData) {
-      return res.status(404).json({ error: "Order not found or does not belong to the user." });
-    }
-
+ 
+ 
     // Additional validation for rating
     if (rating < 1 || rating > 5) {
       return res.status(400).json({ error: "Rating must be between 1 and 5" });
     }
 
-    // Find existing review for this product and order
     const existingReview = await Review.findOne({ 
       user: _id, 
-      product, 
-      order 
+      product 
     });
+    
 
     let review;
     let isNewReview = false;
@@ -66,11 +61,11 @@ const createNewReview = async (req, res) => {
       review = await Review.create({
         user: _id,
         product,
-        order,
         rating,
         title,
         body
       });
+      
       isNewReview = true;
     }
 
