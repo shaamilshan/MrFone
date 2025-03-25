@@ -8,7 +8,7 @@ const Quantity = ({ count, setCount }) => {
   };
 
   return (
-    <div className="flex items-center rounded-lg p-2 font-bold">
+    <div className="flex items-center rounded-lg p-2 font-bold border">
       <input
         type="number"
         value={count}

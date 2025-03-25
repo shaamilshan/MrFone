@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
-import { HomeIcon } from "lucide-react";
+import { Bell, HomeIcon, ShoppingCart, Zap } from "lucide-react";
 import ProductCard2 from "@/components/Cards/ProductCard2";
 import ProductSlider from "@/components/Others/ProductSlider";
 import { IoMdStar } from "react-icons/io";
@@ -317,7 +317,6 @@ const SingleProduct = () => {
 
   const [selectedAttributes, setSelectedAttributes] = useState({});
 
-  
   const handleSelectAttribute = (attributeName, value) => {
     setSelectedAttributes((prev) => ({
       ...prev,
@@ -370,39 +369,38 @@ const SingleProduct = () => {
         </div>
       )}
 
-<div className="container w-full flex my-6 px-4">
-  <h1 className="flex justify-center items-center font-Inter px-5 pl-2 sm:pl-12 md:pl-0 lg:pr-32">
-    <span className="text-[10px] sm:text-sm">
-      <HomeIcon
-        color="#2C2C2C"
-        onClick={onHomeClick}
-        size={14}
-        className="text-xs sm:text-sm"
-      />
-    </span>
-    
-    {product.category && (
-      <>
-        <span
-          className="hover:text-[#CC4254] ml-2 text-[10px] font-semibold sm:text-sm"
-          onClick={onCategoryClick}
-        >
-          {product.category.name}
-        </span>
-        <BsSlash className=" text-3xl" />
-      </>
-    )}
+      <div className="container w-full flex my-6 px-4">
+        <h1 className="flex justify-center items-center font-Inter px-5 pl-2 sm:pl-12 md:pl-0 lg:pr-32">
+          <span className="text-[10px] sm:text-sm">
+            <HomeIcon
+              color="#2C2C2C"
+              onClick={onHomeClick}
+              size={14}
+              className="text-xs sm:text-sm"
+            />
+          </span>
 
-    <span className="hover:text-[#CC4254]  text-[10px] font-semibold sm:text-sm">
-      {product.name}
-    </span>
-  </h1>
-</div>
+          {product.category && (
+            <>
+              <span
+                className="hover:text-[#CC4254] ml-2 text-[10px] font-semibold sm:text-sm"
+                onClick={onCategoryClick}
+              >
+                {product.category.name}
+              </span>
+              <BsSlash className=" text-3xl" />
+            </>
+          )}
 
+          <span className="hover:text-[#CC4254]  text-[10px] font-semibold sm:text-sm">
+            {product.name}
+          </span>
+        </h1>
+      </div>
 
       <div className="w-full lg:px-20 justify-center">
         <div className="w-full my-2 flex flex-col lg:flex-row">
-          <div className="w-full lg:w-1/2 lg:h-[750px] h-[700px] flex flex-col">
+          <div className="w-full lg:w-1/2  lg:h-[750px] h-[700px] flex flex-col">
             <ProductSlider
               images={imageArray}
               selectedImageIndex={selectedImageIndex}
@@ -411,7 +409,7 @@ const SingleProduct = () => {
             <br />
 
             {/* Product Images */}
-            <div className="lg:w-1/2 bg-white p-5 rounded flex flex-col items-center h-fit">
+            <div className="lg:w-1/2 bg-white p-5 rounded flex flex-col   h-fit">
               {/* <div className="w-80 h-80 lg:w-96 lg:h-96 hidden lg:block">
                   {currentImage && (
                     <ImageZoom
@@ -431,26 +429,28 @@ const SingleProduct = () => {
                     />
                   )}
                 </div> */}
-
-              <div className="flex gap-1 lg:gap-5 mt-5 justify-center sm:ml-20">
-                {product.moreImageURL &&
-                  product.moreImageURL.map((image, i) => (
-                    <div
-                      key={i}
-                      className={`flex justify-center items-center w-12 h-12 lg:w-20 lg:h-20 overflow-clip border p ${
-                        currentImage === image
-                          ? "border-gray-500"
-                          : "border-gray-300"
-                      } hover:border-gray-500 cursor-pointer `}
-                      onClick={() => setSelectedImageIndex(i + 1)}
-                    >
-                      <img
-                        className="w-full h-full object-contain"
-                        key={i}
-                        src={`${URL}/img/${image}`}
-                      />
-                    </div>
-                  ))}
+              <div className="flex justify-center w-full">
+                <div className="flex justify-center items-center">
+                  <div className="flex gap-1 lg:gap-5 mt-5 justify-center items-center mx-auto">
+                    {product.moreImageURL &&
+                      product.moreImageURL.map((image, i) => (
+                        <div
+                          key={i}
+                          className={`flex justify-center items-center w-12 h-12 lg:w-20 lg:h-20 overflow-clip border p ${
+                            currentImage === image
+                              ? "border-gray-500"
+                              : "border-gray-300"
+                          } hover:border-gray-500 cursor-pointer`}
+                          onClick={() => setSelectedImageIndex(i + 1)}
+                        >
+                          <img
+                            className="w-full h-full object-contain"
+                            src={`${URL}/img/${image}`}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -492,142 +492,112 @@ const SingleProduct = () => {
                 Incl. of all taxes
                 </h1>
               </div> */}
-            <div className="flex flex-col lg:flex-row gap-5 justify-center items-center w-full">
-              {/* Quantity Selector */}
-              <div className="flex items-center border justify-center  border-gray-300 rounded-md">
-                <Quantity count={count} setCount={setCount} />
-              </div>
+            <div className="w-full max-w-4xl mx-auto ">
+      <div className="flex  md:flex-row gap-4 items-center justify-between mt-5">
+        {/* Quantity Selector */}
+        
+          
+            <Quantity 
+              count={count} 
+              setCount={setCount} 
+              className="p-2 " 
+            />
+         
+       
 
-              {/* Buttons Container */}
-              <div className="grid grid-cols-2 lg:flex lg:justify-start lg:space-x-3 w-full pt-6 lg:pt-0 my-8">
-                {!isOutOfStock && !isMobile && (
-                  <button
-                    className="bg-red-500 w-full lg:w-auto hover:bg-red-600 h-12 font-Inter text-[16px] text-white px-6 rounded-sm transition-all"
-                    onClick={buyNow}
-                    disabled={cartLoading || isOutOfStock}
-                  >
-                    {cartLoading ? "Loading" : "Buy Now"}
-                  </button>
-                )}
+        {/* Action Buttons */}
+        <div className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
+          {/* Buy Now Button (Desktop) */}
+          {!isOutOfStock && (
+            <Button
+              variant="destructive"
+              size="lg"
+              disabled={cartLoading || isOutOfStock}
+              className="w-full sm:w-auto hidden md:flex items-center gap-2"
+            >
+              <Zap size={18} />
+              {cartLoading ? "Processing..." : "Buy Now"}
+            </Button>
+          )}
 
-                {!isOutOfStock && (
-                  <Button
-                    disabled={cartLoading}
-                    onClick={addToCart}
-                    className="w-full lg:w-auto hover:bg-gray-700 h-12 font-Inter text-[16px] text-white px-6 bg-black rounded-sm transition-all"
-                  >
-                    {cartLoading ? "Loading" : "Add to Cart"}
-                  </Button>
-                )}
+          {/* Add to Cart Button */}
+          {!isOutOfStock && (
+            <Button
+              variant="default"
+              size="lg"
+              disabled={cartLoading}
+              className="w-full sm:w-auto hidden md:flex  items-center gap-2"
+            >
+              <ShoppingCart size={18} />
+              {cartLoading ? "Adding..." : "Add to Cart"}
+            </Button>
+          )}
 
-                {isOutOfStock && (
-                  <Button
-                    disabled={cartLoading}
-                    onClick={notifyManager}
-                    className="w-full lg:w-auto bg-[#b3cc42] h-12 font-Inter text-[16px]  text-white px-6  transition-all"
-                  >
-                    {cartLoading ? "Loading" : "Notify Me"}
-                  </Button>
-                )}
+          {/* Notify Me Button */}
+          {isOutOfStock && (
+            <Button
+              variant="secondary"
+              size="lg"
+              disabled={cartLoading}
+              className="w-full sm:w-auto flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-white"
+            >
+              <Bell size={18} />
+              {cartLoading ? "Processing..." : "Notify Me"}
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
 
-                {/* <Button
-    onClick={handleShare}
-    className="w-full lg:w-auto bg-white h-12 font-Inter text-[16px] text-green-500 border border-green-500 px-6 rounded-md flex items-center justify-center hover:bg-green-500 hover:text-white transition-all"
-  >
-    <FaShareAlt className="text-xl" />
-  </Button> */}
-              </div>
+
+
+
+    <div className="w-full">
+  <div className="w-full pt-3 font-Inter">
+    {product.attributes &&
+      Object.entries(groupAttributes(product.attributes)).map(
+        ([name, values], index) => (
+          <div key={index} className="mt-4">
+            <p className="font-semibold text-gray-500 text-sm mb-1">
+              {name.toUpperCase()}
+            </p>
+
+            {/* Responsive Grid Layout */}
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
+              {values.map(({ value, imageIndex, quantity }, valueIndex) => (
+                <button
+                  key={valueIndex}
+                  className={`flex justify-center items-center py-2 px-4 rounded-md text-sm font-medium transition-all duration-300
+                    ${
+                      selectedAttributes[name] === value
+                        ? "bg-black text-white border border-black" // Selected
+                        : "bg-white text-black border border-gray-300 hover:bg-blue-100" // Default + Hover
+                    }
+                    ${
+                      quantity <= 0
+                        ? "bg-gray-200 text-gray-500 cursor-not-allowed border-gray-400" // Out of Stock
+                        : "cursor-pointer"
+                    }
+                  `}
+                  onClick={() =>
+                    quantity > 0
+                      ? handleSelectAttribute(name, value)
+                      : notifyManager(product._id, name, value)
+                  }
+                  disabled={quantity <= 0} // Disable out-of-stock items
+                >
+                  {value}
+                </button>
+              ))}
             </div>
-
-            <div className="w-full ">
-              <div className="w-full pt-3 font-Inter">
-                {product.attributes &&
-                  Object.entries(groupAttributes(product.attributes)).map(
-                    ([name, values], index) => (
-                      <div key={index} className="mt-4">
-                        <p className="font-semibold text-gray-500 text-sm mb-1">
-                          {/* {console.log("testing")} */}
-                          {/* {console.log(values)} */}
-                          {name.toUpperCase()}{" "}
-                        </p>
-                        <div className="grid gap-2 grid-cols-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-10">
-                          {values.map(
-                            ({ value, imageIndex, quantity }, valueIndex) => (
-                              <>
-                                {quantity > 0 ? (
-                                  <button
-                                    key={valueIndex}
-                                    className={`flex justify-center flex-wrap gap-2  items-center py-2 my-2 px-3   cursor-pointer 
-                transition-colors duration-300 
-                ${ 
-                  selectedAttributes[name] === value
-                    ? "bg-black   text-white text-sm text-center px-5 py-2 " // Selected state
-                    : "bg-[white] text-black text-sm text-center  border px-5  py-2 border-black hover:bg-blue-100"
-                } // Default and hover states
-              `} 
-                                    onClick={() =>
-                                      handleSelectAttribute(name, value)
-                                    }
-                                    style={{
-                                      // background: quantity <= 0 ? "gray" : "white",
-                                      cursor:
-                                        quantity <= 0
-                                          ? "not-allowed"
-                                          : "pointer",
-                                    }}
-                                    disabled={quantity <= 0} // Disable the button if out of stock
-                                  >
-                                    {value}{" "}
-                                    {/* {imageIndex !== undefined && `(${imageIndex})`}{" "} */}
-                                    {/* Display imageIndex next to value */}
-                                  </button>
-                                  
-                                ) : (
-                                  <p
-                                    key={valueIndex}
-                                    className={`flex justify-center items-center text-sm text-center py-2 my-2 px-2 rounded-full cursor-pointer 
-                transition-colors duration-300 
-                ${
-                  selectedAttributes[name] === value
-                    ? "bg-blue-600 text-white" // Selected state
-                    : "bg-gray-200 text-black hover:bg-blue-100"
-                } // Default and hover states
-              `}
-                                    // onClick={() => console.log(name, value,"notifying.......")}
-                                    onClick={() =>
-                                      notifyManager(product._id, name, value)
-                                    }
-                                    style={{
-                                      background:
-                                        quantity <= 0 ? "gray" : "white",
-                                      // cursor:
-                                      //   quantity <= 0
-                                      //     ? "not-allowed"
-                                      //     : "pointer",
-                                    }}
-                                    // disabled={quantity <= 0} // Disable the button if out of stock
-                                  >
-                                    {value}{" "}
-                                    {/* {imageIndex !== undefined && `(${imageIndex})`}{" "} */}
-                                    {/* Display imageIndex next to value */}
-                                  </p>
-                                )}
-                              </>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    )
-                  )}
-
-           
-              </div>
-            </div>
+          </div>
+        )
+      )}
+  </div>
+</div>
 
 
-
-
-{/* Shipping & Returns , Size & Material*/}
+            {/* Shipping & Returns , Size & Material*/}
 
             {/* <div className="w-full">
               <div
@@ -687,12 +657,11 @@ const SingleProduct = () => {
             </div> */}
           </div>
         </div>
-       
 
         <div></div>
       </div>
 
-      <DescReview product={product} id={product._id}  />
+      <DescReview product={product} id={product._id} />
       {/* Recommended Products */}
       <div className="w-full px-4 lg:px-20 mt-8 mb-8">
         <h2 className="text-xl lg:text-2xl text-center mb-4">

@@ -29,7 +29,7 @@ const ProductSlider = ({ images, selectedImageIndex, imgUrl }) => {
 
   return (
     // <div className="w-full h-full m-auto relative group">
- <div className="w-full h-full m-auto relative group">
+ <div className="w-full h-full m-auto relative group ">
 
 <div
   style={{

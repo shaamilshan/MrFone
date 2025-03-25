@@ -11,7 +11,7 @@ const DescReview = ({ product, id }) => {
     rating: 0, 
     title: "",
     body: ""
-  }); 
+  });  
 
 
   const loadReviews = async () => {
