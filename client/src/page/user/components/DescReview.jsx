@@ -225,7 +225,7 @@ const DescReview = ({ product, id }) => {
 
             {/* Reviews List - Responsive Typography */}
             <div className="mt-6">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4">Customer Reviews</h3>
+              <h3 className="text-lg sm:text-xl font-semibold  mb-4">Customer Reviews</h3>
               {reviews.length === 0 ? (
                 <p className="text-gray-500 italic text-sm sm:text-base">
                   No reviews yet. Be the first to review!
@@ -234,7 +234,7 @@ const DescReview = ({ product, id }) => {
                 reviews.map(review => (
                   <div 
                     key={review._id} 
-                    className="border-b py-4 hover:bg-gray-50 transition-colors duration-200"
+                    className="border-b py-4 hover:bg-gray-50  px-3 transition-colors duration-200"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
                       <div className="flex items-center mb-2 sm:mb-0">
@@ -259,10 +259,10 @@ const DescReview = ({ product, id }) => {
             {reviews.length === 0 && (
               <div className="mt-6 bg-gray-50 p-4 sm:p-6 rounded-lg">
                 <h3 className="text-lg sm:text-xl font-semibold mb-4">Add a Review</h3>
-                <form onSubmit={handleAddReview} className="space-y-4">
+                <form onSubmit={handleAddReview} className="space-y-4 ">
                   {/* Rating Selection */}
-                  <div>
-                    <label className="block mb-2 text-sm sm:text-base text-gray-700">
+                  <div className="">
+                    <label className="block mb-2   font-semibold  sm:text-lg text-center text-gray-700">
                       Your Rating
                     </label>
                     <div className="flex justify-center">
@@ -336,6 +336,7 @@ const DescReview = ({ product, id }) => {
                     Submit Review
                   </button>
                 </form>
+                
               </div>
             )}
           </div>

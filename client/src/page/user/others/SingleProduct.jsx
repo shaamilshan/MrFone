@@ -493,7 +493,7 @@ const SingleProduct = () => {
                 </h1>
               </div> */}
             <div className="w-full max-w-4xl mx-auto ">
-      <div className="flex  md:flex-row gap-4 items-center justify-between mt-5">
+      <div className="flex  md:flex-row gap-4 items-center  mt-5 ">
         {/* Quantity Selector */}
         
           
@@ -588,7 +588,7 @@ const SingleProduct = () => {
                 >
                   {value}
                 </button>
-              ))}
+              ))} 
             </div>
           </div>
         )
