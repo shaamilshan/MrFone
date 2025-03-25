@@ -4,7 +4,11 @@ const mongoose = require("mongoose");
 
 const requireAuth = async (req, res, next) => {
   try {
-    const token = req.cookies.user_token;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized: No token provided" });
+    }
 
     const { _id } = jwt.verify(token, process.env.SECRET);
 

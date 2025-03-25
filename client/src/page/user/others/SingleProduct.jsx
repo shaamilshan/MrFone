@@ -559,12 +559,12 @@ const SingleProduct = () => {
                                     key={valueIndex}
                                     className={`flex justify-center flex-wrap gap-2  items-center py-2 my-2 px-3   cursor-pointer 
                 transition-colors duration-300 
-                ${
+                ${ 
                   selectedAttributes[name] === value
                     ? "bg-black   text-white text-sm text-center px-5 py-2 " // Selected state
                     : "bg-[white] text-black text-sm text-center  border px-5  py-2 border-black hover:bg-blue-100"
                 } // Default and hover states
-              `}
+              `} 
                                     onClick={() =>
                                       handleSelectAttribute(name, value)
                                     }
@@ -620,26 +620,11 @@ const SingleProduct = () => {
                     )
                   )}
 
-                {/* <div className="w-full flex justify-start pt-8">
-                    <div className="flex items-center flex-col text-center">
-                      <div className="flex items-center justify-center h-12 w-12 mb-2">
-                        <ReplacementPolicy className="h-full w-full" />
-                      </div>
-                      <h1 className="text-[#2C2C2C] text-[16px] font-semibold w-32">
-                        3 Days Easy Replacement
-                      </h1>
-                    </div>
-                    <div className="flex items-center flex-col text-center">
-                      <div className="flex items-center justify-center h-12 w-12 mb-2">
-                        <FastDelivery className="h-full w-full" />
-                      </div>
-                      <h1 className="text-[#2C2C2C] text-[16px] font-semibold w-32">
-                        Fast Delivery
-                      </h1>
-                    </div>
-                  </div> */}
+           
               </div>
             </div>
+
+
 
 
 {/* Shipping & Returns , Size & Material*/}
@@ -702,12 +687,12 @@ const SingleProduct = () => {
             </div> */}
           </div>
         </div>
-        <div className="w-full h-4 mt-2 bg-[#F7F7F7] lg:hidden "></div>
+       
 
         <div></div>
       </div>
 
-      <DescReview product={product} id={product.id} />
+      <DescReview product={product} id={product._id}  />
       {/* Recommended Products */}
       <div className="w-full px-4 lg:px-20 mt-8 mb-8">
         <h2 className="text-xl lg:text-2xl text-center mb-4">

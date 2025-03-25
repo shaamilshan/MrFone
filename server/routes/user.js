@@ -123,6 +123,7 @@ router.post("/address", createAddress);
 router.delete("/address/:id", deleteAddress);
 router.patch("/address/:id", updateAddress);
 
+
 // RazerPay Payment
 router.post("/razor-order", createRazerPayOrder);
 router.post("/razor-verify", verifyPayment);
@@ -146,9 +147,10 @@ router.get("/coupon-remove", removeCoupon);
 // Reviews
 router.get("/reviews/:id", readProductReviews);
 router.get("/review/:id", readProductReview);
-router.post("/review", createNewReview);
+router.post("/review/:id", createNewReview);
 router.delete("/review/:id", deleteReview);
 router.patch("/review/:id", editReview);
+
 // Review on order details page
 router.get("/order-review/:id", readOrderReview);
 
