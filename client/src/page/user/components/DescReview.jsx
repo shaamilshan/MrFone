@@ -239,7 +239,7 @@ const DescReview = ({ product, id }) => {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
                       <div className="flex items-center mb-2 sm:mb-0">
                         {renderStars(review.rating)}
-                        <span className="ml-2 text-gray-600 text-xs sm:text-sm">
+                        <span className="ml-2 text-gray-600 text-xs sm:text-sm"> 
                           {new Date(review.createdAt).toLocaleDateString()}
                         </span>
                       </div>

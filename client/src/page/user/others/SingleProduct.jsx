@@ -499,17 +499,18 @@ const SingleProduct = () => {
           
             <Quantity 
               count={count} 
-              setCount={setCount} 
+              setCount={setCount}  
               className="p-2 " 
             />
          
        
-
+ 
         {/* Action Buttons */}
         <div className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
           {/* Buy Now Button (Desktop) */}
           {!isOutOfStock && (
             <Button
+            onClick={buyNow}
               variant="destructive"
               size="lg"
               disabled={cartLoading || isOutOfStock}
@@ -517,6 +518,7 @@ const SingleProduct = () => {
             >
               <Zap size={18} />
               {cartLoading ? "Processing..." : "Buy Now"}
+              
             </Button>
           )}
 
