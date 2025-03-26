@@ -18,6 +18,10 @@ const Collections = () => {
     (state) => state.userProducts
   );
   const dispatch = useDispatch();
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(1);

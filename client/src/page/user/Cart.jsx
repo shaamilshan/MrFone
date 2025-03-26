@@ -61,7 +61,7 @@ const Cart = () => {
   };
 
   // Modal for deleting entire cart
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false); 
   const toggleConfirm = () => {
     if (cart.length > 0) {
       setShowConfirm(!showConfirm);

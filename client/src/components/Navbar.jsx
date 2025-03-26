@@ -269,7 +269,7 @@ const Navbar = ({ usercheck }) => {
           <Link to="/" className="hover:text-red-600 transition-colors">
             HOME
           </Link>
-          <Link to="/pages" className="hover:text-red-600 transition-colors">
+          <Link to="/collections" className="hover:text-red-600 transition-colors">
             PAGES
           </Link>
           <Link
