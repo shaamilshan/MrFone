@@ -58,45 +58,45 @@ const SingleProduct = () => {
     (product) => product._id !== id
   );
 
-  const handleShare = async () => {
-    const currentUrl = window.location.href;
+  // const handleShare = async () => {
+  //   const currentUrl = window.location.href;
 
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: document.title,
-          url: currentUrl,
-        });
-        console.log("Content shared successfully");
-      } catch (error) {
-        console.error("Error sharing content:", error);
-      }
-    } else {
-      // Fallback: Copy to clipboard
-      navigator.clipboard.writeText(currentUrl).then(
-        () => {
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
-          console.log("URL copied to clipboard");
-        },
-        (error) => {
-          console.error("Error copying URL to clipboard:", error);
-        }
-      );
-    }
-  };
+  //   if (navigator.share) {
+  //     try {
+  //       await navigator.share({
+  //         title: document.title,
+  //         url: currentUrl,
+  //       });
+  //       console.log("Content shared successfully");
+  //     } catch (error) {
+  //       console.error("Error sharing content:", error);
+  //     }
+  //   } else {
+  //     // Fallback: Copy to clipboard
+  //     navigator.clipboard.writeText(currentUrl).then(
+  //       () => {
+  //         setCopied(true);
+  //         setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
+  //         console.log("URL copied to clipboard");
+  //       },
+  //       (error) => {
+  //         console.error("Error copying URL to clipboard:", error);
+  //       }
+  //     );
+  //   }
+  // };
 
-  const dispatchAddWishlist = () => {
-    if (!user) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-      navigate("/login");
-      return;
-    }
-    dispatch(addToWishlist({ product: id }));
-  };
+  // const dispatchAddWishlist = () => {
+  //   if (!user) {
+  //     window.scrollTo({
+  //       top: 0,
+  //       behavior: "smooth",
+  //     });
+  //     navigate("/login");
+  //     return;
+  //   }
+  //   dispatch(addToWishlist({ product: id }));
+  // };
 
   const loadProduct = async () => {
     setLoading(true);
@@ -135,23 +135,23 @@ const SingleProduct = () => {
     loadProduct();
   }, [id]);
 
-  const increment = async () => {
-    const { data } = await axios.get(
-      `${URL}/user/product-quantity/${id}`,
-      config
-    );
-    if (data.stockQuantity > count) {
-      setCount((c) => c + 1);
-    } else {
-      toast.error("Quantity Insufficient");
-    }
-  };
+  // const increment = async () => {
+  //   const { data } = await axios.get(
+  //     `${URL}/user/product-quantity/${id}`,
+  //     config
+  //   );
+  //   if (data.stockQuantity > count) {
+  //     setCount((c) => c + 1);
+  //   } else {
+  //     toast.error("Quantity Insufficient");
+  //   }
+  // };
 
-  const decrement = () => {
-    if (count > 1) {
-      setCount((c) => c - 1);
-    }
-  };
+  // const decrement = () => {
+  //   if (count > 1) {
+  //     setCount((c) => c - 1);
+  //   }
+  // };
 
   const { user } = useSelector((state) => state.user);
 
@@ -240,7 +240,7 @@ const SingleProduct = () => {
     setCartLoading(true);
     try {
       await axios.post(
-        `${URL}/user/cart`,
+        `${URL}/user/wishlist`,
         {
           product: id,
           quantity: count,
@@ -349,6 +349,7 @@ const SingleProduct = () => {
       {/* Fixed bottom panel for mobile devices */}
       {isMobile && (
         <div className="fixed-bottom-panel">
+  
           <button
             className="buy-now-btn"
             onClick={buyNow}
@@ -513,11 +514,12 @@ const SingleProduct = () => {
             onClick={buyNow}
               variant="destructive"
               size="lg"
-              disabled={cartLoading || isOutOfStock}
+              disabled={isOutOfStock}
               className="w-full sm:w-auto hidden md:flex items-center gap-2"
             >
               <Zap size={18} />
-              {cartLoading ? "Processing..." : "Buy Now"}
+              Buy Now
+              {/* {cartLoading ? "Processing..." : "Buy Now"} */}
               
             </Button>
           )}
@@ -525,13 +527,15 @@ const SingleProduct = () => {
           {/* Add to Cart Button */}
           {!isOutOfStock && (
             <Button
+            onClick={addToCart}
               variant="default"
               size="lg"
-              disabled={cartLoading}
+              // disabled={cartLoading}
               className="w-full sm:w-auto hidden md:flex  items-center gap-2"
             >
               <ShoppingCart size={18} />
-              {cartLoading ? "Adding..." : "Add to Cart"}
+              Add to Cart
+              {/* {cartLoading ? "Adding..." : "Add to Cart"} */}
             </Button>
           )}
 

@@ -28,8 +28,16 @@ const Cart = () => {
 
   // Fetching entire cart on page load
   useEffect(() => {
-    dispatch(getCart());
+    dispatch(getCart()).then((cart) => {
+      const cartItem = cart?.find((item) => item.product._id === id);
+      if (cartItem) {
+        setCount(cartItem.quantity); // Set count from cart
+      } else {
+        setCount(1); // Default count
+      }
+    });
   }, []);
+  
 
   // Calculating the total with the data and updating it when ever there is a change
   useEffect(() => {
