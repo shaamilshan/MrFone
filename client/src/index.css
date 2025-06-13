@@ -5,6 +5,20 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+/* Restore number input arrows in Chrome/Safari */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: auto;
+  display: inline;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: number-input;
+}
+
 /* 
 check indexcss tst file 🤣😢🎶😎
 

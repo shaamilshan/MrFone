@@ -3,7 +3,8 @@ import React from "react";
 const Quantity = ({ count, setCount }) => {
   const handleChange = (e) => {
     let value = parseInt(e.target.value, 10);
-    if (isNaN(value) || value < 1) value = 1; // Prevent invalid input
+    if (isNaN(value) || value < 1) value = 1; 
+    // Prevent invalid input
     setCount(value);
   };
 
