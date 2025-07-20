@@ -41,6 +41,7 @@ const SingleProduct = () => {
   } = useSelector((state) => state.userProducts);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [variantPrice, setVariantPrice] = useState(null);
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -99,6 +100,25 @@ const SingleProduct = () => {
     dispatch(getUserProducts(searchParams));
     loadProduct();
   }, [id]);
+
+  useEffect(() => {
+  if (!product.attributes || Object.keys(selectedAttributes).length === 0) return;
+
+  let price = null;
+
+  const selectedAttributeValues = Object.entries(selectedAttributes);
+  for (const [name, value] of selectedAttributeValues) {
+    const match = product.attributes.find(
+      (attr) => attr.name === name && attr.value === value && attr.price
+    );
+    if (match) {
+      price = match.price; // overrides on last match
+    }
+  }
+
+  setVariantPrice(price);
+}, [selectedAttributes, product]);
+
 
   const { user } = useSelector((state) => state.user);
 
@@ -436,13 +456,13 @@ const SingleProduct = () => {
               <ProductDetailsStarAndRating rating={product.rating || 4} />
             </div>
             <div className="flex w-full mt-1  lg:mt-6 pt-3 border-b pb-6 ">
-              <h1 className="text-[16px] lg:text-[20px] text-red-500 xl:text-[25px] font-semibold font-Inter">
-                ₹
-                {(
-                  product.price -
-                  product.price * (product.offer / 100)
-                ).toFixed(2)}
-              </h1>
+             <h1 className="text-[16px] lg:text-[20px] text-red-500 xl:text-[25px] font-semibold font-Inter">
+  ₹
+  {variantPrice
+    ? variantPrice
+    : (product.price - product.price * (product.offer / 100)).toFixed(2)}
+</h1>
+
 
               {product.offer && (
                 <div className="flex justify-center ">
