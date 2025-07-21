@@ -455,26 +455,26 @@ const SingleProduct = () => {
             <div>
               <ProductDetailsStarAndRating rating={product.rating || 4} />
             </div>
-            <div className="flex w-full mt-1  lg:mt-6 pt-3 border-b pb-6 ">
-             <h1 className="text-[16px] lg:text-[20px] text-red-500 xl:text-[25px] font-semibold font-Inter">
-  ₹
-  {variantPrice
-    ? variantPrice
-    : (product.price - product.price * (product.offer / 100)).toFixed(2)}
-</h1>
+            <div className="flex w-full mt-1 lg:mt-6 pt-3 border-b pb-6">
+  <h1 className="text-[16px] lg:text-[20px] text-red-500 xl:text-[25px] font-semibold font-Inter">
+    ₹
+    {variantPrice
+      ? parseInt(variantPrice)
+      : Math.round(product.price - product.price * (product.offer / 100))}
+  </h1>
 
+  {product.offer > 0 && (
+    <div className="flex justify-center">
+      <h1 className="text-[16px] lg:text-[18px] xl:text-[20px] font-light font-Inter text-[#949494] ml-3 line-through">
+        ₹{product.price}
+      </h1>
+      <div className="ml-3 px-2 w-auto h-auto md:ml-4 bg-black rounded-[2px] text-white text-[12px] lg:text-[13px] flex justify-center items-center">
+        {parseInt(product.offer)}% Off
+      </div>
+    </div>
+  )}
+</div>
 
-              {product.offer && (
-                <div className="flex justify-center ">
-                  <h1 className="text-[16px] lg:text-[18px] xl:text-[20px]font-light font-Inter text-[#949494] ml-3 line-through">
-                    ₹{product.price}
-                  </h1>
-                  <div className="ml-3 px-2 w-auto h-auto md:ml-4 bg-black rounded-[2px] text-white text-[12px] lg:text-[13px] flex justify-center items-center">
-                    {parseInt(product.offer)} % Off
-                  </div>
-                </div>
-              )}
-            </div>
 
             <p className="text-[14px] border-b lg:text-[16px] py-4 pr-2">
               {product.description}
