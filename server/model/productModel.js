@@ -80,15 +80,14 @@ const productsSchema = new Schema(
         min: [1, "Image index must be at least 1"],
       },
     }],
+
+
     moreImageURL: [{
       type: String,
-      validate: {
-        validator: function(v) {
-          return /^https?:\/\/.+/.test(v);
-        },
-        message: props => `${props.value} is not a valid URL!`
-      }
+      
     }],
+
+    
     isActive: {
       type: Boolean,
       default: true,

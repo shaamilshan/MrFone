@@ -76,26 +76,37 @@ const addProduct = async (req, res) => {
     let formData = { ...req.body, isActive: true };
     const files = req?.files;
 
+    console.log("Files received:", files); // Debug log
+
     const attributes = JSON.parse(formData.attributes);
-
     formData.attributes = attributes;
-
+  
     if (files && files.length > 0) {
-      formData.moreImageURL = [];
-      formData.imageURL = "";
-      files.map((file) => {
+      formData.moreImageURL = []; 
+      formData.imageURL = ""; 
+      
+      // Base URL for your images
+      const baseURL = process.env.BASE_URL || 'https://mrfone.onrender.com';
+      console.log("Base URL:", baseURL); // Debug log
+      
+      files.forEach((file) => { // Use forEach instead of map
+        console.log("Processing file:", file.fieldname, file.filename); // Debug log
+        
         if (file.fieldname === "imageURL") {
-          formData.imageURL = file.filename;
+          formData.imageURL = `${baseURL}/uploads/${file.filename}`;
         } else {
-          formData.moreImageURL.push(file.filename);
+          formData.moreImageURL.push(`${baseURL}/uploads/${file.filename}`);
         }
       });
+      
+      console.log("Final formData.moreImageURL:", formData.moreImageURL); // Debug log
+      console.log("Final formData.imageURL:", formData.imageURL); // Debug log
     }
 
     const product = await Product.create(formData);
-
     res.status(200).json({ product });
   } catch (error) {
+    console.error("Product creation error:", error); // Debug log
     res.status(400).json({ error: error.message });
   }
 };

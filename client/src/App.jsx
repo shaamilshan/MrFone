@@ -123,10 +123,10 @@ function App() {
             path="/"
             element={
               user ? (
-                user.role === "superAdmin" ? (
+                user.role === "superAdmin"?(
                   <Navigate to="/admin/" />
-                ) : user.role === "manager" ? (
-                  <Navigate to="/manager/" />
+                ) : user.role === "manager"?(
+                  <Navigate to="/manager/"/>
                 ) : (
                   // <Home />
                   <Home2 />

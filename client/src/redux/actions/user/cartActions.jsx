@@ -8,7 +8,7 @@ export const getCart = createAsyncThunk(
   async (rc, { rejectWithValue }) => {
     return commonReduxRequest(
       "get",
-      `/user/cart`,
+      `/user/cart`, 
       {},
       appJson,
       rejectWithValue
@@ -17,7 +17,7 @@ export const getCart = createAsyncThunk(
 );
 
 // Deleting whole cart
-export const deleteEntireCart = createAsyncThunk(
+export const deleteEntireCart = createAsyncThunk( 
   "cart/deleteEntireCart",
   async (id, { rejectWithValue }) => {
     return commonReduxRequest(
