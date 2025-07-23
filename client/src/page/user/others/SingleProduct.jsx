@@ -40,6 +40,11 @@ const SingleProduct = () => {
     totalAvailableProducts,
   } = useSelector((state) => state.userProducts);
   const [searchParams, setSearchParams] = useSearchParams();
+<<<<<<< HEAD
+=======
+
+  const [variantPrice, setVariantPrice] = useState(null);
+>>>>>>> 67d41536baa338d983712baa08cca306595d140c
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -98,8 +103,31 @@ const SingleProduct = () => {
     dispatch(getUserProducts(searchParams));
     loadProduct();
   }, [id]);
+<<<<<<< HEAD
   
   console.log('cart',cart)
+=======
+
+  useEffect(() => {
+  if (!product.attributes || Object.keys(selectedAttributes).length === 0) return;
+
+  let price = null;
+
+  const selectedAttributeValues = Object.entries(selectedAttributes);
+  for (const [name, value] of selectedAttributeValues) {
+    const match = product.attributes.find(
+      (attr) => attr.name === name && attr.value === value && attr.price
+    );
+    if (match) {
+      price = match.price; // overrides on last match
+    }
+  }
+
+  setVariantPrice(price);
+}, [selectedAttributes, product]);
+
+
+>>>>>>> 67d41536baa338d983712baa08cca306595d140c
   const { user } = useSelector((state) => state.user);
 
   const onHomeClick = async () => {
@@ -435,26 +463,26 @@ const SingleProduct = () => {
             <div>
               <ProductDetailsStarAndRating rating={product.rating || 4} />
             </div>
-            <div className="flex w-full mt-1  lg:mt-6 pt-3 border-b pb-6 ">
-              <h1 className="text-[16px] lg:text-[20px] text-red-500 xl:text-[25px] font-semibold font-Inter">
-                ₹
-                {(
-                  product.price -
-                  product.price * (product.offer / 100)
-                ).toFixed(2)}
-              </h1>
+            <div className="flex w-full mt-1 lg:mt-6 pt-3 border-b pb-6">
+  <h1 className="text-[16px] lg:text-[20px] text-red-500 xl:text-[25px] font-semibold font-Inter">
+    ₹
+    {variantPrice
+      ? parseInt(variantPrice)
+      : Math.round(product.price - product.price * (product.offer / 100))}
+  </h1>
 
-              {product.offer && (
-                <div className="flex justify-center ">
-                  <h1 className="text-[16px] lg:text-[18px] xl:text-[20px]font-light font-Inter text-[#949494] ml-3 line-through">
-                    ₹{product.price}
-                  </h1>
-                  <div className="ml-3 px-2 w-auto h-auto md:ml-4 bg-black rounded-[2px] text-white text-[12px] lg:text-[13px] flex justify-center items-center">
-                    {parseInt(product.offer)} % Off
-                  </div>
-                </div>
-              )}
-            </div>
+  {product.offer > 0 && (
+    <div className="flex justify-center">
+      <h1 className="text-[16px] lg:text-[18px] xl:text-[20px] font-light font-Inter text-[#949494] ml-3 line-through">
+        ₹{product.price}
+      </h1>
+      <div className="ml-3 px-2 w-auto h-auto md:ml-4 bg-black rounded-[2px] text-white text-[12px] lg:text-[13px] flex justify-center items-center">
+        {parseInt(product.offer)}% Off
+      </div>
+    </div>
+  )}
+</div>
+
 
             <p className="text-[14px] border-b lg:text-[16px] py-4 pr-2">
               {product.description}

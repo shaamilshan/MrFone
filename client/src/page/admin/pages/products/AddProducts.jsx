@@ -31,6 +31,7 @@ const AddProducts = () => {
     "Low Quantity",
   ]);
 
+<<<<<<< HEAD
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -41,6 +42,21 @@ const AddProducts = () => {
     offer: "",
     status: "Published",
   });
+=======
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [stockQuantity, setStockQuantity] = useState("");
+  const [category, setCategory] = useState();
+  const [imageURL, setImageURL] = useState("");
+  const [status, setStatus] = useState("Published");
+  const [attributes, setAttributes] = useState([]);
+  const [price, setPrice] = useState("");
+  const [markup, setMarkup] = useState("");
+  const [moreImageURL, setMoreImageURL] = useState("");
+  const [offer, setOffer] = useState("");
+  const [attributePrice, setAttributePrice] = useState("");
+
+>>>>>>> 67d41536baa338d983712baa08cca306595d140c
 
   const [imageURL, setImageURL] = useState("");
   const [moreImageURL, setMoreImageURL] = useState([]);
@@ -75,12 +91,51 @@ const AddProducts = () => {
     setMoreImageURL(files || []);
   };
 
+<<<<<<< HEAD
   // Handle attribute form changes
   const handleAttributeChange = (field, value) => {
     setAttributeForm(prev => ({
       ...prev,
       [field]: value
     }));
+=======
+  const handleSave = () => {
+    var newStockQuantity = stockQuantity;
+    if (stockQuantity <= 0) {
+      newStockQuantity = 100;
+      // toast.error("Quantity Should be greater than 0");
+      // return;
+    }
+    // if (price <= 0) {
+    //   toast.error("Price Should be greater than 0");
+    //   return;
+    // }
+    // if (markup <= 0) {
+    //   toast.error("Markup Should be greater than 0");
+    //   return;
+    // }
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("stockQuantity", newStockQuantity);
+    formData.append("attributes", JSON.stringify(attributes));
+    formData.append("price", price);
+    formData.append("markup", markup);
+    formData.append("category", category);
+    formData.append("offer", offer);
+    formData.append("status", status.toLowerCase());
+    // formData.append("managerId", userId);
+
+    formData.append("imageURL", imageURL);
+
+    for (const file of moreImageURL) {
+      formData.append("moreImageURL", file);
+    }
+
+    dispatch(createProduct(formData));
+    navigate(-1);
+>>>>>>> 67d41536baa338d983712baa08cca306595d140c
   };
 
   // Add attribute
@@ -91,6 +146,7 @@ const AddProducts = () => {
       toast.error("Attribute name and value are required");
       return;
     }
+<<<<<<< HEAD
 
     const newAttribute = {
       name: attributeForm.name,
@@ -109,6 +165,24 @@ const AddProducts = () => {
       quantity: "",
       highlight: false,
     }));
+=======
+  
+const attribute = {
+  name: attributeName,
+  value: attributeValue,
+  quantity: attributeQuantity,
+  isHighlight: attributeHighlight,
+  imageIndex: attributeImageIndex,
+  price: attributePrice, // 💰 Add this
+};
+
+    setAttributes([...attributes, attribute]);
+    setAttributeHighlight(false);
+    // setAttributeName("");
+    setAttributeValue("");
+    // setAttributeImageIndex("");
+    setAttributeQuantity("");
+>>>>>>> 67d41536baa338d983712baa08cca306595d140c
   };
 
   // Remove attribute
@@ -360,6 +434,14 @@ const AddProducts = () => {
                   onChange={(e) => handleAttributeChange("quantity", e.target.value)}
                   min="0"
                 />
+                <input
+  type="number"
+  className="admin-input-no-m w-full"
+  placeholder="Price"
+  value={attributePrice}
+  onChange={(e) => setAttributePrice(e.target.value)}
+/>
+
                 <div className="admin-input-no-m w-full lg:w-auto shrink-0">
                   <input
                     type="checkbox"
