@@ -57,32 +57,6 @@ const productsSchema = new Schema(
       default: "draft",
     },
     attributes: [{
-<<<<<<< HEAD
-      name: {
-        type: String,
-        trim: true,
-      },
-      value: {
-        type: String,
-        trim: true,
-      },
-      isHighlight: {
-        type: Boolean,
-        default: false,
-      },
-      quantity: {
-        type: Number,
-        default: 0,
-        min: [0, "Attribute quantity cannot be negative"],
-      },
-      imageIndex: {
-        type: Number,
-        default: 1,
-        min: [1, "Image index must be at least 1"],
-      },
-    }],
-
-=======
   name: {
     type: String,
     trim: true,
@@ -111,7 +85,6 @@ const productsSchema = new Schema(
     // Optional: If not set, use the base product price
   },
 }],
->>>>>>> 67d41536baa338d983712baa08cca306595d140c
 
     moreImageURL: [{
       type: String,
