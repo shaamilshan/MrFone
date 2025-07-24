@@ -3,24 +3,24 @@ import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-import sneakerImg from "../../assets/trendskart/categories/sneakers.jpeg";
-import airpodsImg from "../../assets/trendskart/categories/airpodss.jpeg";
-import smwatchImg from "../../assets/trendskart/categories/smartwatches.jpeg";
-import crocsImg from "../../assets/trendskart/categories/crocs.jpeg";
-import chappelImg from "../../assets/trendskart/categories/chappel.jpeg";
-import gadgetsImg from "../../assets/trendskart/categories/gadgets.jpeg";
-import sunglassesImg from "../../assets/trendskart/categories/sunglasses.jpeg"; 
-import watchesImg from "../../assets/trendskart/categories/watches.jpeg";
+import iphoneImg from "../../assets/category/iphonecat.jpg";
+import airpodsImg from "../../assets/category/airpods.jpeg";
+import smwatchImg from "../../assets/category/watches.jpg";
+import chargerImg from "../../assets/category/charger.webp";
+import caseImg from "../../assets/category/case.avif";
+import iPadImg from "../../assets/category/ipad.webp";
+import macbookImg from "../../assets/category/macbook.webp"; 
+import powerbankImg from "../../assets/category/powerbank.png";
 
 const categories = [
-  { name: "Sneakers", id: "67497eb086528f9f86bbb8cf", image: sneakerImg },
+  { name: "iPhones", id: "67dc5ac5ac4105034f6945db", image: iphoneImg },
   { name: "Airpods", id: "67497f8186528f9f86bbb920", image: airpodsImg },
-  { name: "Smart Watches", id: "6749825b86528f9f86bbba2e", image: smwatchImg },
-  { name: "Crocs", id: "674982e486528f9f86bbba50", image: crocsImg },
-  { name: "Chappals", id: "6749851886528f9f86bbbaf2", image: chappelImg },
-  { name: "Gadgets", id: "6749858586528f9f86bbbaf7", image: gadgetsImg },
-  { name: "Sunglasses", id: "674986fd86528f9f86bbbb38", image: sunglassesImg },
-  { name: "Watches", id: "6749876986528f9f86bbbb3c", image: watchesImg },
+  { name: "Watches", id: "6749825b86528f9f86bbba2e", image: smwatchImg },
+  { name: "Chargers", id: "674982e486528f9f86bbba50", image: chargerImg },
+  { name: "Cases", id: "6749851886528f9f86bbbaf2", image: caseImg },
+  { name: "iPad", id: "6749858586528f9f86bbbaf7", image: iPadImg },
+  { name: "Macbooks", id: "674986fd86528f9f86bbbb38", image: macbookImg },
+  { name: "Powerbanks", id: "6749876986528f9f86bbbb3c", image: powerbankImg },
 ];
 
 const ShopCategories = () => {
