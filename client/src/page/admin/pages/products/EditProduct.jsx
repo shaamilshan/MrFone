@@ -144,6 +144,7 @@ const EditProduct = () => {
   const [attributeImageIndex, setAttributeImageIndex] = useState("");
   const [attributeQuantity, setAttributeQuantity] = useState("");
   const [attributeHighlight, setAttributeHighlight] = useState(false);
+  const [attributePrice, setAttributePrice] = useState("");
 
   const attributeHandler = (e) => {
     e.preventDefault();
@@ -160,6 +161,7 @@ const EditProduct = () => {
       imageIndex: attributeImageIndex,
       quantity: attributeQuantity,
       isHighlight: attributeHighlight,
+      price: attributePrice,
     };
     setFetchedData((prevData) => ({
       ...prevData,
@@ -384,6 +386,13 @@ const EditProduct = () => {
                   value={attributeQuantity}
                   onChange={(e) => setAttributeQuantity(e.target.value)}
                 />
+                              <input
+  type="number"
+  className="admin-input-no-m w-full"
+  placeholder="Price"
+  value={attributePrice}
+  onChange={(e) => setAttributePrice(e.target.value)}
+/>
                 <div className="admin-input-no-m w-full lg:w-auto shrink-0">
                   <input
                     type="checkbox"
@@ -405,6 +414,7 @@ const EditProduct = () => {
                     <th className="px-2 py-1 w-2/6">Value</th>
                     <th className="px-2 py-1 w-1/6">Image Index</th>
                     <th className="px-2 py-1 w-1/6">Quantity</th>
+                    <th className="px-2 py-1 w-1/6">Price</th>
                     <th className="px-2 py-1 w-1/6">Highlighted</th>
                     <th className="px-2 py-1 w-1/6">Action</th>
                   </tr>
@@ -459,6 +469,20 @@ const EditProduct = () => {
                             handleAttributeChange(
                               index,
                               "quantity",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                      <td>
+                        <input
+                          className="admin-input-no-m w-20"
+                          type="text"
+                          value={at.price || ""}
+                          onChange={(e) =>
+                            handleAttributeChange(
+                              index,
+                              "price",
                               e.target.value
                             )
                           }
