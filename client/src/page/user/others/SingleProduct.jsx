@@ -40,11 +40,8 @@ const SingleProduct = () => {
     totalAvailableProducts,
   } = useSelector((state) => state.userProducts);
   const [searchParams, setSearchParams] = useSearchParams();
-<<<<<<< HEAD
-=======
 
   const [variantPrice, setVariantPrice] = useState(null);
->>>>>>> 67d41536baa338d983712baa08cca306595d140c
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -103,10 +100,6 @@ const SingleProduct = () => {
     dispatch(getUserProducts(searchParams));
     loadProduct();
   }, [id]);
-<<<<<<< HEAD
-  
-  console.log('cart',cart)
-=======
 
   useEffect(() => {
   if (!product.attributes || Object.keys(selectedAttributes).length === 0) return;
@@ -127,7 +120,6 @@ const SingleProduct = () => {
 }, [selectedAttributes, product]);
 
 
->>>>>>> 67d41536baa338d983712baa08cca306595d140c
   const { user } = useSelector((state) => state.user);
 
   const onHomeClick = async () => {

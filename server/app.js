@@ -45,12 +45,7 @@ app.use(logger("dev"));
 
 const corsOptions = {
   // origin: ["https://trends-kart.vercel.app","https://trends-kart-production.vercel.app", "https://trends-kart.vercel.app"],
-<<<<<<< HEAD
-  // origin: ["https://mr-fone.vercel.app","https://www.trendkartonline.com", "https://trendkartonline.com","https://trends-kart.vercel.app","https://trends-kart-production.vercel.app", "https://trends-kart.vercel.app","http://localhost:5173","https://ideal-lamp-74gr4wv97vv3p575-5173.app.github.dev"],
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
-=======
   origin: ["https://mr-fone.vercel.app/","https://www.trendkartonline.com", "https://trendkartonline.com","https://trends-kart.vercel.app","https://trends-kart-production.vercel.app", "https://trends-kart.vercel.app","http://localhost:5173","https://ideal-lamp-74gr4wv97vv3p575-5173.app.github.dev"],
->>>>>>> fad443794e010d590daa7e6615a963b90eb03d12
   // origin: process.env.CLIENT_URL,
   // origin: "http://localhost:5173",
   credentials: true, //access-control-allow-credentials:true
