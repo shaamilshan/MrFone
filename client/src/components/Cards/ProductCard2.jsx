@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const StarRating = ({ rating = 5 }) => {
   return (
-    <div className="flex items-center  justify-center">
+    <div className="flex items-center mt-2 mb-2">
       {[...Array(5)].map((_, index) => (
         <svg
           key={index}
@@ -24,19 +24,12 @@ const StarRating = ({ rating = 5 }) => {
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   
-  // Calculate original price for discount display
+  // Calculate original price and discount correctly
   const originalPrice = product.offer
     ? Math.round(product.price / (1 - product.offer / 100))
     : null;
     
-  // Calculate discount percentage correctly
-
-
-
-  // const discountPercentage = product.offer && originalPrice 
-  //   ? Math.round(((originalPrice - product.price) / originalPrice) * 100)
-  //   : 0;
-console.log(product.rating)
+  const discountPercentage = product.offer || 0;
 
   return (
     <div 
@@ -44,7 +37,7 @@ console.log(product.rating)
       className="cursor-pointer bg-white rounded-lg shadow-md transition-all duration-300 p-4"
     >
       {/* Image container with centered product image */}
-      <div className="flex items-center justify-center h-40 mb-3 ">
+      <div className="flex items-center justify-center h-40 mb-3">
         <img
           src={`${URL}/img/${product?.imageURL}`}
           alt={product.name}
@@ -52,17 +45,17 @@ console.log(product.rating)
         />
       </div>
       
-      {/* Rating stars */}
-      <StarRating  rating={product.rating || 4 } />
-      
-      {/* Product name */}
-      <h3 className="text-sm text-gray-700 mt-1 font-semibold mb-2 line-clamp-2 items-center flex justify-center">
+      {/* Product name - left aligned */}
+      <h3 className="text-sm text-gray-700 mt-1 font-semibold mb-1 line-clamp-2">
         {product.name}
       </h3>
       
-      {/* Price section */}
-      <div className="flex items-center flex-wrap gap-2 justify-center">
-        {/* Current price in red */}
+      {/* Rating stars - left aligned */}
+      <StarRating rating={product.rating || 4} />
+      
+      {/* Price section - left aligned */}
+      <div className="flex items-center flex-wrap gap-2">
+        {/* Current price */}
         <span className="text-sm font-medium text-red-500">
           ₹{product.price.toLocaleString()}
         </span>
@@ -70,16 +63,16 @@ console.log(product.rating)
         {/* Original price with strikethrough if there's an offer */}
         {originalPrice && (
           <span className="text-xs text-gray-400 line-through">
-            {/* ₹{originalPrice.toLocaleString()} */}
+            ₹{originalPrice.toLocaleString()}
           </span>
         )}
         
         {/* Discount percentage badge - only show if there's an offer */}
-        {/* {discountPercentage > 0 && ( */}
-          <span className="text-xs bg-red-500 text-white px-1 py-0.5 rounded">
-            {/* {discountPercentage}% Off */} 50% off
+        {product.offer > 0 && (
+          <span className="text-xs bg-red-500 text-white px-2 py-1 rounded">
+            {Math.round(discountPercentage)}% Off
           </span>
-        {/* )} */}
+        )}
       </div>
     </div>
   );

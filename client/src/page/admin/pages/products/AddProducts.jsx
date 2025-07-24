@@ -42,6 +42,8 @@ const AddProducts = () => {
   const [markup, setMarkup] = useState("");
   const [moreImageURL, setMoreImageURL] = useState("");
   const [offer, setOffer] = useState("");
+  const [attributePrice, setAttributePrice] = useState("");
+
 
   const handleSingleImageInput = (img) => {
     setImageURL(img);
@@ -58,10 +60,10 @@ const AddProducts = () => {
       // toast.error("Quantity Should be greater than 0");
       // return;
     }
-    if (price <= 0) {
-      toast.error("Price Should be greater than 0");
-      return;
-    }
+    // if (price <= 0) {
+    //   toast.error("Price Should be greater than 0");
+    //   return;
+    // }
     // if (markup <= 0) {
     //   toast.error("Markup Should be greater than 0");
     //   return;
@@ -77,6 +79,7 @@ const AddProducts = () => {
     formData.append("category", category);
     formData.append("offer", offer);
     formData.append("status", status.toLowerCase());
+    // formData.append("managerId", userId);
 
     formData.append("imageURL", imageURL);
 
@@ -100,13 +103,15 @@ const AddProducts = () => {
       return;
     }
   
-    const attribute = {
-      name: attributeName,
-      value: attributeValue,
-      quantity: attributeQuantity,
-      isHighlight: attributeHighlight,
-      imageIndex: attributeImageIndex,
-    };
+const attribute = {
+  name: attributeName,
+  value: attributeValue,
+  quantity: attributeQuantity,
+  isHighlight: attributeHighlight,
+  imageIndex: attributeImageIndex,
+  price: attributePrice, // 💰 Add this
+};
+
     setAttributes([...attributes, attribute]);
     setAttributeHighlight(false);
     // setAttributeName("");
@@ -238,6 +243,14 @@ const AddProducts = () => {
                   value={attributeQuantity}
                   onChange={(e) => setAttributeQuantity(e.target.value)}
                 />
+                <input
+  type="number"
+  className="admin-input-no-m w-full"
+  placeholder="Price"
+  value={attributePrice}
+  onChange={(e) => setAttributePrice(e.target.value)}
+/>
+
                 <div className="admin-input-no-m w-full lg:w-auto shrink-0">
                   <input
                     type="checkbox"

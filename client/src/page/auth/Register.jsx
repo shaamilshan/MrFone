@@ -8,29 +8,12 @@ import * as Yup from "yup";
 import InputWithIcon from "../../components/InputWithIcon";
 import PasswordInputWithIcon from "../../components/PasswordInputWithIcon";
 import CustomSingleFileInput from "../../components/CustomSingleFileInput";
-import OTPEnterSection from "./Register/OTPEnterSection";
-import OTPExpired from "./components/OTPExpired";
-import { toast } from "react-hot-toast";
-import { appJson } from "../../Common/configurations";
-import { commonRequest } from "../../Common/api";
 import { updateError } from "../../redux/reducers/userSlice";
-// import {
-//   AiOutlineLock,
-//   AiOutlineMail,
-//   AiOutlinePhone,
-//   AiOutlineUser,
-// } from "react-icons/ai";
 
 const Register = () => {
   const { user, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [emailSec, setEmailSec] = useState(true);
-  const [otpSec, setOTPSec] = useState(false);
-  const [otpExpired, setOTPExpired] = useState(false);
-  const [otpLoading, setOTPLoading] = useState(false);
-  const [data, setData] = useState({});
 
   useEffect(() => {
     if (user) {
@@ -69,45 +52,19 @@ const Register = () => {
       .moreThan(999999999, "Not valid phone number"),
   });
 
-  const dispatchSignUp = () => {
-    let formData = new FormData();
-    formData.append("firstName", data.firstName);
-    formData.append("lastName", data.lastName);
-    formData.append("email", data.email);
-    formData.append("password", data.password);
-    formData.append("passwordAgain", data.passwordAgain);
-    formData.append("phoneNumber", data.phoneNumber);
-    if (data.profileImgURL) {
-      formData.append("profileImgURL", data.profileImgURL);
+  const handleRegister = (values) => {
+    const formData = new FormData();
+    formData.append("firstName", values.firstName);
+    formData.append("lastName", values.lastName);
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+    formData.append("passwordAgain", values.passwordAgain);
+    formData.append("phoneNumber", values.phoneNumber);
+    if (values.profileImgURL) {
+      formData.append("profileImgURL", values.profileImgURL);
     }
 
     dispatch(signUpUser(formData));
-  };
-
-  const handleRegister = async (value) => {
-    setOTPLoading(true);
-    setData(value);
-
-    try {
-      const res = await commonRequest(
-        "POST",
-        "/auth/send-otp",
-        { email: value.email },
-        appJson
-      );
-
-      if (res.success) {
-        setEmailSec(false);
-        setOTPSec(true);
-        toast.success("OTP sent successfully!");
-      } else {
-        throw new Error(res.response.data.error || "OTP request failed");
-      }
-    } catch (err) {
-      toast.error(err.message || "An error occurred while sending OTP");
-    } finally {
-      setOTPLoading(false);
-    }
   };
 
   return (
@@ -124,88 +81,47 @@ const Register = () => {
       {/* Right Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 lg:px-16">
         <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg">
-          <div className="flex items-center justify-center mb-6">
-            {/* <img src={Logo} alt="Logo" className="w-12" /> */}
-            {/* <p className="text-3xl font-bold ml-3">ex.iphones.</p> */}
-          </div>
           <h1 className="text-4xl font-bold mb-6 text-center">Register</h1>
 
-          {emailSec && (
-            <Formik
-              initialValues={initialValues}
-              onSubmit={handleRegister}
-              validationSchema={validationSchema}
-            >
-              {({ values, setFieldValue }) => (
-                <Form className="space-y-6">
-                  {/* <div className="flex justify-center">
-                    <CustomSingleFileInput
-                      onChange={(file) => setFieldValue("profileImgURL", file)}
-                    />
-                    <ErrorMessage
-                      className="text-sm text-red-500"
-                      name="profileImgURL"
-                      component="span"
-                    />
-                  </div> */}
-                  <InputWithIcon
-                    // icon={<AiOutlineUser />}
-                    // title="First Name"
-                    name="firstName"
-                    placeholder="Enter your first name"
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleRegister}
+            validationSchema={validationSchema}
+          >
+            {({ setFieldValue }) => (
+              <Form className="space-y-6">
+                {/* Optional Image Upload */}
+                {/* <div className="flex justify-center">
+                  <CustomSingleFileInput
+                    onChange={(file) => setFieldValue("profileImgURL", file)}
                   />
-                  <InputWithIcon
-                    // icon={<AiOutlineUser />}
-                    // title="Last Name"
-                    name="lastName"
-                    placeholder="Enter your last name"
+                  <ErrorMessage
+                    className="text-sm text-red-500"
+                    name="profileImgURL"
+                    component="span"
                   />
-                    <InputWithIcon
-                      // icon={<AiOutlinePhone />}
-                      // title="Phone Number"
-                      name="phoneNumber"
-                      placeholder="Enter your phone number"
-                    />
-                  <InputWithIcon
-                    // icon={<AiOutlineMail />}
-                    // title="Email"
-                    name="email"
-                    placeholder="Enter your email"
-                  />
-                  <PasswordInputWithIcon
-                    // icon={<AiOutlineLock />}
-                    // title="Password"
-                    name="password"
-                    placeholder="Enter your password"
-                  />
-                  <PasswordInputWithIcon
-                    // icon={<AiOutlineLock />}
-                    // title="Confirm Password"
-                    name="passwordAgain"
-                    placeholder="Confirm your password"
-                  />
-                  <button
-                    type="submit"
-                    className="h-12 w-full bg-[#000000] text-white hover:bg-red-500 rounded-md"
-                    disabled={otpLoading}
-                  >
-                    {otpLoading ? "Loading..." : "Sign Up"}
-                  </button>
-                  {error && <p className="text-red-500 text-sm">{error}</p>}
-                </Form>
-              )}
-            </Formik>
-          )}
+                </div> */}
 
-          {otpSec && (
-            <OTPEnterSection
-              email={data.email}
-              setOTPExpired={setOTPExpired}
-              setOTPSec={setOTPSec}
-              dispatchSignUp={dispatchSignUp}
-            />
-          )}
-          {otpExpired && <OTPExpired />}
+                <InputWithIcon name="firstName" placeholder="Enter your first name" />
+                <InputWithIcon name="lastName" placeholder="Enter your last name" />
+                <InputWithIcon name="phoneNumber" placeholder="Enter your phone number" />
+                <InputWithIcon name="email" placeholder="Enter your email" />
+                <PasswordInputWithIcon name="password" placeholder="Enter your password" />
+                <PasswordInputWithIcon name="passwordAgain" placeholder="Confirm your password" />
+
+                <button
+                  type="submit"
+                  className="h-12 w-full bg-black text-white hover:bg-red-500 rounded-md"
+                  disabled={loading}
+                >
+                  {loading ? "Loading..." : "Sign Up"}
+                </button>
+
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+              </Form>
+            )}
+          </Formik>
+
           <p className="mt-6 text-center text-sm">
             Already have an account?{" "}
             <Link

@@ -267,19 +267,19 @@ const Navbar = ({ usercheck }) => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-4 lg:gap-6 font-semibold text-gray-700">
           <Link to="/" className="hover:text-red-600 transition-colors">
-            HOME
+            Home
           </Link>
           <Link to="/collections" className="hover:text-red-600 transition-colors">
-            PAGES
+            Store
           </Link>
           <Link
             to="/dashboard/order-history"
             className="hover:text-red-600 transition-colors"
           >
-            MY ORDER
+            My Orders
           </Link>
           <Link to="/contact" className="hover:text-red-600 transition-colors">
-            CONTACT
+            Contact
           </Link>
         </nav>
 

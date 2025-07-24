@@ -20,12 +20,12 @@ export default function Home2(){
   return (
     <>
   
+    <Marquee/>
   <ImageSlider />
 
   
   <div className="max-w-screen-2xl mx-auto px-4">
 
-    {/* <Marquee/> */}
     {/* <CategorySection/> */} 
     <ShopCategories />  
     {/* <LogoSlider />  */}

@@ -11,7 +11,7 @@ const productsSchema = new Schema(
     },
     managerId: {
       type: String,
-      required: [true, "Manager ID is required"],
+      required: [false, "Manager ID is required"],
     },
     description: {
       type: String,
@@ -34,7 +34,7 @@ const productsSchema = new Schema(
     },
     price: {
       type: Number,
-      required: [true, "Price is required"],
+      required: [false, "Price is required"],
       min: [0, "Price cannot be negative"],
     },
     markup: {
@@ -57,29 +57,35 @@ const productsSchema = new Schema(
       default: "draft",
     },
     attributes: [{
-      name: {
-        type: String,
-        trim: true,
-      },
-      value: {
-        type: String,
-        trim: true,
-      },
-      isHighlight: {
-        type: Boolean,
-        default: false,
-      },
-      quantity: {
-        type: Number,
-        default: 0,
-        min: [0, "Attribute quantity cannot be negative"],
-      },
-      imageIndex: {
-        type: Number,
-        default: 1,
-        min: [1, "Image index must be at least 1"],
-      },
-    }],
+  name: {
+    type: String,
+    trim: true,
+  },
+  value: {
+    type: String,
+    trim: true,
+  },
+  isHighlight: {
+    type: Boolean,
+    default: false,
+  },
+  quantity: {
+    type: Number,
+    default: 0,
+    min: [0, "Attribute quantity cannot be negative"],
+  },
+  imageIndex: {
+    type: Number,
+    default: 1,
+    min: [1, "Image index must be at least 1"],
+  },
+  price: {
+    type: Number,
+    min: [0, "Attribute price cannot be negative"],
+    // Optional: If not set, use the base product price
+  },
+}],
+
     moreImageURL: [{
       type: String,
       validate: {
@@ -125,133 +131,3 @@ const productsSchema = new Schema(
 const Products = mongoose.model("Products", productsSchema);
 
 module.exports = Products;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const mongoose = require("mongoose");
-// const Category = require("../model/categoryModel");
-// const { Schema } = mongoose;
-
-// const productsSchema = new Schema(
-//   {
-//     name: {
-//       type: String,
-//     },
-//     managerId: {
-//       type: String,
-//     },
-//     description: {
-//       type: String,
-//     },
-//     stockQuantity: {
-//       type: Number,
-//     },
-//     category: {
-//       type: Schema.Types.ObjectId,
-//       ref: Category,
-//     },
-//     imageURL: {
-//       type: String,
-//     },
-//     price: {
-//       type: Number,
-//     },
-//     markup: {
-//       type: Number,
-//     },
-//     status: {
-//       type: String,
-//       enum: [
-//         "draft",
-//         "published",
-//         "out of stock",
-//         "low quantity",
-//         "unpublished",
-//       ],
-//     },
-//     attributes: [
-//       {
-//         name: {
-//           type: String,
-//         },
-//         value: {
-//           type: String,
-//         },
-//         isHighlight: {
-//           type: Boolean,
-//         },
-//         quantity: {
-//           type: Number,
-//           default: '0',
-//         },
-//         imageIndex: {
-//           type: Number,
-//           default: '1',
-//         },
-//       },
-//     ],
-//     moreImageURL: [
-//       {
-//         type: String,
-//       },
-//     ],
-//     isActive: {
-//       type: Boolean,
-//     },
-//     rating: {
-//       type: Number,
-//     },
-//     numberOfReviews: {
-//       type: Number,
-//     },
-//     offer: {
-//       type: Number,
-//     },
-//   },
-//   { timestamps: true }
-// );
-
-// const Products = mongoose.model("Products", productsSchema);
-
-// module.exports = Products;

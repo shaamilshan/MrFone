@@ -76,14 +76,30 @@ const addProduct = async (req, res) => {
     let formData = { ...req.body, isActive: true };
     const files = req?.files;
 
+    // Parse attributes
     const attributes = JSON.parse(formData.attributes);
 
-    formData.attributes = attributes;
+    formData.attributes = attributes.map(attr => ({
+      ...attr,
+      quantity: parseInt(attr.quantity || 0),
+      imageIndex: parseInt(attr.imageIndex || 1),
+      price: attr.price !== undefined ? parseFloat(attr.price) : undefined,
+    }));
 
+    // Convert numbers
+    formData.price = parseFloat(formData.price || 0);
+    formData.markup = parseFloat(formData.markup || 0);
+    formData.stockQuantity = parseInt(formData.stockQuantity || 0);
+    formData.offer = parseFloat(formData.offer || 0);
+
+    // Convert category to ObjectId
+    formData.category = new mongoose.Types.ObjectId(formData.category);
+
+    // Handle files
     if (files && files.length > 0) {
       formData.moreImageURL = [];
       formData.imageURL = "";
-      files.map((file) => {
+      files.forEach((file) => {
         if (file.fieldname === "imageURL") {
           formData.imageURL = file.filename;
         } else {
@@ -93,9 +109,9 @@ const addProduct = async (req, res) => {
     }
 
     const product = await Product.create(formData);
-
     res.status(200).json({ product });
   } catch (error) {
+    console.error("Add Product Error:", error);
     res.status(400).json({ error: error.message });
   }
 };

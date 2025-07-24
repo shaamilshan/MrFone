@@ -234,7 +234,7 @@ const Collections = () => {
                 />
                 <DropDownCheckbox
                   title="category"
-                  text=" Type"
+                  text=" Category"
                   filters={category}
                   subItems={categories}
                   onSubItemClick={handleClick}
