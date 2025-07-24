@@ -11,7 +11,7 @@ import ProductSlider from "@/components/Others/ProductSlider";
 import { IoMdStar } from "react-icons/io";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import JustLoading from "@/components/JustLoading";
-import ImageZoom from "@/components/ImageZoom";
+import ImageZoom from "@/components/ImageZoom"; 
 import Quantity from "../components/Quantity";
 import DescReview from "../components/DescReview";
 import { URL } from "@/Common/api";
@@ -27,13 +27,13 @@ import "./singleproduct.css";
 import { useMediaQuery } from "react-responsive";
 import { BsSlash } from "react-icons/bs";
 
+
 const SingleProduct = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let [currentImage, setCurrentImage] = useState("");
-
-  const {
+  const {   
     userProducts,
     loadingproducts,
     errorproducts,
@@ -57,12 +57,12 @@ const SingleProduct = () => {
   const [selectedAttributes, setSelectedAttributes] = useState({});
 
   const filteredProducts = userProducts?.filter(
-    (product) => product._id !== id
-  );
-
-  const loadProduct = async () => {
-    setLoading(true);
-    try {
+    (product) => product._id !== id 
+    );
+    
+    const loadProduct = async () => {
+      setLoading(true);
+      try {
       const { data } = await axios.get(`${URL}/user/product/${id}`, {
         withCredentials: true,
       });
@@ -74,11 +74,11 @@ const SingleProduct = () => {
         // Set default selected attributes to the first available value of each attribute
         const defaultAttributes = {};
         const groupedAttributes = groupAttributes(data.product.attributes);
-
+        
         Object.entries(groupedAttributes).forEach(([name, values]) => {
           // Find the first available (quantity > 0) value for each attribute
           const availableValue = values.find((attr) => attr.quantity > 0);
-          if (availableValue) {
+          if (availableValue){
             defaultAttributes[name] = availableValue.value;
           }
         });
@@ -90,7 +90,7 @@ const SingleProduct = () => {
       setError(error);
     }
   };
-
+  
   useEffect(() => {
     window.scrollTo({
       top: 100,
@@ -217,7 +217,7 @@ const SingleProduct = () => {
           quantity: count,
           attributes: selectedAttributes,
         },
-        { ...config, withCredentials: true }
+        { ...config, withCredentials:true}
       );
       toast.success("Added to cart");
     } catch (error) {
@@ -336,7 +336,7 @@ const SingleProduct = () => {
   const currentSelectionAvailable = isCurrentSelectionAvailable();
   const entireProductOutOfStock = isEntireProductOutOfStock();
 
-  console.log(product);
+  
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   return (

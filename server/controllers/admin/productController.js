@@ -101,11 +101,14 @@ const addProduct = async (req, res) => {
       formData.imageURL = "";
       files.forEach((file) => {
         if (file.fieldname === "imageURL") {
-          formData.imageURL = file.filename;
+          formData.imageURL = `${baseURL}/uploads/${file.filename}`;
         } else {
-          formData.moreImageURL.push(file.filename);
+          formData.moreImageURL.push(`${baseURL}/uploads/${file.filename}`);
         }
       });
+      
+      console.log("Final formData.moreImageURL:", formData.moreImageURL); // Debug log
+      console.log("Final formData.imageURL:", formData.imageURL); // Debug log
     }
 
     const product = await Product.create(formData);

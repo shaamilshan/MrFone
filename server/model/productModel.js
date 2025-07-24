@@ -88,13 +88,10 @@ const productsSchema = new Schema(
 
     moreImageURL: [{
       type: String,
-      validate: {
-        validator: function(v) {
-          return /^https?:\/\/.+/.test(v);
-        },
-        message: props => `${props.value} is not a valid URL!`
-      }
+      
     }],
+
+    
     isActive: {
       type: Boolean,
       default: true,
