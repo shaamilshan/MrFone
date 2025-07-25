@@ -1,5 +1,5 @@
 import React from 'react';
-import redbanner from '../../assets/trendskart/home/red-banner.jpg';
+import redbanner from '../../assets/banner/mac.png';
 
 const RedBanner = () => {
   return (
