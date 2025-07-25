@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import HomeImg from "../../assets/trendskart/home/artbrd1.jpg";
+import HomeImg from "../../assets/banner/banner-iphone.avif";
 import Image2 from "../../assets/trendskart/home/artbrd2.jpg";
 import Image3 from "../../assets/trendskart/home/artbrd3.jpg";
 
