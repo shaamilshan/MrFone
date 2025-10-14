@@ -123,9 +123,9 @@ function App() {
             path="/"
             element={
               user ? (
-                user.role === "superAdmin"?(
+                user.role === "admin" || user.role === "superAdmin" ? (
                   <Navigate to="/admin/" />
-                ) : user.role === "manager"?(
+                ) : user.role === "manager" ? (
                   <Navigate to="/manager/"/>
                 ) : (
                   // <Home />

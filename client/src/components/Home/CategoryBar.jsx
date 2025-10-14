@@ -1,41 +1,28 @@
-import React from "react";
-
-// Import all images
-import sneakersImg from "../../assets/trendskart/categories/shoe.png";
-import chappalsImg from "../../assets/trendskart/categories/sandal.jpg";
-import perfumeImg from "../../assets/trendskart/categories/perfume.png";
-import specsImg from "../../assets/trendskart/categories/spec.png";
-import speakerImg from "../../assets/trendskart/categories/blutoothspeaker.png";
-import tshirtImg from "../../assets/trendskart/categories/tshirt.png";
-import jeansImg from "../../assets/trendskart/categories/jeans.png";
-import watchImg from "../../assets/trendskart/categories/watch.png";
-import airpodImg from "../../assets/trendskart/categories/airpod.png";
-import airbudsImg from "../../assets/trendskart/categories/airbuds.jpg";
-import headsetImg from "../../assets/trendskart/categories/headphone.png";
-import earphonesImg from "../../assets/trendskart/categories/earphones.png";
-import neckbandImg from "../../assets/trendskart/categories/neckbands.png";
-import gadgetsImg from "../../assets/trendskart/categories/gadgets.png";
-
-// Category data
-const categories = [
-  { name: "Sneakers", img: sneakersImg },
-  { name: "Chappals", img: chappalsImg },
-  { name: "Perfume", img: perfumeImg },
-  { name: "Specs", img: specsImg },
-  { name: "Speaker", img: speakerImg },
-  { name: "Tshirt", img: tshirtImg },
-  { name: "Jeans", img: jeansImg },
-  { name: "Watch", img: watchImg },
-  { name: "Airpod", img: airpodImg },
-  { name: "Airbuds", img: airbudsImg },
-  { name: "Headset", img: headsetImg },
-  { name: "Earphones", img: earphonesImg },
-  { name: "Neckband", img: neckbandImg },
-  { name: "Gadgets", img: gadgetsImg },
-];
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { URL } from "@/Common/api";
+import { config } from "@/Common/configurations";
 
 // Component
 const CategorySection = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadCategories = async () => {
+    try {
+      const { data } = await axios.get(`${URL}/user/categories`, config);
+      setCategories(data.categories);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
   return (
     <div className="relative bg-white p-2">
       {/* Gradient Overlay to indicate more items */}
@@ -43,37 +30,55 @@ const CategorySection = () => {
       <div className="absolute top-0 right-0 h-full w-4 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
 
       {/* Scrollable Category List */}
-      <div
-  className="flex gap-4 overflow-x-auto"
-  style={{
-    scrollbarWidth: 'none', // Firefox
-    msOverflowStyle: 'none', // IE & Edge
-  }}
->
-  <style>
-    {`
-      div::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, Opera */
-      }
-    `}
-  </style>
+      {loading ? (
+        <div className="flex justify-center items-center py-10">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        </div>
+      ) : (
+        <div
+          className="flex gap-4 overflow-x-auto"
+          style={{
+            scrollbarWidth: 'none', // Firefox
+            msOverflowStyle: 'none', // IE & Edge
+          }}
+        >
+          <style>
+            {`
+              div::-webkit-scrollbar {
+                display: none; /* Chrome, Safari, Opera */
+              }
+            `}
+          </style>
 
-        {categories.map((category, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center justify-center bg-white rounded-lg min-w-[100px] h-24 p-2 hover:shadow-lg transition duration-200"
-          >
-            <img
-              src={category.img}
-              alt={category.name}
-              className="w-12 h-12 object-contain"
-            />
-            <span className="text-xs font-medium text-gray-700 mt-1">
-              {category.name}
-            </span>
-          </div>
-        ))}
-      </div>
+          {categories.map((category) => (
+            <Link
+              key={category._id}
+              to={`/collections?category=${category._id}`}
+              className="flex flex-col items-center justify-center bg-white rounded-lg min-w-[100px] h-24 p-2 hover:shadow-lg transition duration-200"
+            >
+              {category.imgURL ? (
+                <img
+                  src={`${URL}/img/${category.imgURL}`}
+                  alt={category.name}
+                  className="w-12 h-12 object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div 
+                className={`w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-md flex items-center justify-center ${category.imgURL ? 'hidden' : 'flex'}`}
+              >
+                <span className="text-xl font-bold text-gray-400">{category.name.charAt(0)}</span>
+              </div>
+              <span className="text-xs font-medium text-gray-700 mt-1 text-center">
+                {category.name}
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
