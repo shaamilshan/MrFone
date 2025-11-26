@@ -82,7 +82,16 @@ const productsSchema = new Schema(
   price: {
     type: Number,
     min: [0, "Attribute price cannot be negative"],
-    // Optional: If not set, use the base product price
+  },
+  markup: {
+    type: Number,
+    default: 0,
+    min: [0, "Markup cannot be negative"],
+  },
+  // Multi-attribute support: store combinations like "Color:Blue,Storage:128GB"
+  combination: {
+    type: String,
+    trim: true,
   },
 }],
 

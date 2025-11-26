@@ -24,6 +24,13 @@ const ProductDetails = () => {
   let [error, setError] = useState(false);
   let [currentImage, setCurrentImage] = useState("");
 
+  // Multi-attribute variant state
+  const [attributeTypes, setAttributeTypes] = useState([]);
+  const [attributeOptions, setAttributeOptions] = useState({});
+  const [selectedAttributes, setSelectedAttributes] = useState({});
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [isMultiAttribute, setIsMultiAttribute] = useState(false);
+
   // Adding a product to wishlist
   const dispatchAddWishlist = () => {
     dispatch(addToWishlist({ product: id }));
@@ -41,6 +48,73 @@ const ProductDetails = () => {
         setProduct(data.product);
         setLoading(false);
         setCurrentImage(data.product.imageURL);
+
+        // Check if product has multi-attribute variants
+        if (data.product.attributes && data.product.attributes.length > 0) {
+          // Check if ANY attribute has a combination field with value
+          const hasMultiAttributes = data.product.attributes.some(attr => {
+            return attr.combination && attr.combination.trim() !== '';
+          });
+          
+          console.log('🔍 Checking multi-attributes:');
+          console.log('  - Total attributes:', data.product.attributes.length);
+          console.log('  - First attribute:', data.product.attributes[0]);
+          console.log('  - Has combination field?', !!data.product.attributes[0].combination);
+          console.log('  - Combination value:', data.product.attributes[0].combination);
+          console.log('  - hasMultiAttributes:', hasMultiAttributes);
+          
+          if (hasMultiAttributes) {
+            console.log('✅ Setting as MULTI-ATTRIBUTE product');
+            setIsMultiAttribute(true);
+            
+            // Extract attribute types and all possible values
+            const types = new Set();
+            const options = {};
+
+            data.product.attributes.forEach(attr => {
+              if (attr.combination) {
+                const parts = attr.combination.split(',');
+                parts.forEach(part => {
+                  const [type, value] = part.split(':');
+                  types.add(type);
+                  if (!options[type]) {
+                    options[type] = new Set();
+                  }
+                  options[type].add(value);
+                });
+              }
+            });
+
+            const typesArray = Array.from(types);
+            setAttributeTypes(typesArray);
+            const optionsObj = {};
+            for (const [key, valueSet] of Object.entries(options)) {
+              optionsObj[key] = Array.from(valueSet);
+            }
+            setAttributeOptions(optionsObj);
+            
+            console.log('  - Extracted types:', typesArray);
+            console.log('  - Extracted options:', optionsObj);
+
+            // Auto-select first variant if available
+            if (data.product.attributes.length > 0) {
+              const firstVariant = data.product.attributes[0];
+              setSelectedVariant(firstVariant);
+              if (firstVariant.combination) {
+                const selected = {};
+                firstVariant.combination.split(',').forEach(part => {
+                  const [type, value] = part.split(':');
+                  selected[type] = value;
+                });
+                setSelectedAttributes(selected);
+                console.log('  - Auto-selected:', selected);
+              }
+            }
+          } else {
+            console.log('❌ Setting as SIMPLE product');
+            setIsMultiAttribute(false);
+          }
+        }
       }
     } catch (error) {
       setLoading(false);
@@ -52,15 +126,81 @@ const ProductDetails = () => {
     loadProduct();
   }, [id]);
 
+  // Handle attribute selection
+  const handleAttributeChange = (attributeType, value) => {
+    const newSelected = {
+      ...selectedAttributes,
+      [attributeType]: value
+    };
+    setSelectedAttributes(newSelected);
+
+    // Find matching variant
+    const combinationParts = attributeTypes.map(type => 
+      `${type}:${newSelected[type] || ''}`
+    );
+    const combination = combinationParts.join(',');
+
+    const matchingVariant = product.attributes.find(attr => 
+      attr.combination === combination
+    );
+
+    if (matchingVariant) {
+      setSelectedVariant(matchingVariant);
+    } else {
+      setSelectedVariant(null);
+    }
+  };
+
+  // Get available options for an attribute type based on current selections
+  const getAvailableOptions = (attributeType) => {
+    if (!attributeOptions[attributeType]) return [];
+
+    // Filter options based on what combinations are actually available
+    const availableOptions = new Set();
+    
+    product.attributes.forEach(attr => {
+      if (!attr.combination) return;
+      
+      const parts = attr.combination.split(',');
+      const attrMap = {};
+      parts.forEach(part => {
+        const [type, value] = part.split(':');
+        attrMap[type] = value;
+      });
+
+      // Check if this variant matches currently selected attributes
+      let matches = true;
+      for (const [type, value] of Object.entries(selectedAttributes)) {
+        if (type !== attributeType && attrMap[type] !== value) {
+          matches = false;
+          break;
+        }
+      }
+
+      if (matches && attrMap[attributeType]) {
+        availableOptions.add(attrMap[attributeType]);
+      }
+    });
+
+    return Array.from(availableOptions);
+  };
+
   let [count, setCount] = useState(1);
 
   const increment = async () => {
-    const { data } = await axios.get(
-      `${URL}/user/product-quantity/${id}`,
-      config
-    );
+    let maxStock;
+    
+    if (isMultiAttribute && selectedVariant) {
+      maxStock = selectedVariant.quantity;
+    } else {
+      const { data } = await axios.get(
+        `${URL}/user/product-quantity/${id}`,
+        config
+      );
+      maxStock = data.stockQuantity;
+    }
 
-    if (data.stockQuantity > count) {
+    if (maxStock > count) {
       setCount((c) => c + 1);
     } else {
       toast.error("Quantity Insufficient");
@@ -75,6 +215,28 @@ const ProductDetails = () => {
 
   const [cartLoading, setCartLoading] = useState(false);
   const addToCart = async () => {
+    // Validate variant selection for multi-attribute products
+    if (isMultiAttribute) {
+      const missingAttributes = attributeTypes.filter(
+        type => !selectedAttributes[type]
+      );
+      
+      if (missingAttributes.length > 0) {
+        toast.error(`Please select: ${missingAttributes.join(", ")}`);
+        return;
+      }
+
+      if (!selectedVariant) {
+        toast.error("Selected variant is not available");
+        return;
+      }
+
+      if (selectedVariant.quantity <= 0) {
+        toast.error("Selected variant is out of stock");
+        return;
+      }
+    }
+
     setCartLoading(true);
     await axios
       .post(
@@ -82,6 +244,11 @@ const ProductDetails = () => {
         {
           product: id,
           quantity: count,
+          variant: isMultiAttribute && selectedVariant ? {
+            combination: selectedVariant.combination,
+            price: selectedVariant.price,
+            attributes: selectedAttributes
+          } : undefined
         },
         { ...config, withCredentials: true }
       )
@@ -187,14 +354,18 @@ const ProductDetails = () => {
               </div>
               <p className="text-xl font-semibold my-2">
                 <span className="text-blue-600">
-                  {product.price + product.markup}₹
+                  {(isMultiAttribute && selectedVariant 
+                    ? (selectedVariant.price + (selectedVariant.markup || 0))
+                    : (product.price + product.markup))}₹
                 </span>
                 {"  "}
                 {product.offer && (
                   <>
                     <span className="text-gray-500 line-through">
                       {parseInt(
-                        ((product.price + product.markup) *
+                        ((isMultiAttribute && selectedVariant
+                          ? (selectedVariant.price + (selectedVariant.markup || 0))
+                          : (product.price + product.markup)) *
                           (product.offer + 100)) /
                           100
                       )}
@@ -206,7 +377,63 @@ const ProductDetails = () => {
                   </>
                 )}
               </p>
-              {product.attributes &&
+
+              {/* Multi-Attribute Variant Selectors */}
+              {(() => {
+                console.log('🎨 RENDER CHECK:');
+                console.log('  - isMultiAttribute:', isMultiAttribute);
+                console.log('  - attributeTypes:', attributeTypes);
+                console.log('  - attributeTypes.length:', attributeTypes.length);
+                console.log('  - Condition result:', isMultiAttribute && attributeTypes.length > 0);
+              })()}
+              {isMultiAttribute && attributeTypes.length > 0 ? (
+                <div className="space-y-4 my-4">
+                  {attributeTypes.map((typeName, index) => {
+                    const availableOptions = getAvailableOptions(typeName);
+                    return (
+                      <div key={index}>
+                        <p className="font-semibold text-gray-800 text-base mb-3">
+                          {typeName}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {availableOptions.map((value, vIndex) => {
+                            const isSelected = selectedAttributes[typeName] === value;
+                            return (
+                              <button
+                                key={vIndex}
+                                onClick={() => handleAttributeChange(typeName, value)}
+                                className={`px-4 py-2 border-2 rounded-lg font-medium transition-all ${
+                                  isSelected
+                                    ? "border-blue-600 bg-blue-50 text-blue-700"
+                                    : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
+                                }`}
+                              >
+                                {value}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  
+                  {/* Show stock status for selected variant */}
+                  {selectedVariant && (
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <p className="text-sm">
+                        <span className="font-semibold">Stock:</span>{" "}
+                        <span className={selectedVariant.quantity > 0 ? "text-green-600" : "text-red-600"}>
+                          {selectedVariant.quantity > 0 
+                            ? `${selectedVariant.quantity} available` 
+                            : "Out of stock"}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                /* Simple Product Attributes */
+                product.attributes &&
                 product.attributes.slice(0, 4).map((at, index) => (
                   <div key={index}>
                     <p className="font-semibold text-gray-500 text-sm">
@@ -216,7 +443,8 @@ const ProductDetails = () => {
                       {at.value}
                     </p>
                   </div>
-                ))}
+                ))
+              )}
               <div className="flex my-4 gap-3">
                 <Quantity
                   count={count}

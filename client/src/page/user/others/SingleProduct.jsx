@@ -71,17 +71,35 @@ const SingleProduct = () => {
         console.log("data.product", data.product);
         setLoading(false);
         setCurrentImage(data.product.imageURL);
-        // Set default selected attributes to the first available value of each attribute
-        const defaultAttributes = {};
-        const groupedAttributes = groupAttributes(data.product.attributes);
         
-        Object.entries(groupedAttributes).forEach(([name, values]) => {
-          // Find the first available (quantity > 0) value for each attribute
-          const availableValue = values.find((attr) => attr.quantity > 0);
-          if (availableValue){
-            defaultAttributes[name] = availableValue.value;
+        // Set default selected attributes
+        const defaultAttributes = {};
+        
+        // Check if multi-attribute product
+        const hasMultiAttributes = data.product.attributes?.some(attr => attr.combination && attr.combination.trim() !== '');
+        
+        if (hasMultiAttributes && data.product.attributes.length > 0) {
+          // For multi-attribute: select first available variant's attributes
+          const firstAvailableVariant = data.product.attributes.find(attr => attr.quantity > 0);
+          
+          if (firstAvailableVariant && firstAvailableVariant.combination) {
+            const parts = firstAvailableVariant.combination.split(',');
+            parts.forEach(part => {
+              const [type, value] = part.split(':');
+              defaultAttributes[type] = value;
+            });
           }
-        });
+        } else {
+          // For simple products: use the old logic
+          const groupedAttributes = groupAttributes(data.product.attributes);
+          
+          Object.entries(groupedAttributes).forEach(([name, values]) => {
+            const availableValue = values.find((attr) => attr.quantity > 0);
+            if (availableValue) {
+              defaultAttributes[name] = availableValue.value;
+            }
+          });
+        }
 
         setSelectedAttributes(defaultAttributes);
       }
@@ -151,21 +169,44 @@ const SingleProduct = () => {
       return 0;
     }
 
-    // Find matching attributes for the current selection
-    let minQuantity = Infinity;
+    // Check if this is a multi-attribute product
+    const hasMultiAttributes = product.attributes.some(attr => attr.combination && attr.combination.trim() !== '');
 
-    Object.entries(selectedAttributes).forEach(
-      ([attributeName, selectedValue]) => {
-        const matchingAttribute = product.attributes.find(
-          (attr) => attr.name === attributeName && attr.value === selectedValue
-        );
-        if (matchingAttribute) {
-          minQuantity = Math.min(minQuantity, matchingAttribute.quantity);
+    if (hasMultiAttributes) {
+      // Build the combination string from selected attributes
+      const selectedParts = Object.entries(selectedAttributes)
+        .filter(([_, value]) => value) // Only include selected values
+        .map(([key, value]) => `${key}:${value}`)
+        .sort(); // Sort for consistent comparison
+      
+      // Find the variant that matches this exact combination
+      const matchingVariant = product.attributes.find(attr => {
+        if (!attr.combination) return false;
+        
+        const attrParts = attr.combination.split(',').sort();
+        
+        // Check if all selected attributes match this variant
+        return selectedParts.every(part => attrParts.includes(part));
+      });
+
+      return matchingVariant ? matchingVariant.quantity : 0;
+    } else {
+      // Legacy simple product logic
+      let minQuantity = Infinity;
+
+      Object.entries(selectedAttributes).forEach(
+        ([attributeName, selectedValue]) => {
+          const matchingAttribute = product.attributes.find(
+            (attr) => attr.name === attributeName && attr.value === selectedValue
+          );
+          if (matchingAttribute) {
+            minQuantity = Math.min(minQuantity, matchingAttribute.quantity);
+          }
         }
-      }
-    );
+      );
 
-    return minQuantity === Infinity ? 0 : minQuantity;
+      return minQuantity === Infinity ? 0 : minQuantity;
+    }
   };
 
   const validateAttributesSelection = () => {
@@ -280,16 +321,104 @@ const SingleProduct = () => {
     }));
   };
 
-  const groupAttributes = (attributes) => {
-    return attributes.reduce((acc, attribute) => {
-      acc[attribute.name] = acc[attribute.name] || [];
-      acc[attribute.name].push({
-        value: attribute.value,
-        imageIndex: attribute.imageIndex,
-        quantity: attribute.quantity,
+  const groupAttributes = (attributes, filterBySelected = false) => {
+    if (!attributes || attributes.length === 0) return {};
+    
+    // Check if this is a multi-attribute product (has combination field)
+    const hasMultiAttributes = attributes.some(attr => attr.combination && attr.combination.trim() !== '');
+    
+    if (hasMultiAttributes) {
+      // Parse combination field to group by attribute types
+      const grouped = {};
+      
+      attributes.forEach(attr => {
+        if (attr.combination) {
+          // If filtering, check if this variant matches currently selected attributes
+          if (filterBySelected && Object.keys(selectedAttributes).length > 0) {
+            const parts = attr.combination.split(',');
+            const attrMap = {};
+            parts.forEach(part => {
+              const [type, value] = part.split(':');
+              attrMap[type] = value;
+            });
+            
+            // Check if this variant matches all currently selected attributes (except the current attribute type being displayed)
+            let matches = true;
+            for (const [selectedType, selectedValue] of Object.entries(selectedAttributes)) {
+              if (selectedValue && attrMap[selectedType] && attrMap[selectedType] !== selectedValue) {
+                matches = false;
+                break;
+              }
+            }
+            
+            if (!matches) return; // Skip this variant if it doesn't match current selections
+          }
+          
+          const parts = attr.combination.split(',');
+          parts.forEach(part => {
+            const [type, value] = part.split(':');
+            
+            if (!grouped[type]) {
+              grouped[type] = [];
+            }
+            
+            // Check if this value already exists for this type
+            const existing = grouped[type].find(item => item.value === value);
+            if (!existing) {
+              // Find quantity for this specific value considering current selections
+              let matchingVariants;
+              if (filterBySelected && Object.keys(selectedAttributes).length > 0) {
+                matchingVariants = attributes.filter(a => {
+                  if (!a.combination) return false;
+                  const aParts = a.combination.split(',');
+                  const aMap = {};
+                  aParts.forEach(p => {
+                    const [t, v] = p.split(':');
+                    aMap[t] = v;
+                  });
+                  
+                  // Must include this value
+                  if (aMap[type] !== value) return false;
+                  
+                  // Must match all other selected attributes (not the current type)
+                  for (const [selectedType, selectedValue] of Object.entries(selectedAttributes)) {
+                    if (selectedType !== type && selectedValue && aMap[selectedType] && aMap[selectedType] !== selectedValue) {
+                      return false;
+                    }
+                  }
+                  return true;
+                });
+              } else {
+                matchingVariants = attributes.filter(a => 
+                  a.combination && a.combination.includes(`${type}:${value}`)
+                );
+              }
+              
+              const maxQuantity = matchingVariants.length > 0 ? Math.max(...matchingVariants.map(v => v.quantity || 0)) : 0;
+              
+              grouped[type].push({
+                value: value,
+                imageIndex: attr.imageIndex,
+                quantity: maxQuantity,
+              });
+            }
+          });
+        }
       });
-      return acc;
-    }, {});
+      
+      return grouped;
+    } else {
+      // Legacy simple product attributes
+      return attributes.reduce((acc, attribute) => {
+        acc[attribute.name] = acc[attribute.name] || [];
+        acc[attribute.name].push({
+          value: attribute.value,
+          imageIndex: attribute.imageIndex,
+          quantity: attribute.quantity,
+        });
+        return acc;
+      }, {});
+    }
   };
 
   const handleSelectAttribute = (attributeName, value) => {
@@ -543,7 +672,7 @@ const SingleProduct = () => {
             <div className="w-full">
               <div className="w-full pt-3 font-Inter">
                 {product.attributes &&
-                  Object.entries(groupAttributes(product.attributes)).map(
+                  Object.entries(groupAttributes(product.attributes, false)).map(
                     ([name, values], index) => (
                       <div key={index} className="mt-4">
                         <p className="font-semibold text-gray-500 text-sm mb-1">

@@ -101,17 +101,19 @@ const addProduct = async (req, res) => {
       formData.imageURL = "";
       files.forEach((file) => {
         if (file.fieldname === "imageURL") {
-          formData.imageURL = `${baseURL}/uploads/${file.filename}`;
+          formData.imageURL = file.filename;
         } else {
-          formData.moreImageURL.push(`${baseURL}/uploads/${file.filename}`);
+          formData.moreImageURL.push(file.filename);
         }
       });
       
-      console.log("Final formData.moreImageURL:", formData.moreImageURL); // Debug log
-      console.log("Final formData.imageURL:", formData.imageURL); // Debug log
+      console.log("Final formData.moreImageURL:", formData.moreImageURL);
+      console.log("Final formData.imageURL:", formData.imageURL);
     }
 
+    console.log("Creating product with data:", formData);
     const product = await Product.create(formData);
+    console.log("Product created successfully:", product);
     res.status(200).json({ product });
   } catch (error) {
     console.error("Add Product Error:", error);
