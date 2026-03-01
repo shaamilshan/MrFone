@@ -204,14 +204,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { IoSearch } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/actions/userActions";
-import { HiOutlineShoppingBag } from "react-icons/hi2";
-import { ShoppingCart, Heart, Menu, X } from "lucide-react";
+import { Search, ShoppingBag, Heart, Menu, X, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/trendskart/home/Logocrop.png";
-
-import { CgProfile } from "react-icons/cg";
 
 const Navbar = ({ usercheck }) => {
   const { user } = useSelector((state) => state.user);
@@ -221,6 +218,10 @@ const Navbar = ({ usercheck }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef(null);
+
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
@@ -228,8 +229,18 @@ const Navbar = ({ usercheck }) => {
     setProfileDropdownOpen(false);
   };
 
-  // Handle click outside to close the profile dropdown
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
+
+  // Handle click outside to close the profile dropdown and search
   const profileDropdownRef = useRef(null);
+  const searchBarRef = useRef(null);
 
   const profileImgURL = user?.profileImgURL
     ? `http://localhost:3000/api/img/${user.profileImgURL}`
@@ -243,6 +254,12 @@ const Navbar = ({ usercheck }) => {
       ) {
         setProfileDropdownOpen(false);
       }
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target)
+      ) {
+        setSearchOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -250,17 +267,58 @@ const Navbar = ({ usercheck }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Focus search input when opened
+  useEffect(() => {
+    if (searchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [searchOpen]);
+
   console.log("Profile Image URL:", profileImgURL);
 
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const announcements = [
+    "🔥 Free Shipping on Orders Above ₹999!",
+    "📱 Latest iPhones & Accessories Available",
+    "💰 Special Discounts This Week!",
+    "🛡️ 1 Year Warranty on All Products",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % announcements.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [announcements.length]);
+
   return (
-    <header className="border-b bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-2 md:py-1 flex items-center justify-between">
+    <>
+      {/* Announcement Banner */}
+      <div className="bg-black text-white py-2 overflow-hidden sticky top-0 z-[60]">
+        <div className="flex justify-center items-center h-6 relative">
+          {announcements.map((text, index) => (
+            <span
+              key={index}
+              className={`absolute transition-all duration-500 ease-in-out text-sm font-medium ${
+                index === currentSlide
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              }`}
+            >
+              {text}
+            </span>
+          ))}
+        </div>
+      </div>
+      <header className="border-b bg-white shadow-md sticky top-10 z-50">
+        <div className="container mx-auto px-4 py-2 md:py-1 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <img
             src={logo}
             alt="Logo"
-            className="w-20 h-12 md:w-28 md:h-20 object-contain"
+            className="w-14 h-10 md:w-20 md:h-14 object-contain"
           />
         </Link>
 
@@ -285,19 +343,84 @@ const Navbar = ({ usercheck }) => {
 
         {/* Icons & Mobile Menu Button */}
         <div className="flex items-center gap-2 ">
-          <Link
-            to="/search"
-            className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <IoSearch className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
-          </Link>
+          {/* Expandable Search Bar */}
+          <div className="relative" ref={searchBarRef}>
+            <AnimatePresence mode="wait">
+              {searchOpen ? (
+                <motion.form
+                  key="search-form"
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: "auto", opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  onSubmit={handleSearchSubmit}
+                  className="flex items-center overflow-hidden"
+                >
+                  <motion.div
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center bg-gray-100 rounded-full px-3 py-1.5 border border-gray-200"
+                  >
+                    <Search className="w-4 h-4 text-gray-500" />
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search products..."
+                      className="bg-transparent outline-none ml-2 w-32 md:w-48 text-sm text-gray-700 placeholder-gray-400"
+                    />
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setSearchQuery("");
+                      }}
+                      className="ml-1 p-0.5 hover:bg-gray-200 rounded-full"
+                    >
+                      <X className="w-4 h-4 text-gray-500" />
+                    </motion.button>
+                  </motion.div>
+                </motion.form>
+              ) : (
+                <motion.button
+                  key="search-button"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setSearchOpen(true)}
+                  className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <Search className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
 
-          <Link
-            to="/dashboard/wishlist"
-            className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <HiOutlineShoppingBag className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
-          </Link>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              to="/dashboard/wishlist"
+              className="p-1 rounded-full hover:bg-gray-100 transition-colors block"
+            >
+              <Heart className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
+            </Link>
+          </motion.div>
+
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              to="/dashboard/cart"
+              className="p-1 rounded-full hover:bg-gray-100 transition-colors block"
+            >
+              <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
+            </Link>
+          </motion.div>
 
           {/* Profile Button with Dropdown */}
           <div className="relative" ref={profileDropdownRef}>
@@ -313,7 +436,7 @@ const Navbar = ({ usercheck }) => {
                   onError={() => setImgError(true)} // Fallback to icon if image is broken
                 />
               ) : (
-                <CgProfile className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
+                <User className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
               )}
             </button>
 
@@ -477,6 +600,7 @@ const Navbar = ({ usercheck }) => {
         </div>
       )}
     </header>
+    </>
   );
 };
 

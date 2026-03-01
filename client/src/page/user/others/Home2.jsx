@@ -20,7 +20,7 @@ export default function Home2(){
   return (
     <>
   
-    <Marquee/>
+    {/* <Marquee/> */}
   <ImageSlider />
 
   

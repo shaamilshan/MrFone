@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 import { Toaster } from "react-hot-toast";
@@ -7,15 +7,8 @@ import { Toaster } from "react-hot-toast";
 // Redux
 import { getUserDataFirst } from "./redux/actions/userActions";
 
-// General
-// import Home from "./page/public/Home";
-// import Contact from "./page/public/Contact";
-// import About from "./page/public/About";
-// import Error404 from "./page/public/Error404";
-
 // Components
 import Navbar from "./components/Navbar";
-// import CategorySection from "./components/CategoryBar";
 import Footer from "./components/Footer";
 
 // Auth
@@ -80,11 +73,12 @@ import SingleProduct from "./page/user/others/SingleProduct";
 import SingleProduct2 from "./page/user/others/SingleProduct2";
 import LoginDemo from "./page/user/others/LoginDemo";
 import Home2 from "./page/user/others/Home2";
+import ComingSoon from "./page/user/others/ComingSoon";
 import ManagerSignup from "./page/manager/ManagerSignup";
 import ManagerHome from "./page/manager/pages/ManagerHome";
 import Enquiries from "./page/admin/pages/products/Enquiries";
 import EditStock from "./page/admin/pages/products/EditStock";
-import ManagerOrders from "./page/admin/pages/Order/ManagerOrders"; 
+import ManagerOrders from "./page/admin/pages/Order/ManagerOrders";
 import Managers from "./page/admin/pages/managers/Managers";
 import AllManagerOrders from "./page/admin/pages/Order/AllManagerOrders";
 import OldRegister from "./page/auth/OldRegister";
@@ -99,137 +93,113 @@ function App() {
 
   useEffect(() => {
     if (!user) {
-      dispatch(getUserDataFirst()); 
+      dispatch(getUserDataFirst());
     }
     console.log(user);
   }, [dispatch, user]);
 
   const ProtectedRoute = ({ element }) => {
     const { user } = useSelector((state) => state.user);
-
     return user ? element : <Navigate to="/login" />;
   };
 
   return (
     <>
       <Toaster position="top-center" />
-
       <BrowserRouter>
-        {user ? user.role === "user" && <Navbar usercheck={true} /> : <Navbar usercheck={false} />}
-        {/* {user ? user.role === "user" && <CategorySection /> : <CategorySection />} */}
+        <AppShell user={user} ProtectedRoute={ProtectedRoute} />
+      </BrowserRouter>
+    </>
+  );
+}
 
-        <Routes>
-          <Route
-            path="/"
-            element={
-              user ? (
-                user.role === "admin" || user.role === "superAdmin" ? (
-                  <Navigate to="/admin/" />
-                ) : user.role === "manager" ? (
-                  <Navigate to="/manager/"/>
-                ) : (
-                  // <Home />
-                  <Home2 />
-                  // <Dashboard />
-                )
+/** Inner shell: can use useLocation because it's inside BrowserRouter */
+function AppShell({ user, ProtectedRoute }) {
+  const { pathname } = useLocation();
+  const isComingSoon = pathname === "/";
+
+  return (
+    <>
+      {/* Hide Navbar on the coming-soon home page */}
+      {!isComingSoon &&
+        (user
+          ? user.role === "user" && <Navbar usercheck={true} />
+          : <Navbar usercheck={false} />)}
+
+      <Routes>
+        {/* Home / Coming Soon */}
+        <Route
+          path="/"
+          element={
+            user ? (
+              user.role === "admin" || user.role === "superAdmin" ? (
+                <Navigate to="/admin/" />
+              ) : user.role === "manager" ? (
+                <Navigate to="/manager/" />
               ) : (
-                // <Home />
-                <Home2 />
-                // <Home />
+                <ComingSoon />
               )
-            }
-          />
-
-          <Route path="/manager-signup" element={<ManagerSignup />} />
-          <Route path="/design-demo" element={<ProductPageDesign />} />
-          <Route path="/login-demo" element={<LoginDemo />} />
-          <Route path="/about-us" element={<About />} />
-          <Route path="/contact-us" element={<Contact />} />
-          <Route path="/collection" element={<Collectionsold />} />
-          <Route path="/collections" element={<Collections />} />
-          {/* <Route path="/productnew" element={<SingleProduct2 />} /> */}
-          <Route path="/product" element={<ProductDetails />} />
-          <Route path="/home" element={<Dashboard />} />
-            <Route path="/electronics" element={<Electronics/>}/>
-            <Route path="/blog" element={<Blog/>}/>
-            <Route path="/pages" element={<Pages/>}/>
-
-          {/* Auth Pages */}
-
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="old-register" element={<OldRegister />} />
-          <Route path="otp" element={<ValidateOTP />} />
-          <Route path="forgot-password" element={<ForgetPassword />} />
-          {/* <Route path="/admin/managers/:id" element={<AllManagerOrders />} /> */}
-
-          {/* General Pages */}
-          {/* <Route path="contact" element={<Contact />} /> */}
-          {/* <Route path="about" element={<About />} /> */}
-
-          {/* User Routes */}
-          <Route path="/product/:id" element={<SingleProduct />} />
-          {/* <Route path="/product/:id" element={<ProductDetails/>} /> */}
-
-          {/* <Route path="/cart" element={<ProtectedRoute element={<Cart />} />} /> */}
-          <Route path="/cart" element={<Cart />} />
-
-          <Route
-            path="/checkout"
-            element={<ProtectedRoute element={<Checkout />} />}
-          />
-
-          <Route
-            path="/order-confirmation"
-            element={<ProtectedRoute element={<OrderConfirmation />} />}
-          />
-
-          <Route
-            path="/buy-now"
-            element={<ProtectedRoute element={<BuyNow />} />}
-          />
-
-          <Route
-            path="/dashboard"
-            element={<ProtectedRoute element={<ProfileDashboard />} />}
-          >
-            <Route index element={<Dash />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="order-history" element={<OrderHistory />} />
-            <Route path="order-history/detail/:id" element={<OrderDetail />} />
-            <Route path="wallet" element={<Wallet />} />
-            <Route path="addresses" element={<Addresses />} />
-            <Route path="track-order" element={<TrackOrder />} />
-            <Route path="wishlist" element={<WishList />} />
-            {/* <Route path="find-coupons" element={<FindCoupons />} /> */}
-            {/* <Route path="settings" element={<SettingsPage />} /> */}
-          </Route>
-
-          {/* Admin Routes
-          {(user && user.role === "admin") ||
-          (user && user.role === "superAdmin") ? (
-            <Route path="/admin/*" element={<AdminRoutes />} />
-          ) : (
-            -(<Route path="/admin" element={<Navigate to="/" />} />)
-          )} */}
-
-          {/* Admin Routes */}
-          {user ? ( 
-            user.role === "admin" || user.role === "superAdmin" ? (
-              <Route path="/admin/*" element={<AdminRoutes />} />
-            ) : user.role === "manager" ? (
-              <Route path="/manager/*" element={<ManagerRoutes />} />
             ) : (
-              <Route path="/admin" element={<Navigate to="/" />} />
+              <ComingSoon />
             )
+          }
+        />
+
+        <Route path="/manager-signup" element={<ManagerSignup />} />
+        <Route path="/design-demo" element={<ProductPageDesign />} />
+        <Route path="/login-demo" element={<LoginDemo />} />
+        <Route path="/about-us" element={<About />} />
+        <Route path="/contact-us" element={<Contact />} />
+        <Route path="/collection" element={<Collectionsold />} />
+        <Route path="/collections" element={<Collections />} />
+        <Route path="/product" element={<ProductDetails />} />
+        <Route path="/home" element={<Dashboard />} />
+        <Route path="/electronics" element={<Electronics />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/pages" element={<Pages />} />
+
+        {/* Auth Pages */}
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="old-register" element={<OldRegister />} />
+        <Route path="otp" element={<ValidateOTP />} />
+        <Route path="forgot-password" element={<ForgetPassword />} />
+
+        {/* User Routes */}
+        <Route path="/product/:id" element={<SingleProduct />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<ProtectedRoute element={<Checkout />} />} />
+        <Route path="/order-confirmation" element={<ProtectedRoute element={<OrderConfirmation />} />} />
+        <Route path="/buy-now" element={<ProtectedRoute element={<BuyNow />} />} />
+
+        <Route path="/dashboard" element={<ProtectedRoute element={<ProfileDashboard />} />}>
+          <Route index element={<Dash />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="order-history" element={<OrderHistory />} />
+          <Route path="order-history/detail/:id" element={<OrderDetail />} />
+          <Route path="wallet" element={<Wallet />} />
+          <Route path="addresses" element={<Addresses />} />
+          <Route path="track-order" element={<TrackOrder />} />
+          <Route path="wishlist" element={<WishList />} />
+        </Route>
+
+        {/* Admin / Manager Routes */}
+        {user ? (
+          user.role === "admin" || user.role === "superAdmin" ? (
+            <Route path="/admin/*" element={<AdminRoutes />} />
+          ) : user.role === "manager" ? (
+            <Route path="/manager/*" element={<ManagerRoutes />} />
           ) : (
             <Route path="/admin" element={<Navigate to="/" />} />
-          )}
+          )
+        ) : (
+          <Route path="/admin" element={<Navigate to="/" />} />
+        )}
+      </Routes>
 
-          {/* <Route path="*" element={<Error404 />} /> */}
-        </Routes>
-        {user ? user.role === "user" && <Footer /> : <Footer />}
-      </BrowserRouter>
+      {/* Hide Footer on the coming-soon home page */}
+      {!isComingSoon &&
+        (user ? user.role === "user" && <Footer /> : <Footer />)}
     </>
   );
 }
@@ -252,10 +222,7 @@ function AdminRoutes() {
         <Route path="orders" element={<Orders />} />
         <Route path="orders/detail/:id" element={<OrderDetails />} />
         <Route path="orders/return-requests" element={<ReturnRequests />} />
-        <Route
-          path="orders/return-requests/detail/:id"
-          element={<OrderDetails />}
-        />
+        <Route path="orders/return-requests/detail/:id" element={<OrderDetails />} />
 
         <Route path="manageAdmins" element={<ManageAdmins />} />
         <Route path="manageAdmins/create" element={<CreateAdmin />} />
@@ -273,7 +240,6 @@ function AdminRoutes() {
 
         <Route path="settings" element={<Settings />} />
         <Route path="help" element={<Help />} />
-        {/* <Route path="*" element={<Error404 />} /> */}
       </Route>
     </Routes>
   );
