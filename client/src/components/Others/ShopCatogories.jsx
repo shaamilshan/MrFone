@@ -1,40 +1,41 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
-
-import sneakerImg from "../../assets/trendskart/categories/sneakers.jpeg";
-import airpodsImg from "../../assets/trendskart/categories/airpodss.jpeg";
-import smwatchImg from "../../assets/trendskart/categories/smartwatches.jpeg";
-import crocsImg from "../../assets/trendskart/categories/crocs.jpeg";
-import chappelImg from "../../assets/trendskart/categories/chappel.jpeg";
-import gadgetsImg from "../../assets/trendskart/categories/gadgets.jpeg";
-import sunglassesImg from "../../assets/trendskart/categories/sunglasses.jpeg"; 
-import watchesImg from "../../assets/trendskart/categories/watches.jpeg";
-
-const categories = [
-  { name: "Sneakers", id: "67497eb086528f9f86bbb8cf", image: sneakerImg },
-  { name: "Airpods", id: "67497f8186528f9f86bbb920", image: airpodsImg },
-  { name: "Smart Watches", id: "6749825b86528f9f86bbba2e", image: smwatchImg },
-  { name: "Crocs", id: "674982e486528f9f86bbba50", image: crocsImg },
-  { name: "Chappals", id: "6749851886528f9f86bbbaf2", image: chappelImg },
-  { name: "Gadgets", id: "6749858586528f9f86bbbaf7", image: gadgetsImg },
-  { name: "Sunglasses", id: "674986fd86528f9f86bbbb38", image: sunglassesImg },
-  { name: "Watches", id: "6749876986528f9f86bbbb3c", image: watchesImg },
-];
+import axios from "axios";
+import { URL } from "@/Common/api";
+import { config } from "@/Common/configurations";
 
 const ShopCategories = () => {
   const scrollContainerRef = useRef(null);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadCategories = async () => {
+    try {
+      const { data } = await axios.get(`${URL}/user/categories`, config);
+      console.log("Categories loaded:", data.categories);
+      setCategories(data.categories);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
   useEffect(() => {
     AOS.init({
       duration: 1000,
       easing: "ease-in-out",
-      once: false,  // Allows animations to repeat when element comes into view again
-      mirror: false, // Ensures animation resets when scrolling back
-      anchorPlacement: "bottom-top", // Corrected spelling
+      once: true,  // Animation happens only once
+      mirror: false,
+      anchorPlacement: "bottom-top",
     });
-    AOS.refresh(); // Ensures elements are properly detected
+    AOS.refresh();
   }, []);
   
   
@@ -62,33 +63,54 @@ const ShopCategories = () => {
 
   return (
     <div className="relative bg-white mt-10 py-6">
-      <h2 className="text-2xl font-semibold text-gray-800 px-6" data-aos="fade-right">
+      <h2 className="text-2xl font-semibold text-gray-800 px-6">
         Trending Categories
       </h2>
 
-      <div 
-        ref={scrollContainerRef} 
-        data-aos="fade-left"
-        className="flex gap-6 overflow-x-auto scrollbar-hide px-6 py-4"
-        style={{ 
-          scrollBehavior: "smooth",
-          overflowX: "auto",
-          whiteSpace: "nowrap",
-          width: "100%",
-        }}
-      >
-        {categories.map((category) => (
-          <Link
-            key={category.id}
-            to={`/collections?category=${category.id}`}
-            className="flex flex-col items-center justify-center bg-white rounded-lg w-40 h-40 p-4 shadow-md hover:shadow-lg transition duration-200"
-            style={{ flex: "0 0 auto" }}
-          >
-            <img src={category.image} alt={category.name} className="w-24 h-24 object-contain rounded-md" />
-            <span className="text-sm font-medium text-gray-700 mt-2">{category.name}</span>
-          </Link>
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center py-10">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        </div>
+      ) : (
+        <div 
+          ref={scrollContainerRef}
+          className="flex gap-6 overflow-x-auto scrollbar-hide px-6 py-4"
+          style={{ 
+            scrollBehavior: "smooth",
+            overflowX: "auto",
+            whiteSpace: "nowrap",
+            width: "100%",
+          }}
+        >
+          {categories.map((category) => (
+            <Link
+              key={category._id}
+              to={`/collections?category=${category._id}`}
+              className="flex flex-col items-center justify-center bg-white rounded-lg w-40 h-40 p-4 shadow-md hover:shadow-lg transition duration-200"
+              style={{ flex: "0 0 auto" }}
+            >
+              {category.imgURL ? (
+                <img 
+                  src={`${URL}/img/${category.imgURL}`} 
+                  alt={category.name} 
+                  className="w-24 h-24 object-contain rounded-md"
+                  onError={(e) => {
+                    console.log("Image failed to load:", `${URL}/img/${category.imgURL}`);
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div 
+                className={`w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-md flex items-center justify-center ${category.imgURL ? 'hidden' : 'flex'}`}
+              >
+                <span className="text-3xl font-bold text-gray-400">{category.name.charAt(0)}</span>
+              </div>
+              <span className="text-sm font-medium text-gray-700 mt-2 text-center">{category.name}</span>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

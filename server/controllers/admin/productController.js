@@ -106,9 +106,14 @@ const addProduct = async (req, res) => {
           formData.moreImageURL.push(file.filename);
         }
       });
+      
+      console.log("Final formData.moreImageURL:", formData.moreImageURL);
+      console.log("Final formData.imageURL:", formData.imageURL);
     }
 
+    console.log("Creating product with data:", formData);
     const product = await Product.create(formData);
+    console.log("Product created successfully:", product);
     res.status(200).json({ product });
   } catch (error) {
     console.error("Add Product Error:", error);

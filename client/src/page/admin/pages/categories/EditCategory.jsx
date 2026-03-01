@@ -43,7 +43,7 @@ const EditCategory = () => {
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
-    description: Yup.string().required("Description is required"),
+    description: Yup.string(),
     imageURL: Yup.mixed().required("File is required"),
   });
 
@@ -192,7 +192,7 @@ const EditCategory = () => {
 
                   <p>
                     <label htmlFor="description" className="admin-label">
-                      Category Description
+                      Category Description <span className="text-gray-400 text-xs">(Optional)</span>
                     </label>
                   </p>
                   <Field

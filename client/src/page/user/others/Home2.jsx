@@ -20,7 +20,7 @@ export default function Home2(){
   return (
     <>
   
-    <Marquee/>
+    {/* <Marquee/> */}
   <ImageSlider />
 
   
@@ -38,7 +38,7 @@ export default function Home2(){
     {/* <BestSellers /> */}
     <BannerSection/>
     <Benefits/>
-    {/* <ReviewSlider /> */}
+    <ReviewSlider />
   </div>
 </>
 
