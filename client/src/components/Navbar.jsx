@@ -415,7 +415,7 @@ const Navbar = ({ usercheck }) => {
 
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
             <Link
-              to="/dashboard/cart"
+              to="/cart"
               className="p-1 rounded-full hover:bg-gray-100 transition-colors block"
             >
               <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />

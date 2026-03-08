@@ -252,7 +252,7 @@ const SingleProduct = () => {
     setCartLoading(true);
     try {
       await axios.post(
-        `${URL}/user/wishlist`,
+        `${URL}/user/cart`,
         {
           product: id,
           quantity: count,

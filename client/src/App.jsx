@@ -73,7 +73,6 @@ import SingleProduct from "./page/user/others/SingleProduct";
 import SingleProduct2 from "./page/user/others/SingleProduct2";
 import LoginDemo from "./page/user/others/LoginDemo";
 import Home2 from "./page/user/others/Home2";
-import ComingSoon from "./page/user/others/ComingSoon";
 import ManagerSignup from "./page/manager/ManagerSignup";
 import ManagerHome from "./page/manager/pages/ManagerHome";
 import Enquiries from "./page/admin/pages/products/Enquiries";
@@ -116,18 +115,16 @@ function App() {
 /** Inner shell: can use useLocation because it's inside BrowserRouter */
 function AppShell({ user, ProtectedRoute }) {
   const { pathname } = useLocation();
-  const isComingSoon = pathname === "/";
 
   return (
     <>
-      {/* Hide Navbar on the coming-soon home page */}
-      {!isComingSoon &&
-        (user
-          ? user.role === "user" && <Navbar usercheck={true} />
-          : <Navbar usercheck={false} />)}
+      {/* Navbar */}
+      {user
+        ? user.role === "user" && <Navbar usercheck={true} />
+        : <Navbar usercheck={false} />}
 
       <Routes>
-        {/* Home / Coming Soon */}
+        {/* Home */}
         <Route
           path="/"
           element={
@@ -137,10 +134,10 @@ function AppShell({ user, ProtectedRoute }) {
               ) : user.role === "manager" ? (
                 <Navigate to="/manager/" />
               ) : (
-                <ComingSoon />
+                <Home2 />
               )
             ) : (
-              <ComingSoon />
+              <Home2 />
             )
           }
         />
@@ -197,9 +194,8 @@ function AppShell({ user, ProtectedRoute }) {
         )}
       </Routes>
 
-      {/* Hide Footer on the coming-soon home page */}
-      {!isComingSoon &&
-        (user ? user.role === "user" && <Footer /> : <Footer />)}
+      {/* Footer */}
+      {user ? user.role === "user" && <Footer /> : <Footer />}
     </>
   );
 }
