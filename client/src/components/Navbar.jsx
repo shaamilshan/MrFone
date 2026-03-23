@@ -295,8 +295,8 @@ const Navbar = ({ usercheck }) => {
   return (
     <>
       {/* Announcement Banner */}
-      <div className="bg-black text-white py-2 overflow-hidden sticky top-0 z-[60]">
-        <div className="flex justify-center items-center h-6 relative">
+      <div className="bg-black text-white py-3 overflow-hidden sticky top-0 z-[60]">
+        <div className="flex justify-center items-center h-8 relative">
           {announcements.map((text, index) => (
             <span
               key={index}
@@ -311,37 +311,33 @@ const Navbar = ({ usercheck }) => {
           ))}
         </div>
       </div>
-      <header className="border-b bg-white shadow-md sticky top-10 z-50">
+      <header className="border-b bg-white sticky top-10 z-50">
         <div className="container mx-auto px-4 py-2 md:py-1 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <img
-            src={logo}
-            alt="Logo"
-            className="w-14 h-10 md:w-20 md:h-14 object-contain"
-          />
-        </Link>
+        {/* Hamburger Menu Button - Left */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+          aria-label="Toggle menu"
+        >
+          {menuOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
+        </button>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-4 lg:gap-6 font-semibold text-gray-700">
-          <Link to="/" className="hover:text-red-600 transition-colors">
-            Home
+        {/* Centered Logo */}
+        <div className="flex-1 flex justify-center items-center">
+          <Link to="/" className="flex items-center">
+            <img
+              src={logo}
+              alt="Logo"
+              className="w-14 h-10 md:w-20 md:h-14 object-contain"
+            />
           </Link>
-          <Link to="/collections" className="hover:text-red-600 transition-colors">
-            Store
-          </Link>
-          <Link
-            to="/dashboard/order-history"
-            className="hover:text-red-600 transition-colors"
-          >
-            My Orders
-          </Link>
-          <Link to="/contact" className="hover:text-red-600 transition-colors">
-            Contact
-          </Link>
-        </nav>
+        </div>
 
-        {/* Icons & Mobile Menu Button */}
+        {/* Icons - Right */}
         <div className="flex items-center gap-2 ">
           {/* Expandable Search Bar */}
           <div className="relative" ref={searchBarRef}>
@@ -507,97 +503,84 @@ const Navbar = ({ usercheck }) => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden p-1 rounded-full hover:bg-gray-100 transition-colors"
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Sidebar Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-t shadow-md">
-          <nav className="container mx-auto px-4">
-            <ul className="flex flex-col pt-4 text-gray-700">
-              <Link
-                to="/"
-                className="py-3 border-b border-gray-100 font-semibold"
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            onClick={() => setMenuOpen(false)}
+          />
+          {/* Sidebar */}
+          <div className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out">
+            <div className="flex justify-end items-center p-4 border-b">
+              <button
                 onClick={() => setMenuOpen(false)}
+                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                aria-label="Close menu"
               >
-                HOME
-              </Link>
-              <Link
-                to="/electronics"
-                className="py-3 border-b border-gray-100 font-semibold"
-                onClick={() => setMenuOpen(false)}
-              >
-                ELECTRONICS
-              </Link>
-              <Link
-                to="/blog"
-                className="py-3 border-b border-gray-100 font-semibold"
-                onClick={() => setMenuOpen(false)}
-              >
-                BLOG
-              </Link>
-              <Link
-                to="/pages"
-                className="py-3 border-b border-gray-100 font-semibold"
-                onClick={() => setMenuOpen(false)}
-              >
-                PAGES
-              </Link>
-              <Link
-                to="/contact"
-                className="py-3 border-b border-gray-100 font-semibold"
-                onClick={() => setMenuOpen(false)}
-              >
-                CONTACT
-              </Link>
-
-              {/* {user ? (
-                <>
-                  <Link
-                    to="/dashboard/profile"
-                    className="py-3 border-b border-gray-100"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Profile
-                  </Link>
-                  <Link
-                    to="/dashboard/orders"
-                    className="py-3 border-b border-gray-100"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Orders
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="py-3 text-left text-red-600"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
+                <X className="w-6 h-6 text-gray-800" />
+              </button>
+            </div>
+            <nav className="px-4 py-2">
+              <ul className="flex flex-col text-gray-700">
                 <Link
-                  to="/login"
-                  className="mt-4 block w-full py-2 bg-red-600 text-white text-center rounded-md"
+                  to="/"
+                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
                   onClick={() => setMenuOpen(false)}
                 >
-                  Login
+                  HOME
                 </Link>
-              )} */}
-            </ul>
-          </nav>
-        </div>
+                <Link
+                  to="/electronics"
+                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  ELECTRONICS
+                </Link>
+                <Link
+                  to="/blog"
+                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  BLOG
+                </Link>
+                <Link
+                  to="/pages"
+                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  PAGES
+                </Link>
+                <Link
+                  to="/contact"
+                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  CONTACT
+                </Link>
+                <Link
+                  to="/collections"
+                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  STORE
+                </Link>
+                <Link
+                  to="/dashboard/order-history"
+                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  MY ORDERS
+                </Link>
+              </ul>
+            </nav>
+          </div>
+        </>
       )}
     </header>
     </>
