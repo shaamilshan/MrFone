@@ -9,7 +9,7 @@ import ShopCatogories from "@/components/Others/ShopCatogories";
 const Home = () => {
   return (
     <div>
-      <div className="w-full flex h-[640px] bg-[#FFEFF1] md:py-11 md:px-20 justify-center">
+      <div className="w-full flex h-[calc(100vh-160px)] lg:h-[calc(100vh-160px)] bg-[#FFEFF1] md:px-20 justify-center">
         <ImageSlider />
       </div>
       <div className="mt-6">

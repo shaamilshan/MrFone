@@ -278,6 +278,9 @@ const Navbar = ({ usercheck }) => {
   console.log("Profile Image URL:", profileImgURL);
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [showMarquee, setShowMarquee] = useState(true);
+  const lastScrollY = useRef(0);
+
   const announcements = [
     "🔥 Free Shipping on Orders Above ₹999!",
     "📱 Latest iPhones & Accessories Available",
@@ -292,11 +295,33 @@ const Navbar = ({ usercheck }) => {
     return () => clearInterval(interval);
   }, [announcements.length]);
 
+  // Handle scroll to show/hide marquee
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+        // Scrolling down - hide marquee
+        setShowMarquee(false);
+      } else {
+        // Scrolling up - show marquee
+        setShowMarquee(true);
+      }
+      
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <>
       {/* Announcement Banner */}
-      <div className="bg-black text-white py-3 overflow-hidden sticky top-0 z-[60]">
-        <div className="flex justify-center items-center h-8 relative">
+      <div className={`bg-black text-white py-4 overflow-hidden sticky top-0 z-[60] transition-transform duration-300 ease-in-out ${showMarquee ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className="flex justify-center items-center h-10 relative">
           {announcements.map((text, index) => (
             <span
               key={index}
@@ -311,8 +336,8 @@ const Navbar = ({ usercheck }) => {
           ))}
         </div>
       </div>
-      <header className="border-b bg-white sticky top-10 z-50">
-        <div className="container mx-auto px-4 py-2 md:py-1 flex items-center justify-between">
+      <header className={`border-b bg-white sticky transition-all duration-300 ease-in-out z-[70] ${showMarquee ? 'top-10' : 'top-0'}`}>
+        <div className="container mx-auto px-4 py-3 md:py-4 flex items-center justify-between">
         {/* Hamburger Menu Button - Left */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
