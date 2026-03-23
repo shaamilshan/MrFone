@@ -34,16 +34,18 @@ const ProductCard = ({ product }) => {
   return (
     <div 
       onClick={() => navigate(`/product/${product._id}`)}
-      className="cursor-pointer bg-white rounded-lg shadow-md transition-all duration-300 p-4"
+      className="cursor-pointer bg-white rounded-lg shadow-md transition-all duration-300 w-full max-w-sm"
     >
       {/* Image container with centered product image */}
-      <div className="flex items-center justify-center h-40 mb-3">
+      <div className="aspect-[3/4] mb-3 overflow-hidden rounded-lg">
         <img
           src={`${URL}/img/${product?.imageURL}`}
           alt={product.name}
-          className="h-full object-contain transition-transform duration-500 hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
       </div>
+      
+      <div className="p-4">
       
       {/* Product name - left aligned */}
       <h3 className="text-sm text-gray-700 mt-1 font-semibold mb-1 line-clamp-2">
@@ -73,6 +75,7 @@ const ProductCard = ({ product }) => {
             {Math.round(discountPercentage)}% Off
           </span>
         )}
+      </div>
       </div>
     </div>
   );

@@ -8,18 +8,19 @@ const ProductCard = ({ product }) => {
 
   return (
     <div
-      className="p-5 bg-white rounded-lg border border-gray-200 hover:shadow-lg cursor-pointer"
+      className="bg-white rounded-lg border border-gray-200 hover:shadow-lg cursor-pointer w-full max-w-sm"
       onClick={() => {
         navigate(`/product/${product._id}`);
       }}
     >
-      <div className="overflow-hidden rounded-lg h-56">
+      <div className="overflow-hidden rounded-lg aspect-[3/4] mb-3">
         <img
           src={`${URL}/img/${product.imageURL}`}
           alt={product.name}
-          className="object-contain w-full h-full"
+          className="object-cover w-full h-full"
         />
       </div>
+      <div className="p-5">
       {product.numberOfReviews > 0 ? (
         <RatingStars
           numberOfReviews={product.numberOfReviews}
@@ -40,6 +41,7 @@ const ProductCard = ({ product }) => {
         )}
         {" " + (product.price + product.markup)}₹
       </p>
+      </div>
     </div>
   );
 };

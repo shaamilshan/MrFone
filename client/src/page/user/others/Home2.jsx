@@ -13,6 +13,7 @@ import RedBanner from "@/components/Home/redBanner";
 import ShopCategories from "@/components/Others/ShopCatogories";
 import BestSeller from "@/components/Others/BestSellers";
 import Benefits from "@/components/Home/Benefits";
+import StatsSection from "@/components/Home/StatsSection";
 
 
 
@@ -37,6 +38,7 @@ export default function Home2(){
     {/* <CategoriesGroup /> */}
     {/* <BestSellers /> */}
     <BannerSection/>
+    <StatsSection/>
     <Benefits/>
     <ReviewSlider />
   </div>

@@ -5,6 +5,7 @@ import RecentlyViewed from "@/components/Others/RecentlyViewed";
 import HelahPromis from "@/components/Others/HelahPromis";
 import BestSellers from "@/components/Others/BestSellers";
 import ShopCatogories from "@/components/Others/ShopCatogories";
+import StatsSection from "@/components/Others/StatsSection";
 
 const Home = () => {
   return (
@@ -18,6 +19,7 @@ const Home = () => {
       <div className="mt-8 lg:mx-16">
         <ShopCatogories />
       </div>
+      <StatsSection />
       {/* <div className="mt-8">
         <RecentlyViewed />
       </div> */}

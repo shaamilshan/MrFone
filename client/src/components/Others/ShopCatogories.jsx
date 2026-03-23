@@ -62,9 +62,9 @@ const ShopCategories = () => {
   }, []);
 
   return (
-    <div className="relative bg-white mt-10 py-6">
-      <h2 className="text-2xl font-semibold text-gray-800 px-6">
-        Trending Categories
+    <div className="relative bg-white mt-10 py-8">
+      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 px-6 mb-8 text-center">
+        Explore Categories
       </h2>
 
       {loading ? (
@@ -74,26 +74,26 @@ const ShopCategories = () => {
       ) : (
         <div 
           ref={scrollContainerRef}
-          className="flex gap-6 overflow-x-auto scrollbar-hide px-6 py-4"
+          className="flex gap-4 overflow-x-auto scrollbar-hide px-4 md:px-6 py-6"
           style={{ 
             scrollBehavior: "smooth",
             overflowX: "auto",
-            whiteSpace: "nowrap",
-            width: "100%",
+            WebkitOverflowScrolling: "touch",
           }}
         >
-          {categories.map((category) => (
+          {categories.map((category, index) => (
             <Link
               key={category._id}
               to={`/collections?category=${category._id}`}
-              className="flex flex-col items-center justify-center bg-white rounded-lg w-40 h-40 p-4 shadow-md hover:shadow-lg transition duration-200"
+              className="relative flex-shrink-0 w-[85vw] md:w-[400px] lg:w-[450px] h-[500px] md:h-[600px] group overflow-hidden rounded-xl md:rounded-2xl"
               style={{ flex: "0 0 auto" }}
             >
+              {/* Full-bleed Background Image */}
               {category.imgURL ? (
                 <img 
                   src={`${URL}/img/${category.imgURL}`} 
                   alt={category.name} 
-                  className="w-24 h-24 object-contain rounded-md"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   onError={(e) => {
                     console.log("Image failed to load:", `${URL}/img/${category.imgURL}`);
                     e.target.style.display = 'none';
@@ -101,12 +101,30 @@ const ShopCategories = () => {
                   }}
                 />
               ) : null}
+              
+              {/* Fallback gradient background */}
               <div 
-                className={`w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-md flex items-center justify-center ${category.imgURL ? 'hidden' : 'flex'}`}
+                className={`absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 ${category.imgURL ? 'hidden' : 'flex'}`}
               >
-                <span className="text-3xl font-bold text-gray-400">{category.name.charAt(0)}</span>
+                <span className="text-9xl font-bold text-white/20 self-center">{category.name.charAt(0)}</span>
               </div>
-              <span className="text-sm font-medium text-gray-700 mt-2 text-center">{category.name}</span>
+
+              {/* Subtle dark overlay for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-70 transition-opacity duration-500"></div>
+
+              {/* Centered Category Title */}
+              <div className="absolute inset-0 flex items-end justify-start p-8 md:p-12">
+                <h3 className="text-white text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight drop-shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                  {category.name}
+                </h3>
+              </div>
+
+              {/* Hover indicator */}
+              <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
             </Link>
           ))}
         </div>
