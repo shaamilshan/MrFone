@@ -209,6 +209,7 @@ import { logout } from "../redux/actions/userActions";
 import { Search, ShoppingBag, Heart, Menu, X, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/trendskart/home/Logocrop.png";
+import AuthModal from "./AuthModal";
 
 const Navbar = ({ usercheck }) => {
   const { user } = useSelector((state) => state.user);
@@ -221,6 +222,10 @@ const Navbar = ({ usercheck }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef(null);
+  
+  // Auth Modal State
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("login");
 
   const handleLogout = () => {
     dispatch(logout());
@@ -508,20 +513,26 @@ const Navbar = ({ usercheck }) => {
                   </>
                 ) : (
                   <>
-                    <Link
-                      to="/login"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      onClick={() => setProfileDropdownOpen(false)}
+                    <button
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => {
+                        setAuthMode("login");
+                        setAuthModalOpen(true);
+                        setProfileDropdownOpen(false);
+                      }}
                     >
                       Login
-                    </Link>
-                    <Link
-                      to="/register"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      onClick={() => setProfileDropdownOpen(false)}
+                    </button>
+                    <button
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => {
+                        setAuthMode("register");
+                        setAuthModalOpen(true);
+                        setProfileDropdownOpen(false);
+                      }}
                     >
                       Register
-                    </Link>
+                    </button>
                   </>
                 )}
               </div>
@@ -595,19 +606,39 @@ const Navbar = ({ usercheck }) => {
                 >
                   STORE
                 </Link>
-                <Link
-                  to="/dashboard/order-history"
-                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  MY ORDERS
-                </Link>
+                {user ? (
+                  <Link
+                    to="/dashboard/order-history"
+                    className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    MY ORDERS
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setAuthMode("login");
+                      setAuthModalOpen(true);
+                      setMenuOpen(false);
+                    }}
+                    className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded text-left"
+                  >
+                    LOGIN
+                  </button>
+                )}
               </ul>
             </nav>
           </div>
         </>
       )}
     </header>
+
+    {/* Auth Modal Injection */}
+    <AuthModal 
+        isOpen={authModalOpen} 
+        onClose={() => setAuthModalOpen(false)} 
+        initialMode={authMode} 
+    />
     </>
   );
 };

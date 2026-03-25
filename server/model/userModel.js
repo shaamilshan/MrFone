@@ -55,7 +55,7 @@ UserSchema.statics.signup = async function (
   role,
   isEmailVerified
 ) {
-  const { email, password, passwordAgain, firstName, lastName } =
+  const { email, password, firstName, lastName } =
     userCredentials;
 
   if (
@@ -63,7 +63,6 @@ UserSchema.statics.signup = async function (
     !lastName ||
     !email ||
     !password ||
-    !passwordAgain ||
     !role
   ) {
     throw Error("All fields are required");
@@ -71,10 +70,6 @@ UserSchema.statics.signup = async function (
 
   if (firstName.trim() === "" || lastName.trim() === "") {
     throw Error("All Fields are required");
-  }
-
-  if (password !== passwordAgain) {
-    throw Error("Password is not match");
   }
 
   if (!validator.isEmail(email)) {
@@ -96,8 +91,6 @@ UserSchema.statics.signup = async function (
 
   userCredentials["password"] = hash;
 
-  delete userCredentials["passwordAgain"];
-
   const user = await this.create({
     ...userCredentials,
     isActive: true,
@@ -115,17 +108,13 @@ UserSchema.statics.managersignup = async function (
   role,
   isEmailVerified
 ) {
-  const { email, password, passwordAgain, firstName, lastName } =
+  const { email, password, firstName, lastName } =
     userCredentials;
-
-  
 
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
 
   userCredentials["password"] = hash;
-
-  delete userCredentials["passwordAgain"];
 
   const user = await this.create({
     ...userCredentials,
