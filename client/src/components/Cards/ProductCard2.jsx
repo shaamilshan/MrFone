@@ -1,15 +1,21 @@
 import { URL } from "@/Common/api";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ShoppingCart, Heart } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { addToWishlist } from "../../redux/actions/user/wishlistActions";
+import axios from "axios";
+import { config } from "../../Common/configurations";
+import toast from "react-hot-toast";
 
 const StarRating = ({ rating = 5 }) => {
   return (
-    <div className="flex items-center mt-2 mb-2">
+    <div className="flex items-center gap-0.5 mb-2.5">
       {[...Array(5)].map((_, index) => (
         <svg
           key={index}
-          className={`h-4 w-4 ${
-            index < Math.floor(rating) ? "text-yellow-400" : "text-gray-300"
+          className={`h-[14px] w-[14px] ${
+            index < Math.floor(rating) ? "text-black" : "text-gray-200"
           }`}
           fill="currentColor"
           viewBox="0 0 20 20"
@@ -23,7 +29,14 @@ const StarRating = ({ rating = 5 }) => {
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   
+  const [cartLoading, setCartLoading] = useState(false);
+
+  const wishlistState = useSelector((state) => state.wishlist);
+  const wishlist = wishlistState?.wishlist || [];
+  const isProductInWishlist = wishlist.some((item) => item?.product?._id === product._id);
+
   // Calculate original price and discount correctly
   const originalPrice = product.offer
     ? Math.round(product.price / (1 - product.offer / 100))
@@ -31,58 +44,105 @@ const ProductCard = ({ product }) => {
     
   const discountPercentage = product.offer || 0;
 
+  const handleWishlistClick = (e) => {
+    e.stopPropagation();
+    if (isProductInWishlist) {
+      toast("Already in wishlist", { icon: "❤️" });
+    } else {
+      dispatch(addToWishlist({ product: product._id }));
+    }
+  };
+
+  const handleAddToCartClick = async (e) => {
+    e.stopPropagation();
+    setCartLoading(true);
+    try {
+      await axios.post(
+        `${URL}/user/cart`,
+        {
+          product: product._id,
+          quantity: 1, 
+        },
+        { ...config, withCredentials: true }
+      );
+      toast.success("Added to cart");
+    } catch (error) {
+      const err = error.response?.data?.error || "Error adding to cart";
+      toast.error(err);
+    }
+    setCartLoading(false);
+  };
+
   return (
     <div 
       onClick={() => navigate(`/product/${product._id}`)}
-      className="cursor-pointer bg-white rounded-lg shadow-md transition-all duration-300 w-full max-w-sm h-full flex flex-col"
+      className="group cursor-pointer bg-white rounded-2xl border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-500 w-full max-w-sm h-full flex flex-col overflow-hidden relative"
     >
-      {/* Image container with centered product image */}
-      <div className="aspect-[3/4] mb-3 overflow-hidden rounded-lg flex-shrink-0">
+      {/* Image container */}
+      <div className="aspect-[4/5] overflow-hidden bg-gray-50 flex-shrink-0 relative">
         <img
           src={`${URL}/img/${product?.imageURL}`}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
         />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500"></div>
       </div>
       
-      <div className="p-4 flex flex-col flex-grow">
+      <div className="p-5 flex flex-col flex-grow">
       
-        {/* Product name - left aligned */}
-        <h3 className="text-sm text-gray-800 mt-1 font-semibold line-clamp-2">
+        <StarRating rating={product.rating || 4} />
+
+        {/* Product name */}
+        <h3 className="text-[15px] text-gray-900 font-extrabold line-clamp-2 leading-snug group-hover:text-black transition-colors">
           {product.name}
         </h3>
         
         {/* Product description */}
         {product.description && (
-          <p className="text-xs text-gray-500 mt-1.5 line-clamp-2 leading-snug">
+          <p className="text-[13px] text-gray-500 mt-2 line-clamp-2 leading-relaxed">
             {product.description}
           </p>
         )}
         
-        <div className="mt-auto">
-          {/* Rating stars - left aligned */}
-          <StarRating rating={product.rating || 4} />
-          
-          {/* Price section - left aligned */}
-          <div className="flex items-center flex-wrap gap-2">
-            {/* Current price */}
-            <span className="text-sm font-semibold text-black">
-              ₹{product.price.toLocaleString()}
-            </span>
-            
-            {/* Original price with strikethrough if there's an offer */}
-            {originalPrice && (
-              <span className="text-xs text-gray-500 line-through">
-                ₹{originalPrice.toLocaleString()}
+        <div className="mt-auto pt-4 flex flex-col gap-3">
+          {/* Price section */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-2">
+              <span className="text-[17px] font-black text-black tracking-tight">
+                ₹{product.price.toLocaleString()}
               </span>
-            )}
+              
+              {originalPrice && (
+                <span className="text-[13px] text-gray-400 font-medium line-through">
+                  ₹{originalPrice.toLocaleString()}
+                </span>
+              )}
+            </div>
             
-            {/* Discount percentage badge - only show if there's an offer */}
+            {/* Discount badge */}
             {product.offer > 0 && (
-              <span className="text-[11px] font-medium bg-black text-white px-2 py-0.5 rounded">
-                {Math.round(discountPercentage)}% Off
+              <span className="text-[10px] uppercase font-bold tracking-wider bg-gray-100 text-gray-900 px-2 py-0.5 rounded-sm">
+                -{Math.round(discountPercentage)}%
               </span>
             )}
+          </div>
+          
+          {/* Action Buttons (Always Visible for Mobile) */}
+          <div className="flex gap-2 mt-1">
+            <button
+               onClick={handleAddToCartClick}
+               disabled={cartLoading}
+               className="flex-1 bg-black text-white text-[13px] font-bold py-2.5 rounded-xl hover:bg-gray-800 transition-colors flex justify-center items-center gap-1.5 shadow-sm active:scale-95"
+            >
+               <ShoppingCart size={14} />
+               {cartLoading ? "..." : "Add"}
+            </button>
+            <button 
+              onClick={handleWishlistClick}
+              className="px-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center border border-gray-200 active:scale-95"
+            >
+              <Heart size={16} className={isProductInWishlist ? "fill-red-500 text-red-500" : "text-gray-600"} />
+            </button>
           </div>
         </div>
       </div>
