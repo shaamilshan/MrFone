@@ -33,10 +33,17 @@ const SingleProduct2 = () => {
       </div>
       <div className="w-full  lg:px-20 justify-center">
         <div className="w-full my-2 flex flex-col  lg:flex-row ">
-          <div className="w-full lg:w-1/2 lg:h-[650px] h-[400px] flex flex-col  ">
-            {/* <img className="md:rounded-xl w-full max-h-[650px] object-cover" src="https://s3-alpha-sig.figma.com/img/62da/19c4/b2e856a52e09b9c6e5f3de84a81c2229?Expires=1717977600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=N-Qk8cNJAAiJjIUbdmZgKghe1Sas4832W6S5JMPAxDvo8vhTJUpCrXKvSZHSL~wG~eBB4ZP453Z27rJUrHIZe-ffpUnvI5pldgTT7cooktc3PaHYj3PITeU0T~haS4DgV0NKaAc7pO2r744JBjwUaTtZ8uzhrUNHPBEVL6zFs21cPZFpHyF6woLRDSf1vHRV0BKVeaiSPWb2EVaqhr5aZXLYQUMwStxs23eA67Vj5m6vzcAJDjZcIUgwDlGQEpaMVMmRiRr4Earu34~3icwRlZ9kcG439z-yVq5rnCG3vnsSkQbEYR-HeBrarJf6dLtTyaFbhgKCIX6tkDyPMM~YUg__" alt="" /> */}
-            <ProductSlider />
-          </div>
+            <div className="w-full lg:w-1/2 lg:h-[650px] h-[400px] flex flex-col  ">
+              {/* Provide a small demo images array so the slider has content. If integrating with real data, replace these with product image filenames or full URLs. */}
+              <ProductSlider
+                images={[
+                  "https://via.placeholder.com/1200x1200.png?text=Image+1",
+                  "https://via.placeholder.com/1200x1200.png?text=Image+2",
+                  "https://via.placeholder.com/1200x1200.png?text=Image+3",
+                ]}
+                selectedImageIndex={0}
+              />
+            </div>
           <div className="mt-8 lg:mt-0 lg:w-1/2 px-8">
             <h1 className="text-[16px] lg:text-[30px] xl:text-[40px] font-light font-sans">
               Silver Temple Chain
