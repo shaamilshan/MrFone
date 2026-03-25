@@ -57,6 +57,7 @@ const getProducts = async (req, res) => {
       },
       {
         name: 1,
+        description: 1,
         imageURL: 1,
         price: 1,
         markup: 1,

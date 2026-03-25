@@ -26,7 +26,7 @@ const NewArrivals = () => {
 
   return (
     <div
-      className="container mx-auto px-4 py-8"
+      className="container mx-auto px-4 py-8 my-10 sm:my-14"
       id="newArrival"
       data-aos="fade-up"
     >
@@ -47,15 +47,14 @@ const NewArrivals = () => {
           <JustLoading size={6} />
         </div>
       ) : (
-        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {userProducts && userProducts.length > 0 ? (
             userProducts
-              .slice(0, 5)
+              .slice(0, 4)
               .map((product, index) => (
                 <ProductCard2
                   product={product}
                   key={index}
-                  className="p-1 shadow-sm hover:shadow-md transition w-28 h-36"
                 />
               ))
           ) : (

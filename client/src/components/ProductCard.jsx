@@ -3,15 +3,16 @@ import React from 'react';
 const ProductCard = ({
   imageUrl,
   title,
+  description,
   rating,
   reviewCount,
   discountedPrice,
   originalPrice,
 }) => {
   return (
-    <div className="w-full max-w-sm flex flex-col rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-lg transition-all duration-300">
+    <div className="w-full max-w-sm h-full flex flex-col rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-lg transition-all duration-300">
       {/* Top section: Product Image Container (Increased height as requested) */}
-      <div className="relative w-full h-80 sm:h-96 bg-slate-50 p-6 flex items-center justify-center">
+      <div className="relative w-full h-80 sm:h-96 bg-slate-50 p-6 flex items-center justify-center flex-shrink-0">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -29,9 +30,16 @@ const ProductCard = ({
       {/* Bottom section: Details */}
       <div className="p-5 sm:p-6 flex flex-col flex-grow bg-white">
         {/* Product Title */}
-        <h3 className="text-lg sm:text-xl font-semibold text-slate-800 line-clamp-2 leading-snug mb-3 hover:text-blue-600 transition-colors cursor-pointer">
+        <h3 className="text-lg sm:text-xl font-semibold text-slate-800 line-clamp-2 leading-snug mb-1 hover:text-blue-600 transition-colors cursor-pointer">
           {title}
         </h3>
+        
+        {/* Product Description */}
+        {description && (
+          <p className="text-sm text-slate-500 line-clamp-2 mb-3">
+            {description}
+          </p>
+        )}
 
         {/* This wrapper pushes rating and price to the bottom if the title is short */}
         <div className="mt-auto flex flex-col gap-2">

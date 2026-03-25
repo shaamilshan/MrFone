@@ -34,10 +34,10 @@ const ProductCard = ({ product }) => {
   return (
     <div 
       onClick={() => navigate(`/product/${product._id}`)}
-      className="cursor-pointer bg-white rounded-lg shadow-md transition-all duration-300 w-full max-w-sm"
+      className="cursor-pointer bg-white rounded-lg shadow-md transition-all duration-300 w-full max-w-sm h-full flex flex-col"
     >
       {/* Image container with centered product image */}
-      <div className="aspect-[3/4] mb-3 overflow-hidden rounded-lg">
+      <div className="aspect-[3/4] mb-3 overflow-hidden rounded-lg flex-shrink-0">
         <img
           src={`${URL}/img/${product?.imageURL}`}
           alt={product.name}
@@ -45,37 +45,46 @@ const ProductCard = ({ product }) => {
         />
       </div>
       
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-grow">
       
-      {/* Product name - left aligned */}
-      <h3 className="text-sm text-gray-700 mt-1 font-semibold mb-1 line-clamp-2">
-        {product.name}
-      </h3>
-      
-      {/* Rating stars - left aligned */}
-      <StarRating rating={product.rating || 4} />
-      
-      {/* Price section - left aligned */}
-      <div className="flex items-center flex-wrap gap-2">
-        {/* Current price */}
-        <span className="text-sm font-medium text-red-500">
-          ₹{product.price.toLocaleString()}
-        </span>
+        {/* Product name - left aligned */}
+        <h3 className="text-sm text-gray-800 mt-1 font-semibold line-clamp-2">
+          {product.name}
+        </h3>
         
-        {/* Original price with strikethrough if there's an offer */}
-        {originalPrice && (
-          <span className="text-xs text-gray-400 line-through">
-            ₹{originalPrice.toLocaleString()}
-          </span>
+        {/* Product description */}
+        {product.description && (
+          <p className="text-xs text-gray-500 mt-1.5 line-clamp-2 leading-snug">
+            {product.description}
+          </p>
         )}
         
-        {/* Discount percentage badge - only show if there's an offer */}
-        {product.offer > 0 && (
-          <span className="text-xs bg-red-500 text-white px-2 py-1 rounded">
-            {Math.round(discountPercentage)}% Off
-          </span>
-        )}
-      </div>
+        <div className="mt-auto">
+          {/* Rating stars - left aligned */}
+          <StarRating rating={product.rating || 4} />
+          
+          {/* Price section - left aligned */}
+          <div className="flex items-center flex-wrap gap-2">
+            {/* Current price */}
+            <span className="text-sm font-semibold text-black">
+              ₹{product.price.toLocaleString()}
+            </span>
+            
+            {/* Original price with strikethrough if there's an offer */}
+            {originalPrice && (
+              <span className="text-xs text-gray-500 line-through">
+                ₹{originalPrice.toLocaleString()}
+              </span>
+            )}
+            
+            {/* Discount percentage badge - only show if there's an offer */}
+            {product.offer > 0 && (
+              <span className="text-[11px] font-medium bg-black text-white px-2 py-0.5 rounded">
+                {Math.round(discountPercentage)}% Off
+              </span>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
