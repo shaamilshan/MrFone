@@ -572,25 +572,11 @@ const Navbar = ({ usercheck }) => {
                   HOME
                 </Link>
                 <Link
-                  to="/electronics"
+                  to="/collections"
                   className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
                   onClick={() => setMenuOpen(false)}
                 >
-                  ELECTRONICS
-                </Link>
-                <Link
-                  to="/blog"
-                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  BLOG
-                </Link>
-                <Link
-                  to="/pages"
-                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  PAGES
+                  STORE
                 </Link>
                 <Link
                   to="/contact"
@@ -598,13 +584,6 @@ const Navbar = ({ usercheck }) => {
                   onClick={() => setMenuOpen(false)}
                 >
                   CONTACT
-                </Link>
-                <Link
-                  to="/collections"
-                  className="py-3 border-b border-gray-100 font-semibold hover:bg-gray-50 px-2 rounded"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  STORE
                 </Link>
                 {user ? (
                   <Link
