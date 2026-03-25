@@ -199,6 +199,11 @@ const SingleProduct = () => {
       return;
     }
 
+    if (!product || !id) {
+      toast.error("Product data is not available. Please refresh the page.");
+      return;
+    }
+
     if (!validateAttributesSelection()) {
       toast.error("Please select a value for each attribute.");
       return;
@@ -222,7 +227,7 @@ const SingleProduct = () => {
       );
       toast.success("Added to cart");
     } catch (error) {
-      const err = error.response.data.error;
+      const err = error.response?.data?.error || "Failed to add to cart";
       toast.error(err);
     }
     setCartLoading(false);
@@ -231,6 +236,11 @@ const SingleProduct = () => {
   const buyNow = async () => {
     if (!user) {
       navigate("/login");
+      return;
+    }
+
+    if (!product || !id) {
+      toast.error("Product data is not available. Please refresh the page.");
       return;
     }
 
@@ -257,7 +267,7 @@ const SingleProduct = () => {
       );
       navigate("/cart");
     } catch (error) {
-      const err = error.response.data.error;
+      const err = error.response?.data?.error || "Failed to process order";
       toast.error(err);
     }
     setCartLoading(false);
@@ -267,85 +277,90 @@ const SingleProduct = () => {
   const isProductInWishlist = wishlist.some((item) => item.product._id === id);
 
   const groupAttributes = (attributes, filterBySelected = false) => {
-    if (!attributes || attributes.length === 0) return {};
+    if (!attributes || !Array.isArray(attributes) || attributes.length === 0) return {};
     
-    const hasMultiAttributes = attributes.some(attr => attr.combination && attr.combination.trim() !== '');
+    const hasMultiAttributes = attributes.some(attr => attr && attr.combination && attr.combination.trim() !== '');
     
     if (hasMultiAttributes) {
       const grouped = {};
       
       attributes.forEach(attr => {
-        if (attr.combination) {
-          if (filterBySelected && Object.keys(selectedAttributes).length > 0) {
-            const parts = attr.combination.split(',');
-            const attrMap = {};
-            parts.forEach(part => {
-              const [type, value] = part.split(':');
-              attrMap[type] = value;
-            });
-            
-            let matches = true;
-            for (const [selectedType, selectedValue] of Object.entries(selectedAttributes)) {
-              if (selectedValue && attrMap[selectedType] && attrMap[selectedType] !== selectedValue) {
-                matches = false;
-                break;
-              }
+        if (!attr || !attr.combination) return;
+        
+        if (filterBySelected && Object.keys(selectedAttributes).length > 0) {
+          const parts = attr.combination.split(',');
+          const attrMap = {};
+          parts.forEach(part => {
+            if (!part) return;
+            const [type, value] = part.split(':');
+            if (type && value) attrMap[type] = value;
+          });
+          
+          let matches = true;
+          for (const [selectedType, selectedValue] of Object.entries(selectedAttributes)) {
+            if (selectedValue && attrMap[selectedType] && attrMap[selectedType] !== selectedValue) {
+              matches = false;
+              break;
             }
-            
-            if (!matches) return;
           }
           
-          const parts = attr.combination.split(',');
-          parts.forEach(part => {
-            const [type, value] = part.split(':');
-            
-            if (!grouped[type]) {
-              grouped[type] = [];
-            }
-            
-            const existing = grouped[type].find(item => item.value === value);
-            if (!existing) {
-              let matchingVariants;
-              if (filterBySelected && Object.keys(selectedAttributes).length > 0) {
-                matchingVariants = attributes.filter(a => {
-                  if (!a.combination) return false;
-                  const aParts = a.combination.split(',');
-                  const aMap = {};
-                  aParts.forEach(p => {
-                    const [t, v] = p.split(':');
-                    aMap[t] = v;
-                  });
-                  
-                  if (aMap[type] !== value) return false;
-                  
-                  for (const [selectedType, selectedValue] of Object.entries(selectedAttributes)) {
-                    if (selectedType !== type && selectedValue && aMap[selectedType] && aMap[selectedType] !== selectedValue) {
-                      return false;
-                    }
-                  }
-                  return true;
-                });
-              } else {
-                matchingVariants = attributes.filter(a => 
-                  a.combination && a.combination.includes(`${type}:${value}`)
-                );
-              }
-              
-              const maxQuantity = matchingVariants.length > 0 ? Math.max(...matchingVariants.map(v => v.quantity || 0)) : 0;
-              
-              grouped[type].push({
-                value: value,
-                imageIndex: attr.imageIndex,
-                quantity: maxQuantity,
-              });
-            }
-          });
+          if (!matches) return;
         }
+        
+        const parts = attr.combination.split(',');
+        parts.forEach(part => {
+          if (!part) return;
+          const [type, value] = part.split(':');
+          if (!type || !value) return;
+          
+          if (!grouped[type]) {
+            grouped[type] = [];
+          }
+          
+          const existing = grouped[type].find(item => item.value === value);
+          if (!existing) {
+            let matchingVariants;
+            if (filterBySelected && Object.keys(selectedAttributes).length > 0) {
+              matchingVariants = attributes.filter(a => {
+                if (!a || !a.combination) return false;
+                const aParts = a.combination.split(',');
+                const aMap = {};
+                aParts.forEach(p => {
+                  if (!p) return;
+                  const [t, v] = p.split(':');
+                  if (t && v) aMap[t] = v;
+                });
+                
+                if (aMap[type] !== value) return false;
+                
+                for (const [selectedType, selectedValue] of Object.entries(selectedAttributes)) {
+                  if (selectedType !== type && selectedValue && aMap[selectedType] && aMap[selectedType] !== selectedValue) {
+                    return false;
+                  }
+                }
+                return true;
+              });
+            } else {
+              matchingVariants = attributes.filter(a => 
+                a && a.combination && a.combination.includes(`${type}:${value}`)
+              );
+            }
+            
+            const maxQuantity = matchingVariants.length > 0 ? Math.max(...matchingVariants.map(v => v.quantity || 0)) : 0;
+            
+            grouped[type].push({
+              value: value,
+              imageIndex: attr.imageIndex,
+              quantity: maxQuantity,
+            });
+          }
+        });
       });
       
       return grouped;
     } else {
       return attributes.reduce((acc, attribute) => {
+        if (!attribute) return acc;
         acc[attribute.name] = acc[attribute.name] || [];
         acc[attribute.name].push({
           value: attribute.value,
@@ -652,7 +667,14 @@ const SingleProduct = () => {
 
                 {/* Wishlist Button */}
                 <button
-                  onClick={() => dispatch(addToWishlist(id))}
+                  onClick={() => {
+                    if (!user) {
+                      toast.error("Please login to add to wishlist");
+                      navigate("/login");
+                      return;
+                    }
+                    dispatch(addToWishlist(id));
+                  }}
                   className={`w-14 h-14 flex items-center justify-center rounded-xl border transition-all duration-200 active:scale-90 ${
                     isProductInWishlist
                       ? "bg-red-50 border-red-200 text-red-500"

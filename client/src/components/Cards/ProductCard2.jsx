@@ -36,6 +36,9 @@ const ProductCard = ({ product }) => {
   const wishlistState = useSelector((state) => state.wishlist);
   const wishlist = wishlistState?.wishlist || [];
   const isProductInWishlist = wishlist.some((item) => item?.product?._id === product._id);
+  
+  // Get user from Redux state
+  const { user } = useSelector((state) => state.user);
 
   // Calculate original price and discount correctly
   const originalPrice = product.offer
@@ -46,6 +49,14 @@ const ProductCard = ({ product }) => {
 
   const handleWishlistClick = (e) => {
     e.stopPropagation();
+    
+    // Check if user is logged in
+    if (!user) {
+      toast.error("Please login to add to wishlist");
+      navigate("/login");
+      return;
+    }
+    
     if (isProductInWishlist) {
       toast("Already in wishlist", { icon: "❤️" });
     } else {
@@ -55,14 +66,56 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCartClick = async (e) => {
     e.stopPropagation();
+    
+    // Check if user is logged in
+    if (!user) {
+      toast.error("Please login to add to cart");
+      navigate("/login");
+      return;
+    }
+    
+    if (!product || !product._id) {
+      toast.error("Product information is missing");
+      return;
+    }
+
     setCartLoading(true);
     try {
+      const payload = {
+        product: product._id,
+        quantity: 1,
+      };
+      
+      // Add attributes if product has them
+      if (product.attributes && product.attributes.length > 0) {
+        const defaultAttributes = {};
+        const hasMultiAttributes = product.attributes.some(attr => attr.combination && attr.combination.trim() !== '');
+        
+        if (hasMultiAttributes) {
+          const firstAvailableVariant = product.attributes.find(attr => attr.quantity > 0);
+          if (firstAvailableVariant && firstAvailableVariant.combination) {
+            const parts = firstAvailableVariant.combination.split(',');
+            parts.forEach(part => {
+              const [type, value] = part.split(':');
+              if (type && value) defaultAttributes[type] = value;
+            });
+          }
+        } else {
+          product.attributes.forEach(attr => {
+            if (attr && attr.name && attr.value) {
+              defaultAttributes[attr.name] = attr.value;
+            }
+          });
+        }
+        
+        if (Object.keys(defaultAttributes).length > 0) {
+          payload.attributes = defaultAttributes;
+        }
+      }
+
       await axios.post(
         `${URL}/user/cart`,
-        {
-          product: product._id,
-          quantity: 1, 
-        },
+        payload,
         { ...config, withCredentials: true }
       );
       toast.success("Added to cart");
