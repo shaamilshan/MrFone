@@ -300,33 +300,30 @@ const Navbar = ({ usercheck }) => {
     return () => clearInterval(interval);
   }, [announcements.length]);
 
-  // Handle scroll to show/hide marquee
+  // Handle hero section visibility to show/hide marquee
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
-        // Scrolling down - hide marquee
-        setShowMarquee(false);
-      } else {
-        // Scrolling up - show marquee
-        setShowMarquee(true);
-      }
-      
-      lastScrollY.current = currentScrollY;
-    };
+    const heroEl = document.querySelector('section'); // The hero ImageSlider is the first <section>
+    if (!heroEl) {
+      setShowMarquee(false);
+      return;
+    }
 
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowMarquee(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(heroEl);
+    return () => observer.disconnect();
   }, []);
 
   return (
     <>
       {/* Announcement Banner */}
-      <div className={`bg-black text-white py-4 overflow-hidden sticky top-0 z-[60] transition-transform duration-300 ease-in-out ${showMarquee ? 'translate-y-0' : '-translate-y-full'}`}>
-        <div className="flex justify-center items-center h-10 relative">
+      <div className={`bg-black text-white overflow-hidden sticky top-0 z-[60] transition-all duration-500 ease-in-out ${showMarquee ? 'max-h-14 opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className="flex justify-center items-center h-14 relative">
           {announcements.map((text, index) => (
             <span
               key={index}
@@ -341,7 +338,7 @@ const Navbar = ({ usercheck }) => {
           ))}
         </div>
       </div>
-      <header className={`border-b bg-white sticky transition-all duration-300 ease-in-out z-[70] ${showMarquee ? 'top-10' : 'top-0'}`}>
+      <header className={`border-b bg-white sticky transition-all duration-500 ease-in-out z-[70] ${showMarquee ? 'top-14' : 'top-0'}`}>
         <div className="container mx-auto px-4 py-3 md:py-4 flex items-center justify-between">
         {/* Hamburger Menu Button - Left */}
         <button

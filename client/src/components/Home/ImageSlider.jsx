@@ -1,102 +1,184 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
-import HomeImg from "../../assets/banner/banner-iphone.avif";
+import Image1 from "../../assets/banner/banner-iphone.avif";
 import Image2 from "../../assets/banner/Banner-ipad-pro.jpg";
-import Image3 from "../../assets/banner/ipad-banner.webp";
+import Image3 from "../../assets/banner/mac.jpg";
 
-const images = [HomeImg, Image2, Image3];
+const slides = [
+  {
+    image: Image1,
+    tag: "New Release",
+    title: "iPhone 16 Pro",
+    subtitle: "Titanium. So strong. So light. So Pro.",
+    cta: "Shop Now",
+  },
+  {
+    image: Image2,
+    tag: "Best Seller",
+    title: "iPad Pro",
+    subtitle: "The ultimate iPad experience. Impossibly thin. Incredibly powerful.",
+    cta: "Explore",
+  },
+  {
+    image: Image3,
+    tag: "Top Pick",
+    title: "MacBook Pro",
+    subtitle: "Mind-blowing. Head-turning.",
+    cta: "Learn More",
+  },
+];
 
 function ImageSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const totalImages = images.length;
+  const [direction, setDirection] = useState(1);
+  const totalSlides = slides.length;
+  const navigate = useNavigate();
 
-  // Automatically change slide every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      handleNext();
-    }, 5000);
+      setDirection(1);
+      setCurrentIndex((prev) => (prev + 1) % totalSlides);
+    }, 6000);
     return () => clearInterval(interval);
-  }, [currentIndex]);
+  }, [currentIndex, totalSlides]);
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % totalImages);
+    setDirection(1);
+    setCurrentIndex((prev) => (prev + 1) % totalSlides);
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? totalImages - 1 : prevIndex - 1
-    );
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
+  };
+
+  const current = slides[currentIndex];
+
+  const textVariants = {
+    enter: (dir) => ({ opacity: 0, y: dir > 0 ? 50 : -50 }),
+    center: { opacity: 1, y: 0 },
+    exit: (dir) => ({ opacity: 0, y: dir > 0 ? -50 : 50 }),
+  };
+
+  const imageVariants = {
+    enter: { opacity: 0, scale: 1.1 },
+    center: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 1.05 },
   };
 
   return (
-    <div className="flex flex-col">
-      <main>
-        <section className="relative bg-[#C84332] h-[calc(100vh-160px)] lg:h-[calc(100vh-160px)] w-full overflow-hidden">
-          <div className="relative h-full w-full">
-            {/* Navigation Buttons */}
-            <Button
-              className="absolute left-10 top-1/2 -translate-y-1/2 rounded-full bg-white shadow-lg hover:bg-gray-100 transition-transform scale-110 opacity-70"
-              size="icon"
-              variant="ghost"
-              onClick={handlePrev}
-            >
-              <ChevronLeft className="h-8 w-8 text-black" />
-            </Button>
-            <Button
-              className="absolute right-10 top-1/2 -translate-y-1/2 rounded-full bg-white shadow-lg hover:bg-gray-100 transition-transform scale-110 opacity-70"
-              size="icon"
-              variant="ghost"
-              onClick={handleNext}
-            >
-              <ChevronRight className="h-8 w-8 text-black" />
-            </Button>
+    <section className="relative h-[75vh] md:h-[90vh] w-full overflow-hidden bg-black">
+      
+      {/* Full Background Image */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`bg-${currentIndex}`}
+          variants={imageVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0 w-full h-full"
+        >
+          <img
+            src={current.image}
+            alt={current.title}
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+      </AnimatePresence>
 
-            {/* Sliding Image Container */}
-            <div
-              className="flex h-full w-full transition-transform duration-500 ease-in-out"
-              style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
+      {/* Dark Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
+
+      {/* Text Overlay Content */}
+      <div className="absolute inset-0 z-20 flex items-center">
+        <div className="container mx-auto px-6 md:px-12 lg:px-20">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={`text-${currentIndex}`}
+              custom={direction}
+              variants={textVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="max-w-2xl"
+            >
+              {/* Tag */}
+              <span className="inline-block text-[11px] font-bold uppercase tracking-[0.25em] text-white/80 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full mb-6 border border-white/20">
+                {current.tag}
+              </span>
+
+              {/* Title */}
+              <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white tracking-tight leading-[1.05] mb-5">
+                {current.title}
+              </h1>
+
+              {/* Subtitle */}
+              <p className="text-lg md:text-xl text-white/70 font-medium max-w-lg mb-10 leading-relaxed">
+                {current.subtitle}
+              </p>
+
+              {/* CTA Button */}
+              <button
+                onClick={() => navigate("/collections")}
+                className="group inline-flex items-center gap-3 bg-white text-black text-sm font-bold px-8 py-4 rounded-full hover:bg-gray-100 transition-all duration-300 shadow-2xl active:scale-95"
+              >
+                {current.cta}
+                <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+              </button>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="absolute bottom-8 left-6 md:left-12 lg:left-20 flex items-center gap-4 z-30">
+        {/* Slide Counter */}
+        <span className="text-sm font-bold text-white/50 tabular-nums">
+          {String(currentIndex + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}
+        </span>
+
+        {/* Dot indicators */}
+        <div className="flex items-center gap-2">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setDirection(index > currentIndex ? 1 : -1);
+                setCurrentIndex(index);
               }}
-            >
-              {images.map((image, index) => (
-                <div
-                  key={index}
-                  className="relative h-full w-full flex-shrink-0"
-                >
-                  <img
-                    alt={`Slide ${index}`}
-                    className="h-full w-full object-cover"
-                    src={image}
-                  />
-                  {/* Shop Now Button */}
-                  <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
-                    <Button className=" rounded-full bg-red-600 px-6 py-2  text-white font-semibold shadow-md hover:bg-red-700">
-                      Shop Now
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+              className={`rounded-full transition-all duration-500 ${
+                index === currentIndex
+                  ? "bg-white w-8 h-2.5"
+                  : "bg-white/40 w-2.5 h-2.5 hover:bg-white/70"
+              }`}
+            />
+          ))}
+        </div>
 
-            {/* Dots Navigation */} 
-            <div className="absolute bottom-12 right-6 flex items-center gap-2">
-              {images.map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-2 rounded-full transition-all duration-500 ${
-                    index === currentIndex
-                      ? "bg-white w-6"
-                      : "bg-white opacity-50 w-2"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
+        {/* Arrow buttons */}
+        <div className="flex items-center gap-1.5 ml-2">
+          <button
+            onClick={handlePrev}
+            className="p-2 rounded-full border border-white/30 bg-white/10 backdrop-blur text-white hover:bg-white hover:text-black transition-all duration-300"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={handleNext}
+            className="p-2 rounded-full border border-white/30 bg-white/10 backdrop-blur text-white hover:bg-white hover:text-black transition-all duration-300"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </div>
+    </section>
   );
 }
 
