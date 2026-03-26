@@ -9,7 +9,7 @@ import RevenueChart from "../Components/DashboardComponents/RevenueChart";
 import MostSoldChart from "../Components/DashboardComponents/MostSoldChart";
 import Modal from "../../../components/Modal";
 import UpdateOrder from "./Order/UpdateOrder";
-import { AiOutlineCalendar } from "react-icons/ai";
+import { Calendar, ChevronDown } from "lucide-react";
 import OutsideTouchCloseComponent from "../../../components/OutsideTouchCloseComponent";
 import { debounce } from "time-loom";
 import { useSearchParams } from "react-router-dom";
@@ -49,116 +49,108 @@ const AdminHome = () => {
           }
         />
       )}
-      <div className="p-5 w-full overflow-auto">
-        <div className="flex justify-between items-center text-xs font-semibold pb-5">
+      <div className="p-6 lg:p-8 w-full h-full overflow-y-auto bg-gray-50">
+        {/* Header Section */}
+        <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="font-bold text-2xl">Dashboard</h1>
+            <h1 className="text-4xl font-bold text-black mb-2">Dashboard</h1>
+            <p className="text-gray-500 text-sm">Welcome back to your admin panel</p>
           </div>
-          <div className="flex gap-3 relative">
+          
+          {/* Date Filter */}
+          <div className="relative">
             <button
-              className="admin-button-fl bg-white hover:bg-gray-200 active:bg-gray-300 text-sm"
+              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm text-gray-700"
               onClick={toggleDropDown}
             >
-              <AiOutlineCalendar />
-              Last {numberOfDates} days
+              <Calendar size={18} className="text-gray-600" />
+              <span>Last {numberOfDates} days</span>
+              <ChevronDown size={16} className={`text-gray-400 transition-transform ${dropDown ? 'rotate-180' : ''}`} />
             </button>
+            
             {dropDown && (
               <OutsideTouchCloseComponent
                 toggleVisibility={toggleDropDown}
-                style="absolute top-10 right-0 font-normal w-44 bg-white rounded-lg shadow-2xl"
+                style="absolute top-12 right-0 font-normal w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10"
               >
-                <button
-                  className="navbar-drop-ul w-full"
-                  onClick={() => {
-                    setNumberOfDates(7);
-                    toggleDropDown();
-                  }}
-                >
-                  Last 7 Days
-                </button>
-                <button
-                  className="navbar-drop-ul w-full"
-                  onClick={() => {
-                    setNumberOfDates(30);
-                    toggleDropDown();
-                  }}
-                >
-                  Last 30 Days
-                </button>
-                <button
-                  className="navbar-drop-ul w-full"
-                  onClick={() => {
-                    setNumberOfDates(180);
-                    toggleDropDown();
-                  }}
-                >
-                  Last 180 Days
-                </button>
-                <button
-                  className="navbar-drop-ul w-full"
-                  onClick={() => {
-                    setNumberOfDates(365);
-                    toggleDropDown();
-                  }}
-                >
-                  Last 365 Days
-                </button>
+                {[7, 30, 180, 365].map((days) => (
+                  <button
+                    key={days}
+                    className="w-full text-left px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700 border-b border-gray-100 last:border-b-0 transition-colors"
+                    onClick={() => {
+                      setNumberOfDates(days);
+                      toggleDropDown();
+                    }}
+                  >
+                    Last {days} Days
+                  </button>
+                ))}
               </OutsideTouchCloseComponent>
             )}
           </div>
         </div>
 
-        <div className="flex lg:flex-row flex-col gap-5 mb-5">
-          <SalesChart numberOfDates={numberOfDates} />
-          <ProfitChart numberOfDates={numberOfDates} />
-          <UserChart numberOfDates={numberOfDates} />
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <SalesChart numberOfDates={numberOfDates} />
+          </div>
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <ProfitChart numberOfDates={numberOfDates} />
+          </div>
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <UserChart numberOfDates={numberOfDates} />
+          </div>
         </div>
 
-        <div className="flex gap-5 lg:flex-row flex-col">
-          <RevenueChart numberOfDates={numberOfDates} />
-          <div className="bg-white p-5 rounded-md w-full lg:w-1/3">
-            <h1 className="text-lg font-bold">Most Sold Items</h1>
+        {/* Revenue and Most Sold */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <RevenueChart numberOfDates={numberOfDates} />
+          </div>
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h2 className="text-lg font-bold text-black mb-4">Most Sold Items</h2>
             <MostSoldChart numberOfDates={numberOfDates} />
           </div>
         </div>
+
+        {/* Latest Orders Table */}
         {orders && orders.length > 0 ? (
-          <div className="overflow-x-scroll lg:overflow-hidden bg-white rounded-lg my-5">
-            <h1 className="px-5 pt-5 font-bold text-lg">Latest Orders</h1>
-            <table className="w-full min-w-max table-auto">
-              <thead className="font-normal">
-                <tr className="border-b border-gray-200">
-                  <th className="admin-table-head">No:</th>
-                  <th className="admin-table-head w-64">Product</th>
-                  <th className="admin-table-head">Order Date</th>
-                  <th className="admin-table-head">Customer</th>
-                  <th className="admin-table-head">Total</th>
-                  <th className="admin-table-head">Delivery Date</th>
-                  <th className="admin-table-head">Status</th>
-                  <th className="admin-table-head">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.slice(0, 5).map((item, index) => {
-                  const isLast = index === orders.length - 1;
-                  const classes = isLast
-                    ? "p-4"
-                    : "p-4 border-b border-gray-200 ";
-                  return (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-100">
+              <h2 className="text-lg font-bold text-black">Latest Orders</h2>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-max">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">No</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Order Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Customer</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Delivery</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.slice(0, 5).map((item, index) => (
                     <OrderTableRow
                       index={index + 1}
                       item={item}
                       toggleUpdateModal={toggleUpdateModal}
-                      classes={classes}
+                      classes="px-6 py-4 border-b border-gray-100 text-sm text-gray-700 hover:bg-gray-50 transition-colors last:border-b-0"
                       key={index}
                     />
-                  );
-                })}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : (
-          <div className="absolute top-1/2 left-1/3 lg:left-1/2 lg:right-1/2">
-            <p className="w-44">{error ? error : "No orders are placed yet"}</p>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 flex flex-col items-center justify-center">
+            <p className="text-gray-500 text-center text-lg">{error ? error : "No orders placed yet"}</p>
           </div>
         )}
       </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { Edit2, Trash2 } from "lucide-react";
 import date from "date-and-time";
 import { useNavigate } from "react-router-dom";
 import StatusComponent from "../../../../components/StatusComponent";
@@ -10,84 +10,92 @@ import { config } from "@/Common/configurations";
 const TableRow = ({ index, length, product }) => {
   const navigate = useNavigate();
 
-  const isLast = index === length - 1;
-  const classes = isLast ? "p-4" : "p-4 border-b border-gray-200 ";
-
-
   const handleDelete = async (productId) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this product?");
     if (isConfirmed) {
       try {
         const response = await axios.delete(`${URL}/admin/product/${productId}`, config);
-        console.log("respons");
-        console.log(response);
-
         if (response.data.product) {
           alert("Product deleted successfully!");
-          // Optionally refresh the product list or navigate elsewhere
           navigate("/admin/products");
         } else {
           alert("Failed to delete the product.");
         }
       } catch (error) {
         console.error("Error deleting product:", error);
-        // alert("An error occurred while deleting the product.");
-        // alert(productId);
       }
     }
   };
 
   return (
-    <tr
-      className={`${classes} hover:bg-gray-200 active:bg-gray-300 cursor-pointer`}
-    // onClick={() => navigate(`edit/${product._id}`)}
-    >
-      <td className="admin-table-row flex items-center gap-2 ">
-        <div className="w-10 h-10 overflow-clip flex justify-center items-center shrink-0">
-          {product.imageURL ? (
-            <img
-              src={`${URL}/img/${product.imageURL}`}
-              alt="img"
-              className="object-contain w-full h-full"
-            />
-          ) : (
-            <div className="w-10 h-10 bg-slate-300 rounded-md"></div>
-          )}
+    <tr className="border-b border-gray-100 hover:bg-gray-50 transition-colors last:border-b-0">
+      {/* Product Name with Image */}
+      <td className="px-6 py-4 text-sm text-gray-900">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 overflow-hidden flex justify-center items-center shrink-0 rounded-lg bg-gray-100">
+            {product.imageURL ? (
+              <img
+                src={`${URL}/img/${product.imageURL}`}
+                alt={product.name}
+                className="object-contain w-full h-full"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-300"></div>
+            )}
+          </div>
+          <p className="line-clamp-1 font-medium text-gray-900 max-w-xs">{product.name}</p>
         </div>
-        <p className="line-clamp-1">{product.name}</p>
       </td>
-      <td className="admin-table-row">
-        <div className="line-clamp-2">{product.description}</div>
+
+      {/* Description */}
+      <td className="px-6 py-4 text-sm text-gray-600">
+        <div className="line-clamp-1 w-16 truncate text-xs overflow-hidden" title={product.description}>{product.description}</div>
       </td>
-      <td className="admin-table-row">{product?.category?.name || ""}</td>
-      <td className="admin-table-row">{product.stockQuantity}</td>
-      <td className="admin-table-row">{product.price}</td>
-      <td className="admin-table-row capitalize shrink-0">
+
+      {/* Category */}
+      <td className="px-6 py-4 text-sm text-gray-600">
+        {product?.category?.name || "—"}
+      </td>
+
+      {/* Quantity */}
+      <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+        {product.stockQuantity}
+      </td>
+
+      {/* Price */}
+      <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
+        ₹{product.price}
+      </td>
+
+      {/* Status */}
+      <td className="px-6 py-4 text-sm">
         <StatusComponent status={product.status} />
       </td>
-      <td className="admin-table-row">
+
+      {/* Added Date */}
+      <td className="px-6 py-4 text-sm text-gray-600">
         {product.createdAt
           ? date.format(new Date(product.createdAt), "MMM DD YYYY")
-          : "No Data"}
+          : "—"}
       </td>
-      <td className="admin-table-row">
-        <div className="flex items-center gap-2 text-lg">
-          <span
-            className="hover:text-gray-500"
+
+      {/* Actions */}
+      <td className="px-6 py-4 text-sm">
+        <div className="flex items-center gap-2">
+          <button
             onClick={() => navigate(`edit/${product._id}`)}
+            className="p-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
+            title="Edit product"
           >
-            <AiOutlineEdit />
-          </span>
-        </div>
-      </td>
-      <td className="admin-table-row">
-        <div className="flex items-center gap-2 text-lg">
-          <span
-            className="hover:text-gray-500"
+            <Edit2 size={16} />
+          </button>
+          <button
             onClick={() => handleDelete(product._id)}
+            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            title="Delete product"
           >
-            <AiOutlineDelete />
-          </span>
+            <Trash2 size={16} />
+          </button>
         </div>
       </td>
     </tr>
@@ -95,4 +103,3 @@ const TableRow = ({ index, length, product }) => {
 };
 
 export default TableRow;
-
